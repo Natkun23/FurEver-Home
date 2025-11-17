@@ -26,6 +26,7 @@
             min-height: 100vh;
         }
 
+        /* Sidebar - CONSISTENT DESIGN */
         .sidebar {
             width: 280px;
             background: linear-gradient(180deg, #2E8BC0 0%, #1a5a7d 100%);
@@ -33,44 +34,93 @@
             position: fixed;
             height: 100vh;
             overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
         }
 
         .sidebar-header {
             padding: 30px 20px;
             background: rgba(0,0,0,0.2);
+            text-align: center;
         }
 
-            .sidebar-header img {
-                max-width: 200px;
-                margin: 0 auto 10px;
-                display: block;
-            }
+        .sidebar-header img {
+            max-width: 200px;
+            margin: 0 auto 15px;
+            display: block;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+            text-align: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        .sidebar-menu {
+            padding: 10px 0;
+        }
 
         .menu-item {
-            padding: 15px 25px;
+            padding: 16px 25px;
             color: white;
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 15px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             border-left: 4px solid transparent;
+            position: relative;
         }
 
-            .menu-item:hover, .menu-item.active {
-                background: rgba(255,255,255,0.1);
-                border-left-color: #FFD93D;
-            }
+        .menu-item:hover {
+            background: rgba(255,255,255,0.08);
+            padding-left: 28px;
+        }
 
+        .menu-item.active {
+            background: rgba(255,255,255,0.12);
+            border-left-color: #FFD93D;
+            padding-left: 25px;
+        }
+
+        .menu-icon {
+            font-size: 1.2em;
+            width: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .menu-text {
+            font-weight: 600;
+            color: white;
+            font-size: 0.95em;
+        }
+
+        .badge {
+            margin-left: auto;
+            background: #FFD93D;
+            color: #2E8BC0;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 700;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        /* Main Content - CONSISTENT SPACING */
         .main-content {
             margin-left: 280px;
             flex: 1;
             padding: 30px;
+            min-height: 100vh;
+            background: #f0f2f5;
         }
 
         .top-bar {
             background: white;
-            padding: 20px 30px;
+            padding: 25px 30px;
             border-radius: 15px;
             box-shadow: 0 2px 10px rgba(0,0,0,0.05);
             margin-bottom: 30px;
@@ -80,6 +130,7 @@
             font-size: 2em;
             color: #2E8BC0;
             font-weight: 700;
+            margin: 0;
         }
 
         .applications-grid {
@@ -99,9 +150,9 @@
             transition: all 0.3s;
         }
 
-            .application-card:hover {
-                box-shadow: 0 8px 25px rgba(63, 169, 245, 0.2);
-            }
+        .application-card:hover {
+            box-shadow: 0 8px 25px rgba(63, 169, 245, 0.2);
+        }
 
         .app-icon {
             width: 80px;
@@ -191,11 +242,11 @@
             box-shadow: 0 2px 15px rgba(0,0,0,0.08);
         }
 
-            .empty-state i {
-                font-size: 5em;
-                color: #cbd5e1;
-                margin-bottom: 20px;
-            }
+        .empty-state i {
+            font-size: 5em;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
 
         .alert {
             padding: 15px 20px;
@@ -208,13 +259,24 @@
             align-items: center;
             gap: 15px;
         }
+
+        /* Responsive */
+       @@media (max-width: 1024px) {
+            .sidebar {
+                width: 0;
+                transform: translateX(-100%);
+            }
+            .main-content {
+                margin-left: 0;
+            }
+        }
     </style>
 </head>
 <body>
     <div class="sidebar">
         <div class="sidebar-header">
             <img src="~/Content/Images/fur_everhome.png" alt="FurEver Home">
-            <div style="font-size: 0.9em; opacity: 0.9; text-align: center;">Admin Panel</div>
+            <div class="sidebar-subtitle">Admin Panel</div>
         </div>
         <nav class="sidebar-menu">
             <a href="@Url.Action("Dashboard", "Admin")" class="menu-item">
@@ -238,10 +300,6 @@
                 <span class="menu-text">Applications</span>
             </a>
             <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
-            <a href="@Url.Action("Index", "Home")" class="menu-item">
-                <i class="fas fa-globe menu-icon"></i>
-                <span class="menu-text">View Website</span>
-            </a>
             <a href="@Url.Action("Logout", "Account")" class="menu-item">
                 <i class="fas fa-sign-out-alt menu-icon"></i>
                 <span class="menu-text">Logout</span>
