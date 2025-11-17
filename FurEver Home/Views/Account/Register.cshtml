@@ -1,6 +1,6 @@
 ﻿@model FurEver_Home.Models.RegisterViewModel
 @{
-    ViewBag.Title = "Register";
+    ViewBag.Title = "Sign Up - FurEver Home";
     Layout = null;
 }
 
@@ -9,7 +9,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FurEver Home - Register</title>
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
     <style>
         * {
             margin: 0;
@@ -18,79 +20,60 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
             align-items: center;
-            padding: 20px;
+            padding: 40px 20px;
         }
 
-        .container {
+        .register-container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 520px;
             width: 100%;
-            max-width: 900px;
-            display: flex;
-            min-height: 600px;
+            padding: 48px 40px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .left-panel {
-            flex: 1;
-            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .register-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #FFD93D 0%, #3FA9F5 100%);
+        }
+
+        .logo-container {
             text-align: center;
+            margin-bottom: 32px;
         }
 
-        .logo h1 {
-            font-size: 3em;
-            color: #3FA9F5;
-            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
-            font-weight: 900;
-            letter-spacing: 2px;
-        }
-
-        .logo h2 {
-            font-size: 2.5em;
-            color: #3FA9F5;
-            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
-            font-weight: 900;
-            letter-spacing: 2px;
-            margin-top: -10px;
+        .logo-img {
+            width: 200px;
+            height: auto;
+            margin-bottom: 24px;
         }
 
         .welcome-text {
-            color: #2E8BC0;
-            font-size: 1.2em;
-            margin-top: 20px;
-            line-height: 1.6;
-        }
-
-        .right-panel {
-            flex: 1;
-            padding: 60px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .form-title {
-            color: #2E8BC0;
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 28px;
             font-weight: 700;
+            color: #2E8BC0;
+            margin-bottom: 8px;
+            text-align: center;
         }
 
-        .form-subtitle {
-            color: #666;
-            margin-bottom: 30px;
+        .subtitle {
+            font-size: 15px;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 32px;
         }
 
         .form-group {
@@ -99,166 +82,392 @@
 
         .form-group label {
             display: block;
-            color: #333;
+            color: #334155;
             margin-bottom: 8px;
             font-weight: 600;
-            font-size: 0.9em;
+            font-size: 14px;
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="password"] {
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .form-group input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #E0E0E0;
-            border-radius: 10px;
-            font-size: 1em;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
             transition: all 0.3s ease;
             outline: none;
+            background: #f8fafc;
         }
 
         .form-group input:focus {
-            border-color: #3FA9F5;
-            box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.1);
+            border-color: #FFD93D;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(255, 217, 61, 0.1);
         }
 
         .form-group input.input-validation-error {
-            border-color: #dc3545;
+            border-color: #ef4444;
         }
 
         .field-validation-error {
-            color: #dc3545;
-            font-size: 0.85em;
-            margin-top: 5px;
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 6px;
             display: block;
         }
 
-        .validation-summary-errors {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
+        .file-upload-wrapper {
+            margin-top: 24px;
+            padding: 24px;
+            background: #f8fafc;
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .file-upload-wrapper:hover {
+            border-color: #FFD93D;
+            background: #fffbeb;
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            display: none;
+        }
+
+        .file-upload-label {
+            display: block;
+            cursor: pointer;
+        }
+
+        .file-upload-icon {
+            font-size: 40px;
+            color: #FFD93D;
+            margin-bottom: 12px;
+        }
+
+        .file-upload-text {
+            color: #64748b;
+            font-size: 14px;
+            margin-bottom: 4px;
+        }
+
+        .file-upload-hint {
+            color: #94a3b8;
+            font-size: 12px;
+        }
+
+        .id-type-selector {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 12px;
+            margin-top: 12px;
+        }
+
+        .id-type-option {
+            padding: 12px;
+            border: 2px solid #e2e8f0;
             border-radius: 10px;
-            margin-bottom: 20px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            background: #f8fafc;
         }
 
-        .validation-summary-errors ul {
-            margin: 0;
-            padding-left: 20px;
+        .id-type-option:hover {
+            border-color: #FFD93D;
+            background: #fffbeb;
         }
 
-        .btn-secondary {
+        .id-type-option input[type="radio"] {
+            display: none;
+        }
+
+        .id-type-option input[type="radio"]:checked + label {
+            color: #2E8BC0;
+            font-weight: 600;
+        }
+
+        .id-type-option.selected {
+            border-color: #FFD93D;
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        }
+
+        .btn-register {
             width: 100%;
-            padding: 15px;
+            padding: 16px;
             background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
             color: #2E8BC0;
             border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s ease;
-            margin-top: 15px;
+            box-shadow: 0 4px 12px rgba(255, 217, 61, 0.3);
+            margin-top: 24px;
         }
 
-        .btn-secondary:hover {
+        .btn-register:hover {
             transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(255, 217, 61, 0.3);
+            box-shadow: 0 8px 20px rgba(255, 217, 61, 0.4);
         }
 
-        .toggle-form {
+        .btn-register:active {
+            transform: translateY(0);
+        }
+
+        .divider {
             text-align: center;
-            margin-top: 20px;
-            color: #666;
+            margin: 24px 0;
+            position: relative;
         }
 
-        .toggle-form a {
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            color: #94a3b8;
+            font-size: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signin-link {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .signin-link a {
             color: #3FA9F5;
             text-decoration: none;
             font-weight: 600;
+            transition: color 0.3s;
         }
 
-        .toggle-form a:hover {
-            text-decoration: underline;
+        .signin-link a:hover {
+            color: #2E8BC0;
         }
 
-        @@media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                max-width: 400px;
+        .back-home {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .back-home a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+
+        .back-home a:hover {
+            color: #FFD93D;
+        }
+
+        .info-note {
+            background: #eff6ff;
+            border-left: 4px solid #3FA9F5;
+            padding: 14px 16px;
+            border-radius: 8px;
+            margin-top: 24px;
+            font-size: 13px;
+            color: #1e40af;
+        }
+
+        .info-note i {
+            margin-right: 8px;
+        }
+
+        @@media (max-width: 480px) {
+            .register-container {
+                padding: 36px 28px;
             }
 
-            .left-panel {
-                padding: 40px 30px;
+            .welcome-text {
+                font-size: 24px;
             }
 
-            .logo h1, .logo h2 {
-                font-size: 2em;
+            .logo-img {
+                width: 160px;
             }
 
-            .right-panel {
-                padding: 40px 30px;
+            .id-type-selector {
+                grid-template-columns: 1fr;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="left-panel">
-            <div class="logo">
-                <h1>FUR EVER</h1>
-                <h2>HOME</h2>
-            </div>
-            <p class="welcome-text">
-                Welcome to FurEver Home<br>
-                Where pets find their forever families 🐾
-            </p>
+    <div class="register-container">
+        <div class="logo-container">
+            <img src="~/Content/Images/full_furever.png" alt="FurEver Home" class="logo-img">
         </div>
 
-        <div class="right-panel">
-            <h2 class="form-title">Create Account</h2>
-            <p class="form-subtitle">Join FurEver Home today</p>
+        <h1 class="welcome-text">Join FurEver Home</h1>
+        <p class="subtitle">Create your account to start helping pets</p>
 
-            @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { @class = "register-form" }))
-            {
-                @Html.AntiForgeryToken()
-                @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        {
+            @Html.AntiForgeryToken()
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.FullName)
-                    @Html.TextBoxFor(m => m.FullName, new { @class = "form-control", placeholder = "Enter your full name" })
-                    @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "field-validation-error" })
+            <div class="form-group">
+                @Html.LabelFor(m => m.FullName)
+                <div class="input-wrapper">
+                    <i class="fas fa-user input-icon"></i>
+                    @Html.TextBoxFor(m => m.FullName, new { placeholder = "Enter your full name" })
                 </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Email)
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter your email", type = "email" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Password)
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Create a password" })
-                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.ConfirmPassword)
-                    @Html.PasswordFor(m => m.ConfirmPassword, new { @class = "form-control", placeholder = "Confirm your password" })
-                    @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "field-validation-error" })
-                </div>
-
-                <button type="submit" class="btn-secondary">Create Account</button>
-            }
-
-            <div class="toggle-form">
-                Already have an account? @Html.ActionLink("Sign In", "Login", "Account")
+                @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "field-validation-error" })
             </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email)
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope input-icon"></i>
+                    @Html.TextBoxFor(m => m.Email, new { placeholder = "Enter your email", type = "email" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password)
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    @Html.PasswordFor(m => m.Password, new { placeholder = "Create a password (min. 6 characters)" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.ConfirmPassword)
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { placeholder = "Confirm your password" })
+                </div>
+                @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-group">
+                <label>ID Type</label>
+                <div class="id-type-selector">
+                    <div class="id-type-option">
+                        <input type="radio" name="IDType" value="National ID" id="national" checked>
+                        <label for="national">
+                            <i class="fas fa-id-card"></i><br>
+                            National ID
+                        </label>
+                    </div>
+                    <div class="id-type-option">
+                        <input type="radio" name="IDType" value="Passport" id="passport">
+                        <label for="passport">
+                            <i class="fas fa-passport"></i><br>
+                            Passport
+                        </label>
+                    </div>
+                    <div class="id-type-option">
+                        <input type="radio" name="IDType" value="Driver's License" id="license">
+                        <label for="license">
+                            <i class="fas fa-id-badge"></i><br>
+                            Driver's License
+                        </label>
+                    </div>
+                    <div class="id-type-option">
+                        <input type="radio" name="IDType" value="Postal ID" id="postal">
+                        <label for="postal">
+                            <i class="fas fa-envelope"></i><br>
+                            Postal ID
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="file-upload-wrapper">
+                <label for="idUpload" class="file-upload-label">
+                    <div class="file-upload-icon">
+                        <i class="fas fa-cloud-upload-alt"></i>
+                    </div>
+                    <div class="file-upload-text">Upload Your Valid ID</div>
+                    <div class="file-upload-hint">Click to browse or drag and drop</div>
+                    <div class="file-upload-hint">PNG, JPG or PDF (Max 5MB)</div>
+                </label>
+                <input type="file" id="idUpload" name="IDImage" accept="image/*,.pdf">
+                <div id="fileName" style="margin-top: 12px; color: #3FA9F5; font-size: 14px; font-weight: 600;"></div>
+            </div>
+
+            <div class="info-note">
+                <i class="fas fa-info-circle"></i>
+                Your ID will be verified by our admin team within 24-48 hours. This helps us ensure the safety of our pets and community.
+            </div>
+
+            <button type="submit" class="btn-register">
+                <i class="fas fa-user-plus"></i> Create Account
+            </button>
+        }
+
+        <div class="divider">
+            <span>or</span>
+        </div>
+
+        <div class="signin-link">
+            Already have an account? <a href="@Url.Action("Login", "Account")">Sign In</a>
+        </div>
+
+        <div class="back-home">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
         </div>
     </div>
 
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    <script src="~/Scripts/jquery-validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        // File upload preview
+        document.getElementById('idUpload').addEventListener('change', function (e) {
+            var fileName = e.target.files[0]?.name;
+            if (fileName) {
+                document.getElementById('fileName').textContent = '✓ ' + fileName;
+            }
+        });
+
+        // ID type selector
+        document.querySelectorAll('.id-type-option').forEach(option => {
+            option.addEventListener('click', function () {
+                document.querySelectorAll('.id-type-option').forEach(o => o.classList.remove('selected'));
+                this.classList.add('selected');
+                this.querySelector('input[type="radio"]').checked = true;
+            });
+        });
+
+        // Set initial selected state
+        document.querySelector('.id-type-option input:checked').parentElement.classList.add('selected');
+    </script>
 </body>
 </html>

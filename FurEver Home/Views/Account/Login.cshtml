@@ -1,6 +1,6 @@
 ﻿@model FurEver_Home.Models.LoginViewModel
 @{
-    ViewBag.Title = "Login";
+    ViewBag.Title = "Login - FurEver Home";
     Layout = null;
 }
 
@@ -9,7 +9,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FurEver Home - Login</title>
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
     <style>
         * {
             margin: 0;
@@ -18,8 +20,8 @@
         }
 
         body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
             min-height: 100vh;
             display: flex;
             justify-content: center;
@@ -27,259 +29,317 @@
             padding: 20px;
         }
 
-        .container {
+        .login-container {
             background: white;
-            border-radius: 20px;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
-            overflow: hidden;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 440px;
             width: 100%;
-            max-width: 900px;
-            display: flex;
-            min-height: 550px;
+            padding: 48px 40px;
+            position: relative;
+            overflow: hidden;
         }
 
-        .left-panel {
-            flex: 1;
-            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
-            padding: 60px 40px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
+        .login-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #3FA9F5 0%, #FFD93D 100%);
+        }
+
+        .logo-container {
             text-align: center;
+            margin-bottom: 32px;
         }
 
-        .logo h1 {
-            font-size: 3em;
-            color: #3FA9F5;
-            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
-            font-weight: 900;
-            letter-spacing: 2px;
-        }
-
-        .logo h2 {
-            font-size: 2.5em;
-            color: #3FA9F5;
-            text-shadow: 3px 3px 0px rgba(0, 0, 0, 0.1);
-            font-weight: 900;
-            letter-spacing: 2px;
-            margin-top: -10px;
+        .logo-img {
+            width: 140px;
+            height: auto;
+            margin-bottom: 24px;
         }
 
         .welcome-text {
-            color: #2E8BC0;
-            font-size: 1.2em;
-            margin-top: 20px;
-            line-height: 1.6;
-        }
-
-        .right-panel {
-            flex: 1;
-            padding: 60px 50px;
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-        }
-
-        .form-title {
-            color: #2E8BC0;
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 28px;
             font-weight: 700;
+            color: #2E8BC0;
+            margin-bottom: 8px;
+            text-align: center;
         }
 
-        .form-subtitle {
-            color: #666;
-            margin-bottom: 30px;
+        .subtitle {
+            font-size: 15px;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 32px;
         }
 
         .form-group {
-            margin-bottom: 25px;
+            margin-bottom: 24px;
         }
 
         .form-group label {
             display: block;
-            color: #333;
+            color: #334155;
             margin-bottom: 8px;
             font-weight: 600;
-            font-size: 0.9em;
+            font-size: 14px;
         }
 
-        .form-group input[type="text"],
-        .form-group input[type="email"],
-        .form-group input[type="password"] {
+        .input-wrapper {
+            position: relative;
+        }
+
+        .input-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 18px;
+        }
+
+        .form-group input {
             width: 100%;
-            padding: 15px;
-            border: 2px solid #E0E0E0;
-            border-radius: 10px;
-            font-size: 1em;
+            padding: 14px 16px 14px 48px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
             transition: all 0.3s ease;
             outline: none;
+            background: #f8fafc;
         }
 
         .form-group input:focus {
             border-color: #3FA9F5;
-            box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.1);
+            background: white;
+            box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
         }
 
         .form-group input.input-validation-error {
-            border-color: #dc3545;
+            border-color: #ef4444;
         }
 
         .field-validation-error {
-            color: #dc3545;
-            font-size: 0.85em;
-            margin-top: 5px;
+            color: #ef4444;
+            font-size: 13px;
+            margin-top: 6px;
             display: block;
-        }
-
-        .validation-summary-errors {
-            background: #f8d7da;
-            border: 1px solid #f5c6cb;
-            color: #721c24;
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-        }
-
-        .validation-summary-errors ul {
-            margin: 0;
-            padding-left: 20px;
-        }
-
-        .btn-primary {
-            width: 100%;
-            padding: 15px;
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-            color: white;
-            border: none;
-            border-radius: 10px;
-            font-size: 1.1em;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s ease;
-            margin-top: 10px;
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(63, 169, 245, 0.3);
-        }
-
-        .toggle-form {
-            text-align: center;
-            margin-top: 20px;
-            color: #666;
-        }
-
-        .toggle-form a {
-            color: #3FA9F5;
-            text-decoration: none;
-            font-weight: 600;
-        }
-
-        .toggle-form a:hover {
-            text-decoration: underline;
         }
 
         .forgot-password {
             text-align: right;
-            margin-top: 10px;
+            margin-top: -8px;
+            margin-bottom: 24px;
         }
 
         .forgot-password a {
             color: #3FA9F5;
             text-decoration: none;
-            font-size: 0.9em;
+            font-size: 14px;
+            font-weight: 500;
+            transition: color 0.3s;
         }
 
         .forgot-password a:hover {
-            text-decoration: underline;
+            color: #2E8BC0;
+        }
+
+        .btn-login {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(63, 169, 245, 0.3);
+        }
+
+        .btn-login:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(63, 169, 245, 0.4);
+        }
+
+        .btn-login:active {
+            transform: translateY(0);
+        }
+
+        .divider {
+            text-align: center;
+            margin: 28px 0;
+            position: relative;
+        }
+
+        .divider::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            width: 100%;
+            height: 1px;
+            background: #e2e8f0;
+        }
+
+        .divider span {
+            background: white;
+            padding: 0 16px;
+            color: #94a3b8;
+            font-size: 14px;
+            position: relative;
+            z-index: 1;
+        }
+
+        .signup-link {
+            text-align: center;
+            color: #64748b;
+            font-size: 14px;
+        }
+
+        .signup-link a {
+            color: #3FA9F5;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .signup-link a:hover {
+            color: #2E8BC0;
         }
 
         .alert {
-            padding: 15px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
 
         .alert-success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
         }
 
-       @@media (max-width: 768px) {
-            .container {
-                flex-direction: column;
-                max-width: 400px;
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .alert i {
+            font-size: 18px;
+        }
+
+        .back-home {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .back-home a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+
+        .back-home a:hover {
+            color: #3FA9F5;
+        }
+
+        @@media (max-width: 480px) {
+            .login-container {
+                padding: 36px 28px;
             }
 
-            .left-panel {
-                padding: 40px 30px;
+            .welcome-text {
+                font-size: 24px;
             }
 
-            .logo h1, .logo h2 {
-                font-size: 2em;
-            }
-
-            .right-panel {
-                padding: 40px 30px;
+            .logo-img {
+                width: 120px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="container">
-        <div class="left-panel">
-            <div class="logo">
-                <h1>FUR EVER</h1>
-                <h2>HOME</h2>
-            </div>
-            <p class="welcome-text">
-                Welcome to FurEver Home<br>
-                Where pets find their forever families 🐾
-            </p>
+    <div class="login-container">
+        <div class="logo-container">
+            <img src="~/Content/Images/circle_furever.png" alt="FurEver Home" class="logo-img">
         </div>
 
-        <div class="right-panel">
-            <h2 class="form-title">Welcome Back!</h2>
-            <p class="form-subtitle">Sign in to continue</p>
+        <h1 class="welcome-text">Welcome Back</h1>
+        <p class="subtitle">Sign in to continue to FurEver Home</p>
 
-            @if (TempData["Success"] != null)
-            {
-                <div class="alert alert-success">
-                    @TempData["Success"]
-                </div>
-            }
-
-            @using (Html.BeginForm("Login", "Account", FormMethod.Post, new { @class = "login-form" }))
-            {
-                @Html.AntiForgeryToken()
-                @Html.ValidationSummary(true, "", new { @class = "validation-summary-errors" })
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Email)
-                    @Html.TextBoxFor(m => m.Email, new { @class = "form-control", placeholder = "Enter your email", type = "email" })
-                    @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
-                </div>
-
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Password)
-                    @Html.PasswordFor(m => m.Password, new { @class = "form-control", placeholder = "Enter your password" })
-                    @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
-                </div>
-
-                <div class="forgot-password">
-                    <a href="#">Forgot Password?</a>
-                </div>
-
-                <button type="submit" class="btn-primary">Sign In</button>
-            }
-
-            <div class="toggle-form">
-                Don't have an account? @Html.ActionLink("Sign Up", "Register", "Account")
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <span>@TempData["Success"]</span>
             </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>@TempData["Error"]</span>
+            </div>
+        }
+
+        @using (Html.BeginForm("Login", "Account", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Email)
+                <div class="input-wrapper">
+                    <i class="fas fa-envelope input-icon"></i>
+                    @Html.TextBoxFor(m => m.Email, new { placeholder = "Enter your email", type = "email" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
+            </div>
+
+            <div class="form-group">
+                @Html.LabelFor(m => m.Password)
+                <div class="input-wrapper">
+                    <i class="fas fa-lock input-icon"></i>
+                    @Html.PasswordFor(m => m.Password, new { placeholder = "Enter your password" })
+                </div>
+                @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
+            </div>
+
+            <div class="forgot-password">
+                <a href="@Url.Action("ForgotPassword", "Account")">Forgot Password?</a>
+            </div>
+
+            <button type="submit" class="btn-login">
+                <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+        }
+
+        <div class="divider">
+            <span>or</span>
+        </div>
+
+        <div class="signup-link">
+            Don't have an account? <a href="@Url.Action("Register", "Account")">Sign Up</a>
+        </div>
+
+        <div class="back-home">
+            <a href="@Url.Action("Index", "Home")">
+                <i class="fas fa-arrow-left"></i> Back to Home
+            </a>
         </div>
     </div>
 

@@ -53,6 +53,14 @@ namespace FurEver_Home.Models
         [Column("age")]
         public int? Age { get; set; }
 
+        // PASSWORD RESET PROPERTIES - ADD THESE
+        [Column("reset_token")]
+        [StringLength(255)]
+        public string ResetToken { get; set; }
+
+        [Column("reset_token_expiry")]
+        public DateTime? ResetTokenExpiry { get; set; }
+
         [Column("date_registered")]
         public DateTime DateRegistered { get; set; } = DateTime.Now;
 

@@ -1,0 +1,326 @@
+﻿@model List<FurEver_Home.Models.AdoptionApplication>
+@{
+    ViewBag.Title = "Adoption Applications - FurEver Home Admin";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #2E8BC0 0%, #1a5a7d 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            background: rgba(0,0,0,0.2);
+        }
+
+            .sidebar-header img {
+                max-width: 200px;
+                margin: 0 auto 10px;
+                display: block;
+            }
+
+        .menu-item {
+            padding: 15px 25px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s;
+            border-left: 4px solid transparent;
+        }
+
+            .menu-item:hover, .menu-item.active {
+                background: rgba(255,255,255,0.1);
+                border-left-color: #FFD93D;
+            }
+
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 30px;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 2em;
+            color: #2E8BC0;
+            font-weight: 700;
+        }
+
+        .applications-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .application-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 20px;
+            align-items: center;
+            transition: all 0.3s;
+        }
+
+            .application-card:hover {
+                box-shadow: 0 8px 25px rgba(63, 169, 245, 0.2);
+            }
+
+        .app-icon {
+            width: 80px;
+            height: 80px;
+            border-radius: 15px;
+            background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            color: #3FA9F5;
+        }
+
+        .app-content h3 {
+            color: #2E8BC0;
+            font-size: 1.3em;
+            margin-bottom: 8px;
+        }
+
+        .app-details {
+            color: #64748b;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+        }
+
+        .status-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            text-align: center;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .app-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn-sm {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-view {
+            background: #3FA9F5;
+            color: white;
+        }
+
+        .btn-approve {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 15px;
+            padding: 80px 40px;
+            text-align: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+            .empty-state i {
+                font-size: 5em;
+                color: #cbd5e1;
+                margin-bottom: 20px;
+            }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="~/Content/Images/fur_everhome.png" alt="FurEver Home">
+            <div style="font-size: 0.9em; opacity: 0.9; text-align: center;">Admin Panel</div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="@Url.Action("Dashboard", "Admin")" class="menu-item">
+                <i class="fas fa-chart-line menu-icon"></i>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="@Url.Action("Users", "Admin")" class="menu-item">
+                <i class="fas fa-users menu-icon"></i>
+                <span class="menu-text">Users</span>
+            </a>
+            <a href="@Url.Action("VerifyIDs", "Admin")" class="menu-item">
+                <i class="fas fa-id-card menu-icon"></i>
+                <span class="menu-text">Verify IDs</span>
+            </a>
+            <a href="@Url.Action("Pets", "Admin")" class="menu-item">
+                <i class="fas fa-paw menu-icon"></i>
+                <span class="menu-text">Manage Pets</span>
+            </a>
+            <a href="@Url.Action("Applications", "Admin")" class="menu-item active">
+                <i class="fas fa-file-alt menu-icon"></i>
+                <span class="menu-text">Applications</span>
+            </a>
+            <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
+            <a href="@Url.Action("Index", "Home")" class="menu-item">
+                <i class="fas fa-globe menu-icon"></i>
+                <span class="menu-text">View Website</span>
+            </a>
+            <a href="@Url.Action("Logout", "Account")" class="menu-item">
+                <i class="fas fa-sign-out-alt menu-icon"></i>
+                <span class="menu-text">Logout</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h1 class="page-title">Adoption Applications</h1>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert">
+                <i class="fas fa-check-circle"></i>
+                <span>@TempData["Success"]</span>
+            </div>
+        }
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <i class="fas fa-inbox"></i>
+                <h3 style="color: #64748b; margin-bottom: 10px;">No Applications Yet</h3>
+                <p style="color: #94a3b8;">Adoption applications will appear here</p>
+            </div>
+        }
+        else
+        {
+            <div class="applications-grid">
+                @foreach (var app in Model)
+                {
+                    <div class="application-card">
+                        <div class="app-icon">
+                            <i class="fas fa-file-alt"></i>
+                        </div>
+                        <div class="app-content">
+                            <h3>@app.User.FullName wants to adopt @app.Pet.Name</h3>
+                            <div class="app-details">
+                                <i class="fas fa-envelope"></i> @app.User.Email
+                            </div>
+                            <div class="app-details">
+                                <i class="fas fa-phone"></i> @app.PhoneNumber
+                            </div>
+                            <div class="app-details">
+                                <i class="fas fa-calendar"></i> Applied on @app.ApplicationDate.ToString("MMM dd, yyyy")
+                            </div>
+                        </div>
+                        <div class="app-actions">
+                            <div class="status-badge status-@(app.Status.ToLower())">
+                                @app.Status
+                            </div>
+                            <a href="@Url.Action("ApplicationDetails", "Admin", new { id = app.ApplicationId })" class="btn-sm btn-view">
+                                <i class="fas fa-eye"></i> View Details
+                            </a>
+                            @if (app.Status == "Pending")
+                            {
+                                <form action="@Url.Action("ApproveApplication", "Admin")" method="post" style="margin: 0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@app.ApplicationId" />
+                                    <button type="submit" class="btn-sm btn-approve" onclick="return confirm('Approve this application?')">
+                                        <i class="fas fa-check"></i> Approve
+                                    </button>
+                                </form>
+
+                                <form action="@Url.Action("RejectApplication", "Admin")" method="post" style="margin: 0">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden" name="id" value="@app.ApplicationId" />
+                                    <button type="submit" class="btn-sm btn-reject" onclick="return confirm('Reject this application?')">
+                                        <i class="fas fa-times"></i> Reject
+                                    </button>
+                                </form>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</body>
+</html>

@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Web;
 
 namespace FurEver_Home.Models
 {
@@ -25,5 +26,12 @@ namespace FurEver_Home.Models
         [Display(Name = "Confirm Password")]
         [Compare("Password", ErrorMessage = "Passwords do not match")]
         public string ConfirmPassword { get; set; }
+
+        // ID VERIFICATION PROPERTIES - ADD THESE IF MISSING
+        [Display(Name = "ID Type")]
+        public string IDType { get; set; }
+
+        [Display(Name = "ID Image")]
+        public HttpPostedFileBase IDImage { get; set; }
     }
 }

@@ -1,14 +1,17 @@
 ﻿using System;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
-using System.Web.Security;
 using FurEver_Home.Models;
 
 namespace FurEver_Home.Controllers
 {
     public class AccountController : Controller
     {
-        private FurEverHomeContext db = new FurEverHomeContext();
+        private readonly FurEverHomeContext db = new FurEverHomeContext();
+
+        // ==================== LOGIN ====================
 
         // GET: Account/Login
         public ActionResult Login()
@@ -28,22 +31,21 @@ namespace FurEver_Home.Controllers
 
                 if (user != null)
                 {
-                    // Check if password matches (in production, use hashed passwords!)
+                    // TODO: In production, use proper password hashing (BCrypt, etc.)
+                    // For now, direct comparison
                     if (user.Password == model.Password)
                     {
-                        // Check if user is active
+                        // Check if account is active
                         if (!user.IsActive)
                         {
-                            ModelState.AddModelError("", "Your account has been deactivated. Please contact support.");
+                            TempData["Error"] = "Your account has been deactivated. Please contact support.";
                             return View(model);
                         }
 
-                        // Set authentication cookie
-                        FormsAuthentication.SetAuthCookie(user.Email, model.RememberMe);
-
-                        // Store user info in session
+                        // Create session
                         Session["UserId"] = user.UserId;
                         Session["UserName"] = user.FullName;
+                        Session["UserEmail"] = user.Email;
                         Session["UserRole"] = user.Role;
 
                         // Redirect based on role
@@ -58,12 +60,13 @@ namespace FurEver_Home.Controllers
                     }
                 }
 
-                // If we got here, login failed
-                ModelState.AddModelError("", "Invalid email or password.");
+                TempData["Error"] = "Invalid email or password.";
             }
 
             return View(model);
         }
+
+        // ==================== REGISTER ====================
 
         // GET: Account/Register
         public ActionResult Register()
@@ -74,16 +77,52 @@ namespace FurEver_Home.Controllers
         // POST: Account/Register
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Register(RegisterViewModel model)
+        public ActionResult Register(RegisterViewModel model, HttpPostedFileBase IDImage)
         {
             if (ModelState.IsValid)
             {
                 // Check if email already exists
-                var existingUser = db.Users.FirstOrDefault(u => u.Email == model.Email);
-                if (existingUser != null)
+                if (db.Users.Any(u => u.Email == model.Email))
                 {
                     ModelState.AddModelError("Email", "This email is already registered.");
                     return View(model);
+                }
+
+                // Handle ID image upload
+                string idImagePath = null;
+                if (IDImage != null && IDImage.ContentLength > 0)
+                {
+                    // Validate file type
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
+                    var extension = Path.GetExtension(IDImage.FileName).ToLower();
+
+                    if (!allowedExtensions.Contains(extension))
+                    {
+                        ModelState.AddModelError("IDImage", "Only JPG, PNG, or PDF files are allowed.");
+                        return View(model);
+                    }
+
+                    // Validate file size (max 5MB)
+                    if (IDImage.ContentLength > 5 * 1024 * 1024)
+                    {
+                        ModelState.AddModelError("IDImage", "File size must be less than 5MB.");
+                        return View(model);
+                    }
+
+                    // Create uploads directory if it doesn't exist
+                    var uploadsDir = Server.MapPath("~/Content/Uploads/IDs");
+                    if (!Directory.Exists(uploadsDir))
+                    {
+                        Directory.CreateDirectory(uploadsDir);
+                    }
+
+                    // Generate unique filename
+                    var fileName = Guid.NewGuid().ToString() + extension;
+                    var filePath = Path.Combine(uploadsDir, fileName);
+
+                    // Save file
+                    IDImage.SaveAs(filePath);
+                    idImagePath = "/Content/Uploads/IDs/" + fileName;
                 }
 
                 // Create new user
@@ -93,9 +132,11 @@ namespace FurEver_Home.Controllers
                     Email = model.Email,
                     Password = model.Password, // TODO: Hash password in production!
                     Role = "Client",
-                    IDStatus = "Pending",
-                    IsActive = true,
+                    IDType = model.IDType,
+                    IDImageUrl = idImagePath,
+                    IDStatus = IDImage != null ? "Pending" : "Not Submitted",
                     DateRegistered = DateTime.Now,
+                    IsActive = true,
                     CreatedAt = DateTime.Now,
                     UpdatedAt = DateTime.Now
                 };
@@ -103,21 +144,117 @@ namespace FurEver_Home.Controllers
                 db.Users.Add(user);
                 db.SaveChanges();
 
-                TempData["Success"] = "Account created successfully! Please login.";
+                TempData["Success"] = "Registration successful! Please login.";
                 return RedirectToAction("Login");
             }
 
             return View(model);
         }
 
+        // ==================== FORGOT PASSWORD ====================
+
+        // GET: Account/ForgotPassword
+        public ActionResult ForgotPassword()
+        {
+            return View();
+        }
+
+        // POST: Account/ForgotPassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ForgotPassword(ForgotPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = db.Users.FirstOrDefault(u => u.Email == model.Email);
+
+                if (user != null)
+                {
+                    // Generate reset token
+                    var token = Guid.NewGuid().ToString();
+                    user.ResetToken = token;
+                    user.ResetTokenExpiry = DateTime.Now.AddHours(1); // Token valid for 1 hour
+                    user.UpdatedAt = DateTime.Now;
+                    db.SaveChanges();
+
+                    // In production, send email with reset link
+                    // For now, we'll just show the link in success message
+                    var resetUrl = Url.Action("ResetPassword", "Account", new { token = token, email = user.Email }, Request.Url.Scheme);
+
+                    TempData["Success"] = $"Password reset instructions have been sent to your email. For testing: {resetUrl}";
+                    return View();
+                }
+
+                // Don't reveal if email exists or not (security best practice)
+                TempData["Success"] = "If your email exists in our system, you will receive password reset instructions.";
+            }
+
+            return View(model);
+        }
+
+        // ==================== RESET PASSWORD ====================
+
+        // GET: Account/ResetPassword
+        public ActionResult ResetPassword(string token, string email)
+        {
+            if (string.IsNullOrEmpty(token) || string.IsNullOrEmpty(email))
+            {
+                return RedirectToAction("Login");
+            }
+
+            var user = db.Users.FirstOrDefault(u => u.Email == email && u.ResetToken == token);
+
+            if (user == null || user.ResetTokenExpiry < DateTime.Now)
+            {
+                TempData["Error"] = "Invalid or expired reset token.";
+                return RedirectToAction("Login");
+            }
+
+            var model = new ResetPasswordViewModel
+            {
+                Token = token,
+                Email = email
+            };
+
+            return View(model);
+        }
+
+        // POST: Account/ResetPassword
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ResetPassword(ResetPasswordViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = db.Users.FirstOrDefault(u => u.Email == model.Email && u.ResetToken == model.Token);
+
+                if (user != null && user.ResetTokenExpiry >= DateTime.Now)
+                {
+                    // Update password
+                    user.Password = model.NewPassword; // TODO: Hash password in production!
+                    user.ResetToken = null;
+                    user.ResetTokenExpiry = null;
+                    user.UpdatedAt = DateTime.Now;
+                    db.SaveChanges();
+
+                    TempData["Success"] = "Your password has been reset successfully! Please login with your new password.";
+                    return RedirectToAction("Login");
+                }
+
+                TempData["Error"] = "Invalid or expired reset token.";
+            }
+
+            return View(model);
+        }
+
+        // ==================== LOGOUT ====================
+
         // GET: Account/Logout
         public ActionResult Logout()
         {
-            FormsAuthentication.SignOut();
             Session.Clear();
             Session.Abandon();
-
-            TempData["Success"] = "You have been logged out.";
+            TempData["Success"] = "You have been logged out successfully.";
             return RedirectToAction("Login");
         }
 

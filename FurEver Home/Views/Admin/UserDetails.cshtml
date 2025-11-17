@@ -1,0 +1,235 @@
+﻿@model FurEver_Home.Models.User
+@{
+    ViewBag.Title = "User Details - FurEver Home Admin";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            padding: 40px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .user-avatar-large {
+            width: 100px;
+            height: 100px;
+            background: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            font-weight: 700;
+            color: #3FA9F5;
+        }
+
+        .header-info h1 {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .header-info p {
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .info-item label {
+            display: block;
+            color: #64748b;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .info-item .value {
+            font-size: 1.1em;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-verified {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .id-preview {
+            margin-top: 30px;
+            padding: 30px;
+            background: #f8fafc;
+            border-radius: 15px;
+        }
+
+            .id-preview h3 {
+                color: #2E8BC0;
+                margin-bottom: 20px;
+            }
+
+        .id-image {
+            max-width: 100%;
+            border-radius: 10px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+        }
+
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <div class="user-avatar-large">@Model.FullName.Substring(0, 1).ToUpper()</div>
+            <div class="header-info">
+                <h1>@Model.FullName</h1>
+                <p><i class="fas fa-envelope"></i> @Model.Email</p>
+            </div>
+        </div>
+
+        <div class="content">
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>User ID</label>
+                    <div class="value">#@Model.UserId.ToString("D6")</div>
+                </div>
+                <div class="info-item">
+                    <label>Account Status</label>
+                    <div class="value">
+                        @if (Model.IsActive)
+                        {
+                            <span class="status-badge status-verified">Active</span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-pending">Inactive</span>
+                        }
+                    </div>
+                </div>
+                <div class="info-item">
+                    <label>ID Type</label>
+                    <div class="value">@(Model.IDType ?? "Not Provided")</div>
+                </div>
+                <div class="info-item">
+                    <label>ID Status</label>
+                    <div class="value">
+                        <span class="status-badge status-@(Model.IDStatus == "Verified" ? "verified" : "pending")">
+                            @Model.IDStatus
+                        </span>
+                    </div>
+                </div>
+                <div class="info-item">
+                    <label>Registered Date</label>
+                    <div class="value">@Model.DateRegistered.ToString("MMMM dd, yyyy")</div>
+                </div>
+                <div class="info-item">
+                    <label>Role</label>
+                    <div class="value">@Model.Role</div>
+                </div>
+            </div>
+
+            @if (!string.IsNullOrEmpty(Model.IDImageUrl))
+            {
+                <div class="id-preview">
+                    <h3><i class="fas fa-id-card"></i> Uploaded ID</h3>
+                    <img src="@Model.IDImageUrl" alt="User ID" class="id-image">
+                </div>
+            }
+
+            <div class="action-buttons">
+                <a href="@Url.Action("Users", "Admin")" class="btn btn-back">
+                    <i class="fas fa-arrow-left"></i> Back to Users
+                </a>
+                @if (Model.IDStatus == "Pending")
+                {
+                    <a href="@Url.Action("VerifyIDDetails", "Admin", new { id = Model.UserId })" class="btn btn-primary">
+                        <i class="fas fa-check"></i> Verify ID
+                    </a>
+                }
+            </div>
+        </div>
+    </div>
+</body>
+</html>

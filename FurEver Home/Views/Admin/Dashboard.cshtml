@@ -411,36 +411,48 @@
         </div>
         <nav class="sidebar-menu">
             <a href="@Url.Action("Dashboard", "Admin")" class="menu-item active">
-                <span class="menu-icon">📊</span>
+                <i class="fas fa-chart-line menu-icon"></i>
                 <span class="menu-text">Dashboard</span>
             </a>
             <a href="@Url.Action("Users", "Admin")" class="menu-item">
-                <span class="menu-icon">👥</span>
+                <i class="fas fa-users menu-icon"></i>
                 <span class="menu-text">Users</span>
-                <span class="badge">@ViewBag.TotalUsers</span>
+                @if (ViewBag.TotalUsers != null)
+                {
+                    <span class="badge">@ViewBag.TotalUsers</span>
+                }
             </a>
             <a href="@Url.Action("VerifyIDs", "Admin")" class="menu-item">
-                <span class="menu-icon">🆔</span>
+                <i class="fas fa-id-card menu-icon"></i>
                 <span class="menu-text">Verify IDs</span>
-                <span class="badge">@ViewBag.PendingVerifications</span>
+                @if (ViewBag.PendingVerifications != null)
+                {
+                    <span class="badge">@ViewBag.PendingVerifications</span>
+                }
             </a>
             <a href="@Url.Action("Pets", "Admin")" class="menu-item">
-                <span class="menu-icon">🐾</span>
+                <i class="fas fa-paw menu-icon"></i>
                 <span class="menu-text">Manage Pets</span>
-                <span class="badge">@ViewBag.TotalPets</span>
+                @if (ViewBag.TotalPets != null)
+                {
+                    <span class="badge">@ViewBag.TotalPets</span>
+                }
             </a>
             <a href="@Url.Action("Applications", "Admin")" class="menu-item">
-                <span class="menu-icon">📋</span>
+                <i class="fas fa-file-alt menu-icon"></i>
                 <span class="menu-text">Applications</span>
-                <span class="badge">@ViewBag.PendingApplications</span>
+                @if (ViewBag.PendingApplications != null)
+                {
+                    <span class="badge">@ViewBag.PendingApplications</span>
+                }
             </a>
             <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
             <a href="@Url.Action("Index", "Home")" class="menu-item">
-                <span class="menu-icon">🌐</span>
+                <i class="fas fa-globe menu-icon"></i>
                 <span class="menu-text">View Website</span>
             </a>
             <a href="@Url.Action("Logout", "Account")" class="menu-item">
-                <span class="menu-icon">🚪</span>
+                <i class="fas fa-sign-out-alt menu-icon"></i>
                 <span class="menu-text">Logout</span>
             </a>
         </nav>
