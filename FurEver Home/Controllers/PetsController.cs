@@ -1,87 +1,111 @@
-﻿using FurEver_Home.Models;
-using System;
-using System.Collections.Generic;
+﻿using System;
+using System.Data.Entity;
+using System.Linq;
+using System.Web.Mvc;
+using FurEver_Home.Models;
 
-private static List<Pet> pets = new List<Pet>
+namespace FurEver_Home.Controllers
 {
-    new Pet
+    public class PetsController : Controller
     {
-        PetId = 1,
-        Name = "Parki",
-        Type = "Dog",
-        Breed = "Mixed Breed",
-        Age = 2,
-        Gender = "Male",
-        Size = "Medium",
-        Description = "Parki is a rescue dog that was found in a parking area. That's why Parki is his name!",
-        ImageUrl = "/Content/Images/charlie.jpg",
-        Traits = "Gentle,Quiet,Affectionate",
-        Vaccines = "Anti Rabies, Dewormed, 5 in 1 Distemper, Hepatitis, Leptospirosis, Parvovirus, Parainfluenza (DHLPPi)",
-        DaysInCenter = 60,
-        WhyAdoptMe = "Healthy and neutered,Fully vaccinated,Deserves a loving forever home!",
-        IsHealthy = true,
-        IsNeutered = true,
-        IsAdopted = false,
-        DateAdded = DateTime.Now.AddDays(-60)
-    },
-    new Pet
-    {
-        PetId = 2,
-        Name = "Max",
-        Type = "Dog",
-        Breed = "Golden Retriever",
-        Age = 3,
-        Gender = "Male",
-        Size = "Large",
-        Description = "Max is a friendly and energetic Golden Retriever who loves to play fetch and go for long walks.",
-        ImageUrl = "/Content/Images/max.jpg",
-        Traits = "Friendly,Energetic,Good with kids",
-        Vaccines = "Anti Rabies, Dewormed, 5 in 1 Distemper, Hepatitis, Leptospirosis, Parvovirus, Parainfluenza (DHLPPi)",
-        DaysInCenter = 45,
-        WhyAdoptMe = "Great with children,Fully trained,Loves outdoor activities",
-        IsHealthy = true,
-        IsNeutered = true,
-        IsAdopted = false,
-        DateAdded = DateTime.Now.AddDays(-45)
-    },
-    new Pet
-    {
-        PetId = 3,
-        Name = "Buddy",
-        Type = "Dog",
-        Breed = "Beagle",
-        Age = 2,
-        Gender = "Male",
-        Size = "Medium",
-        Description = "Buddy is a playful and curious beagle who loves exploring and making new friends.",
-        ImageUrl = "/Content/Images/buddy.jpg",
-        Traits = "Playful,Curious,Affectionate",
-        Vaccines = "Anti Rabies, Dewormed, 5 in 1 Distemper, Hepatitis, Leptospirosis, Parvovirus, Parainfluenza (DHLPPi)",
-        DaysInCenter = 30,
-        WhyAdoptMe = "Perfect companion,Loves to play,Gets along with other pets",
-        IsHealthy = true,
-        IsNeutered = true,
-        IsAdopted = false,
-        DateAdded = DateTime.Now.AddDays(-30)
-    },
-    new Pet
-    {
-        PetId = 4,
-        Name = "Bella",
-        Type = "Cat",
-        Breed = "Calico",
-        Age = 1,
-        Gender = "Female",
-        Size = "Small",
-        Description = "Bella is a playful and energetic calico cat who loves to chase toys and cuddle.",
-        ImageUrl = "/Content/Images/bella.jpg",
-        Traits = "Playful,Energetic,Curious",
-        Vaccines = "Anti Rabies, Dewormed, Feline Distemper (FVRCP)",
-        DaysInCenter = 20,
-        WhyAdoptMe = "Affectionate lap cat,Low maintenance,Indoor friendly",
-        IsHealthy = true,
-        IsNeutered = true,
-        IsAdopted = false,
-        DateAdded = DateTime.Now.AddDays(-20)
+        private FurEverHomeContext db = new FurEverHomeContext();
+
+        // GET: Pets (Browse all pets)
+        public ActionResult Index()
+        {
+            var pets = db.Pets.Include(p => p.PetType)
+                              .Where(p => !p.IsAdopted)
+                              .ToList();
+            return View(pets);
+        }
+
+        // GET: Pets/Dogs
+        public ActionResult Dogs()
+        {
+            var dogs = db.Pets.Include(p => p.PetType)
+                              .Where(p => p.PetTypeId == 1 && !p.IsAdopted)
+                              .ToList();
+            return View("Index", dogs);
+        }
+
+        // GET: Pets/Cats
+        public ActionResult Cats()
+        {
+            var cats = db.Pets.Include(p => p.PetType)
+                              .Where(p => p.PetTypeId == 2 && !p.IsAdopted)
+                              .ToList();
+            return View("Index", cats);
+        }
+
+        // GET: Pets/Details/5
+        public ActionResult Details(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var pet = db.Pets.Include(p => p.PetType).FirstOrDefault(p => p.PetId == id);
+            if (pet == null)
+            {
+                return HttpNotFound();
+            }
+            return View(pet);
+        }
+
+        // GET: Pets/Apply/5
+        public ActionResult Apply(int? id)
+        {
+            if (id == null)
+            {
+                return RedirectToAction("Index");
+            }
+
+            var pet = db.Pets.Include(p => p.PetType).FirstOrDefault(p => p.PetId == id);
+            if (pet == null)
+            {
+                return HttpNotFound();
+            }
+
+            var model = new AdoptionApplication
+            {
+                PetId = id.Value,
+                Pet = pet
+            };
+
+            return View(model);
+        }
+
+        // POST: Pets/Apply
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult Apply(AdoptionApplication model)
+        {
+            if (ModelState.IsValid)
+            {
+                // TODO: Get actual logged-in user ID (for now using 1)
+                model.UserId = 1;
+                model.ApplicationDate = DateTime.Now;
+                model.Status = "Pending";
+
+                db.AdoptionApplications.Add(model);
+                db.SaveChanges();
+
+                TempData["Success"] = "Your adoption application has been submitted! We'll contact you soon.";
+                return RedirectToAction("Index", "Home");
+            }
+
+            model.Pet = db.Pets.Find(model.PetId);
+            return View(model);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
+        }
     }
-};
+}

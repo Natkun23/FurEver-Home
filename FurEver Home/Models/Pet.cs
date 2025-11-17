@@ -1,53 +1,106 @@
 ﻿using System;
 using System.ComponentModel.DataAnnotations;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace FurEver_Home.Models
 {
+    [Table("pets")]
     public class Pet
     {
+        [Key]
+        [Column("pet_id")]
         public int PetId { get; set; }
 
         [Required]
+        [Column("pet_name")]
         [StringLength(100)]
         public string Name { get; set; }
 
         [Required]
-        public string Type { get; set; } // "Dog" or "Cat"
+        [Column("pet_type_id")]
+        public int PetTypeId { get; set; }
 
         [Required]
+        [Column("breed")]
+        [StringLength(100)]
         public string Breed { get; set; }
 
         [Required]
+        [Column("age")]
         public int Age { get; set; }
 
         [Required]
-        public string Gender { get; set; } // "Male" or "Female"
+        [Column("gender")]
+        [StringLength(10)]
+        public string Gender { get; set; }
 
         [Required]
-        public string Size { get; set; } // "Small", "Medium", "Large"
+        [Column("size")]
+        [StringLength(50)]
+        public string Size { get; set; }
 
         [Required]
+        [Column("description")]
         public string Description { get; set; }
 
-        public string ImageUrl { get; set; }
+        [Column("personality_traits")]
+        [StringLength(500)]
+        public string Traits { get; set; }
 
-        public string Traits { get; set; } // Comma-separated: "Friendly,Playful,Trained"
+        [Column("vaccines_info")]
+        public string Vaccines { get; set; }
 
-        // NEW FIELDS
-        public string Vaccines { get; set; } // Full vaccine information
-
-        public int DaysInCenter { get; set; } // Days in shelter/center
-
-        public string WhyAdoptMe { get; set; } // Reasons to adopt (one per line or comma-separated)
-
+        [Column("is_healthy")]
         public bool IsHealthy { get; set; } = true;
 
+        [Column("is_neutered")]
         public bool IsNeutered { get; set; } = true;
 
-        // END NEW FIELDS
+        [Column("days_in_center")]
+        public int DaysInCenter { get; set; } = 0;
 
-        public bool IsAdopted { get; set; }
+        [Column("why_adopt_me")]
+        public string WhyAdoptMe { get; set; }
 
-        public DateTime DateAdded { get; set; }
+        [Column("is_adopted")]
+        public bool IsAdopted { get; set; } = false;
+
+        [Column("image_url")]
+        [StringLength(500)]
+        public string ImageUrl { get; set; }
+
+        [Column("date_added")]
+        public DateTime DateAdded { get; set; } = DateTime.Now;
+
+        [Column("created_at")]
+        public DateTime CreatedAt { get; set; } = DateTime.Now;
+
+        [Column("updated_at")]
+        public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        [Column("created_by")]
+        public int? CreatedBy { get; set; }
+
+        [Column("updated_by")]
+        public int? UpdatedBy { get; set; }
+
+        // Navigation Properties
+        [NotMapped]
+        public string Type
+        {
+            get
+            {
+                return PetTypeId == 1 ? "Dog" : "Cat";
+            }
+        }
+
+        [ForeignKey("PetTypeId")]
+        public virtual PetType PetType { get; set; }
+
+        [ForeignKey("CreatedBy")]
+        public virtual User Creator { get; set; }
+
+        [ForeignKey("UpdatedBy")]
+        public virtual User Updater { get; set; }
     }
 }

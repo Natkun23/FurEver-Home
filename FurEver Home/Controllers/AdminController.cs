@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
+using System.Data.Entity;
 using System.Linq;
 using System.Web.Mvc;
 using FurEver_Home.Models;
@@ -8,32 +8,15 @@ namespace FurEver_Home.Controllers
 {
     public class AdminController : Controller
     {
-        // Temporary in-memory data
-        private static List<User> users = new List<User>
-        {
-            new User { UserId = 1, FullName = "John Doe", Email = "john@example.com", Role = "Client", IDType = "National ID", IDStatus = "Pending", DateRegistered = DateTime.Now.AddDays(-5), IsActive = true },
-            new User { UserId = 2, FullName = "Jane Smith", Email = "jane@example.com", Role = "Client", IDType = "Passport", IDStatus = "Verified", DateRegistered = DateTime.Now.AddDays(-10), IsActive = true },
-            new User { UserId = 3, FullName = "Admin User", Email = "admin@furever.com", Role = "Admin", IDStatus = "Verified", DateRegistered = DateTime.Now.AddDays(-100), IsActive = true }
-        };
-
-        private static List<Pet> pets = new List<Pet>
-        {
-            new Pet { PetId = 1, Name = "Charlie", Type = "Dog", Breed = "Poodle Mix", Age = 1, Gender = "Male", Size = "Small", Description = "Gentle pup", Traits = "Gentle,Quiet", IsAdopted = false, DateAdded = DateTime.Now.AddDays(-3) },
-            new Pet { PetId = 2, Name = "Max", Type = "Dog", Breed = "Golden Retriever", Age = 3, Gender = "Male", Size = "Large", Description = "Friendly dog", Traits = "Friendly,Energetic", IsAdopted = false, DateAdded = DateTime.Now.AddDays(-7) }
-        };
-
-        private static List<AdoptionApplication> applications = new List<AdoptionApplication>
-        {
-            new AdoptionApplication { ApplicationId = 1, UserId = 1, PetId = 1, PhoneNumber = "123-456-7890", Address = "123 Main St", HousingType = "House", HasPets = "No", Status = "Pending", ApplicationDate = DateTime.Now.AddDays(-2) }
-        };
+        private FurEverHomeContext db = new FurEverHomeContext();
 
         // GET: Admin/Dashboard
         public ActionResult Dashboard()
         {
-            ViewBag.TotalUsers = users.Count(u => u.Role == "Client");
-            ViewBag.TotalPets = pets.Count(p => !p.IsAdopted);
-            ViewBag.PendingVerifications = users.Count(u => u.IDStatus == "Pending");
-            ViewBag.PendingApplications = applications.Count(a => a.Status == "Pending");
+            ViewBag.TotalUsers = db.Users.Count(u => u.Role == "Client");
+            ViewBag.TotalPets = db.Pets.Count(p => !p.IsAdopted);
+            ViewBag.PendingVerifications = db.Users.Count(u => u.IDStatus == "Pending");
+            ViewBag.PendingApplications = db.AdoptionApplications.Count(a => a.Status == "Pending");
 
             return View();
         }
@@ -43,14 +26,14 @@ namespace FurEver_Home.Controllers
         // GET: Admin/Users
         public ActionResult Users()
         {
-            var clientUsers = users.Where(u => u.Role == "Client").ToList();
+            var clientUsers = db.Users.Where(u => u.Role == "Client").ToList();
             return View(clientUsers);
         }
 
         // GET: Admin/UserDetails/5
         public ActionResult UserDetails(int id)
         {
-            var user = users.FirstOrDefault(u => u.UserId == id);
+            var user = db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -62,10 +45,12 @@ namespace FurEver_Home.Controllers
         [HttpPost]
         public ActionResult ToggleUserStatus(int id)
         {
-            var user = users.FirstOrDefault(u => u.UserId == id);
+            var user = db.Users.Find(id);
             if (user != null)
             {
                 user.IsActive = !user.IsActive;
+                user.UpdatedAt = DateTime.Now;
+                db.SaveChanges();
                 TempData["Success"] = $"User {user.FullName} has been {(user.IsActive ? "activated" : "deactivated")}.";
             }
             return RedirectToAction("Users");
@@ -76,14 +61,14 @@ namespace FurEver_Home.Controllers
         // GET: Admin/VerifyIDs
         public ActionResult VerifyIDs()
         {
-            var pendingVerifications = users.Where(u => u.IDStatus == "Pending").ToList();
+            var pendingVerifications = db.Users.Where(u => u.IDStatus == "Pending").ToList();
             return View(pendingVerifications);
         }
 
         // GET: Admin/VerifyIDDetails/5
         public ActionResult VerifyIDDetails(int id)
         {
-            var user = users.FirstOrDefault(u => u.UserId == id);
+            var user = db.Users.Find(id);
             if (user == null)
             {
                 return HttpNotFound();
@@ -95,10 +80,12 @@ namespace FurEver_Home.Controllers
         [HttpPost]
         public ActionResult ApproveID(int id)
         {
-            var user = users.FirstOrDefault(u => u.UserId == id);
+            var user = db.Users.Find(id);
             if (user != null)
             {
                 user.IDStatus = "Verified";
+                user.UpdatedAt = DateTime.Now;
+                db.SaveChanges();
                 TempData["Success"] = $"ID for {user.FullName} has been verified.";
             }
             return RedirectToAction("VerifyIDs");
@@ -108,10 +95,12 @@ namespace FurEver_Home.Controllers
         [HttpPost]
         public ActionResult RejectID(int id, string reason)
         {
-            var user = users.FirstOrDefault(u => u.UserId == id);
+            var user = db.Users.Find(id);
             if (user != null)
             {
                 user.IDStatus = "Rejected";
+                user.UpdatedAt = DateTime.Now;
+                db.SaveChanges();
                 TempData["Success"] = $"ID for {user.FullName} has been rejected.";
             }
             return RedirectToAction("VerifyIDs");
@@ -122,12 +111,14 @@ namespace FurEver_Home.Controllers
         // GET: Admin/Pets
         public ActionResult Pets()
         {
+            var pets = db.Pets.Include(p => p.PetType).ToList();
             return View(pets);
         }
 
         // GET: Admin/AddPet
         public ActionResult AddPet()
         {
+            ViewBag.PetTypes = db.PetTypes.ToList();
             return View();
         }
 
@@ -138,24 +129,31 @@ namespace FurEver_Home.Controllers
         {
             if (ModelState.IsValid)
             {
-                model.PetId = pets.Count > 0 ? pets.Max(p => p.PetId) + 1 : 1;
                 model.DateAdded = DateTime.Now;
+                model.CreatedAt = DateTime.Now;
+                model.UpdatedAt = DateTime.Now;
                 model.IsAdopted = false;
-                pets.Add(model);
+                model.CreatedBy = 1; // TODO: Get from session
+
+                db.Pets.Add(model);
+                db.SaveChanges();
                 TempData["Success"] = $"Pet '{model.Name}' has been added successfully!";
                 return RedirectToAction("Pets");
             }
+
+            ViewBag.PetTypes = db.PetTypes.ToList();
             return View(model);
         }
 
         // GET: Admin/EditPet/5
         public ActionResult EditPet(int id)
         {
-            var pet = pets.FirstOrDefault(p => p.PetId == id);
+            var pet = db.Pets.Find(id);
             if (pet == null)
             {
                 return HttpNotFound();
             }
+            ViewBag.PetTypes = db.PetTypes.ToList();
             return View(pet);
         }
 
@@ -166,23 +164,33 @@ namespace FurEver_Home.Controllers
         {
             if (ModelState.IsValid)
             {
-                var pet = pets.FirstOrDefault(p => p.PetId == model.PetId);
+                var pet = db.Pets.Find(model.PetId);
                 if (pet != null)
                 {
                     pet.Name = model.Name;
-                    pet.Type = model.Type;
+                    pet.PetTypeId = model.PetTypeId;
                     pet.Breed = model.Breed;
                     pet.Age = model.Age;
                     pet.Gender = model.Gender;
                     pet.Size = model.Size;
                     pet.Description = model.Description;
                     pet.Traits = model.Traits;
+                    pet.Vaccines = model.Vaccines;
+                    pet.DaysInCenter = model.DaysInCenter;
+                    pet.WhyAdoptMe = model.WhyAdoptMe;
+                    pet.IsHealthy = model.IsHealthy;
+                    pet.IsNeutered = model.IsNeutered;
                     pet.ImageUrl = model.ImageUrl;
+                    pet.UpdatedAt = DateTime.Now;
+                    pet.UpdatedBy = 1; // TODO: Get from session
 
+                    db.SaveChanges();
                     TempData["Success"] = $"Pet '{pet.Name}' has been updated successfully!";
                     return RedirectToAction("Pets");
                 }
             }
+
+            ViewBag.PetTypes = db.PetTypes.ToList();
             return View(model);
         }
 
@@ -190,10 +198,11 @@ namespace FurEver_Home.Controllers
         [HttpPost]
         public ActionResult DeletePet(int id)
         {
-            var pet = pets.FirstOrDefault(p => p.PetId == id);
+            var pet = db.Pets.Find(id);
             if (pet != null)
             {
-                pets.Remove(pet);
+                db.Pets.Remove(pet);
+                db.SaveChanges();
                 TempData["Success"] = $"Pet '{pet.Name}' has been deleted.";
             }
             return RedirectToAction("Pets");
@@ -204,26 +213,26 @@ namespace FurEver_Home.Controllers
         // GET: Admin/Applications
         public ActionResult Applications()
         {
-            // Populate user and pet data
-            foreach (var app in applications)
-            {
-                app.User = users.FirstOrDefault(u => u.UserId == app.UserId);
-                app.Pet = pets.FirstOrDefault(p => p.PetId == app.PetId);
-            }
+            var applications = db.AdoptionApplications
+                                 .Include(a => a.User)
+                                 .Include(a => a.Pet)
+                                 .OrderByDescending(a => a.ApplicationDate)
+                                 .ToList();
             return View(applications);
         }
 
         // GET: Admin/ApplicationDetails/5
         public ActionResult ApplicationDetails(int id)
         {
-            var application = applications.FirstOrDefault(a => a.ApplicationId == id);
+            var application = db.AdoptionApplications
+                                .Include(a => a.User)
+                                .Include(a => a.Pet)
+                                .FirstOrDefault(a => a.ApplicationId == id);
+
             if (application == null)
             {
                 return HttpNotFound();
             }
-
-            application.User = users.FirstOrDefault(u => u.UserId == application.UserId);
-            application.Pet = pets.FirstOrDefault(p => p.PetId == application.PetId);
 
             return View(application);
         }
@@ -232,15 +241,21 @@ namespace FurEver_Home.Controllers
         [HttpPost]
         public ActionResult ApproveApplication(int id)
         {
-            var application = applications.FirstOrDefault(a => a.ApplicationId == id);
+            var application = db.AdoptionApplications.Find(id);
             if (application != null)
             {
                 application.Status = "Approved";
-                var pet = pets.FirstOrDefault(p => p.PetId == application.PetId);
+                application.ReviewedDate = DateTime.Now;
+                application.ReviewedBy = 1; // TODO: Get from session
+
+                var pet = db.Pets.Find(application.PetId);
                 if (pet != null)
                 {
                     pet.IsAdopted = true;
+                    pet.UpdatedAt = DateTime.Now;
                 }
+
+                db.SaveChanges();
                 TempData["Success"] = "Application has been approved!";
             }
             return RedirectToAction("Applications");
@@ -250,13 +265,26 @@ namespace FurEver_Home.Controllers
         [HttpPost]
         public ActionResult RejectApplication(int id)
         {
-            var application = applications.FirstOrDefault(a => a.ApplicationId == id);
+            var application = db.AdoptionApplications.Find(id);
             if (application != null)
             {
                 application.Status = "Rejected";
+                application.ReviewedDate = DateTime.Now;
+                application.ReviewedBy = 1; // TODO: Get from session
+
+                db.SaveChanges();
                 TempData["Success"] = "Application has been rejected.";
             }
             return RedirectToAction("Applications");
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

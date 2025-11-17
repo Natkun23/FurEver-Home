@@ -10,6 +10,8 @@
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
     <style>
         * {
             margin: 0;
@@ -370,7 +372,7 @@
             font-weight: 900;
         }
 
-        @media (max-width: 968px) {
+        @@media (max-width: 968px) {
             .pet-details-grid {
                 grid-template-columns: 1fr;
             }
@@ -395,10 +397,7 @@
     <nav class="navbar">
         <div class="nav-container">
             <a href="@Url.Action("Index", "Home")" class="logo">
-                <span class="logo-icon">🐾</span>
-                <div class="logo-text">
-                    <h1>FUR<span>EVER</span> HOME</h1>
-                </div>
+                <img src="~/Content/Images/full_furever.png" alt="FurEver Home" style="height: 50px;">
             </a>
             <a href="@Url.Action("Index", "Pets")" class="back-link">
                 ← Back to @Model.Type@(Model.Type == "Dog" ? "s" : "s")
