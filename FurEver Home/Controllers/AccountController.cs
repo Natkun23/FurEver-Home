@@ -266,5 +266,98 @@ namespace FurEver_Home.Controllers
             }
             base.Dispose(disposing);
         }
+
+    // GET: Account/Profile
+public ActionResult Profile()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(user);
+        }
+
+        // POST: Account/UpdateProfile
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult UpdateProfile(User model, HttpPostedFileBase ProfilePicture, HttpPostedFileBase IDImage)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Update basic info
+            user.FullName = model.FullName;
+            user.PhoneNumber = model.PhoneNumber;
+            user.Address = model.Address;
+            user.Age = model.Age;
+
+            // Handle Profile Picture Upload
+            if (ProfilePicture != null && ProfilePicture.ContentLength > 0)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                var extension = Path.GetExtension(ProfilePicture.FileName).ToLower();
+
+                if (allowedExtensions.Contains(extension))
+                {
+                    var uploadsDir = Server.MapPath("~/Content/Uploads/Profiles");
+                    if (!Directory.Exists(uploadsDir))
+                    {
+                        Directory.CreateDirectory(uploadsDir);
+                    }
+
+                    var fileName = Guid.NewGuid().ToString() + extension;
+                    var filePath = Path.Combine(uploadsDir, fileName);
+                    ProfilePicture.SaveAs(filePath);
+                    user.ProfilePictureUrl = "/Content/Uploads/Profiles/" + fileName;
+                }
+            }
+
+            // Handle ID Image Upload
+            if (IDImage != null && IDImage.ContentLength > 0)
+            {
+                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
+                var extension = Path.GetExtension(IDImage.FileName).ToLower();
+
+                if (allowedExtensions.Contains(extension))
+                {
+                    var uploadsDir = Server.MapPath("~/Content/Uploads/IDs");
+                    if (!Directory.Exists(uploadsDir))
+                    {
+                        Directory.CreateDirectory(uploadsDir);
+                    }
+
+                    var fileName = Guid.NewGuid().ToString() + extension;
+                    var filePath = Path.Combine(uploadsDir, fileName);
+                    IDImage.SaveAs(filePath);
+                    user.IDImageUrl = "/Content/Uploads/IDs/" + fileName;
+                    user.IDStatus = "Pending"; // Reset to pending for admin review
+                }
+            }
+
+            user.UpdatedAt = DateTime.Now;
+            db.SaveChanges();
+
+            TempData["Success"] = "Profile updated successfully!";
+            return RedirectToAction("Profile");
+        }
     }
 }

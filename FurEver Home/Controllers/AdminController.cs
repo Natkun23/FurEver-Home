@@ -1,8 +1,10 @@
-﻿using System;
+﻿using FurEver_Home.Models;
+using System;
 using System.Data.Entity;
+using System.IO;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
-using FurEver_Home.Models;
 
 namespace FurEver_Home.Controllers
 {
@@ -85,6 +87,19 @@ namespace FurEver_Home.Controllers
             {
                 user.IDStatus = "Verified";
                 user.UpdatedAt = DateTime.Now;
+
+                // CREATE NOTIFICATION
+                var notification = new UserNotification
+                {
+                    UserId = user.UserId,
+                    NotificationType = "ID_Verified",
+                    Title = "ID Verified Successfully!",
+                    Message = "Congratulations! Your ID has been verified. You can now post pets for adoption.",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                db.UserNotifications.Add(notification);
+
                 db.SaveChanges();
                 TempData["Success"] = $"ID for {user.FullName} has been verified.";
             }
@@ -125,10 +140,31 @@ namespace FurEver_Home.Controllers
         // POST: Admin/AddPet
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddPet(Pet model)
+        public ActionResult AddPet(Pet model, HttpPostedFileBase PetImage)
         {
             if (ModelState.IsValid)
             {
+                // Handle pet image upload
+                if (PetImage != null && PetImage.ContentLength > 0)
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                    var extension = Path.GetExtension(PetImage.FileName).ToLower();
+
+                    if (allowedExtensions.Contains(extension))
+                    {
+                        var uploadsDir = Server.MapPath("~/Content/Uploads/Pets");
+                        if (!Directory.Exists(uploadsDir))
+                        {
+                            Directory.CreateDirectory(uploadsDir);
+                        }
+
+                        var fileName = Guid.NewGuid().ToString() + extension;
+                        var filePath = Path.Combine(uploadsDir, fileName);
+                        PetImage.SaveAs(filePath);
+                        model.ImageUrl = "/Content/Uploads/Pets/" + fileName;
+                    }
+                }
+
                 model.DateAdded = DateTime.Now;
                 model.CreatedAt = DateTime.Now;
                 model.UpdatedAt = DateTime.Now;
@@ -160,13 +196,35 @@ namespace FurEver_Home.Controllers
         // POST: Admin/EditPet/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditPet(Pet model)
+        public ActionResult EditPet(Pet model, HttpPostedFileBase PetImage)
         {
             if (ModelState.IsValid)
             {
                 var pet = db.Pets.Find(model.PetId);
                 if (pet != null)
                 {
+                    // Handle pet image upload if new image is provided
+                    if (PetImage != null && PetImage.ContentLength > 0)
+                    {
+                        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                        var extension = Path.GetExtension(PetImage.FileName).ToLower();
+
+                        if (allowedExtensions.Contains(extension))
+                        {
+                            var uploadsDir = Server.MapPath("~/Content/Uploads/Pets");
+                            if (!Directory.Exists(uploadsDir))
+                            {
+                                Directory.CreateDirectory(uploadsDir);
+                            }
+
+                            var fileName = Guid.NewGuid().ToString() + extension;
+                            var filePath = Path.Combine(uploadsDir, fileName);
+                            PetImage.SaveAs(filePath);
+                            pet.ImageUrl = "/Content/Uploads/Pets/" + fileName;
+                        }
+                    }
+
+                    // Update pet properties
                     pet.Name = model.Name;
                     pet.PetTypeId = model.PetTypeId;
                     pet.Breed = model.Breed;
@@ -180,7 +238,6 @@ namespace FurEver_Home.Controllers
                     pet.WhyAdoptMe = model.WhyAdoptMe;
                     pet.IsHealthy = model.IsHealthy;
                     pet.IsNeutered = model.IsNeutered;
-                    pet.ImageUrl = model.ImageUrl;
                     pet.UpdatedAt = DateTime.Now;
                     pet.UpdatedBy = 1; // TODO: Get from session
 

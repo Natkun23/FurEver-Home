@@ -70,16 +70,16 @@
             align-items: center;
         }
 
-        .nav-links a {
-            color: #333;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
+            .nav-links a {
+                color: #333;
+                text-decoration: none;
+                font-weight: 600;
+                transition: color 0.3s;
+            }
 
-        .nav-links a:hover {
-            color: #3FA9F5;
-        }
+                .nav-links a:hover {
+                    color: #3FA9F5;
+                }
 
         .btn-adopt {
             background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
@@ -93,10 +93,193 @@
             transition: transform 0.3s;
         }
 
-        .btn-adopt:hover {
-            transform: translateY(-2px);
+            .btn-adopt:hover {
+                transform: translateY(-2px);
+                color: #2E8BC0;
+            }
+
+        /* User Menu */
+        .user-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: #f8fafc;
+            border-radius: 25px;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .user-menu:hover {
+                background: #e2e8f0;
+            }
+
+        .user-avatar-small {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            object-fit: cover;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+        }
+
+        .user-name-nav {
+            font-weight: 600;
             color: #2E8BC0;
         }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            margin-top: 10px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.15);
+            min-width: 200px;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s;
+        }
+
+        .user-menu:hover .dropdown-menu {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .dropdown-menu a {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 18px;
+            color: #334155;
+            text-decoration: none;
+            transition: all 0.3s;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+            .dropdown-menu a:last-child {
+                border-bottom: none;
+            }
+
+            .dropdown-menu a:hover {
+                background: #f8fafc;
+                color: #3FA9F5;
+            }
+
+            .dropdown-menu a:first-child {
+                border-radius: 12px 12px 0 0;
+            }
+
+            .dropdown-menu a:last-child {
+                border-radius: 0 0 12px 12px;
+            }
+
+        /* Notification Popup */
+        .notification-popup {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 10000;
+            animation: fadeIn 0.3s;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .notification-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+            text-align: center;
+            position: relative;
+            animation: slideUp 0.3s;
+        }
+
+        @@keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .notification-close {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: none;
+            border: none;
+            font-size: 28px;
+            color: #94a3b8;
+            cursor: pointer;
+            transition: color 0.3s;
+        }
+
+            .notification-close:hover {
+                color: #ef4444;
+            }
+
+        .notification-icon {
+            font-size: 4em;
+            margin-bottom: 20px;
+        }
+
+        .notification-content h3 {
+            color: #2E8BC0;
+            font-size: 1.8em;
+            margin-bottom: 15px;
+        }
+
+        .notification-content p {
+            color: #64748b;
+            font-size: 1.1em;
+            line-height: 1.6;
+            margin-bottom: 25px;
+        }
+
+        .btn-notification {
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            color: #2E8BC0;
+            padding: 14px 40px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1.1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .btn-notification:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(255, 217, 61, 0.4);
+            }
 
         /* Hero Section */
         .hero {
@@ -106,20 +289,20 @@
             text-align: center;
         }
 
-        .hero h1 {
-            font-size: 3.5em;
-            margin-bottom: 20px;
-            font-weight: 900;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
-        }
+            .hero h1 {
+                font-size: 3.5em;
+                margin-bottom: 20px;
+                font-weight: 900;
+                text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+            }
 
-        .hero p {
-            font-size: 1.3em;
-            margin-bottom: 40px;
-            max-width: 700px;
-            margin-left: auto;
-            margin-right: auto;
-        }
+            .hero p {
+                font-size: 1.3em;
+                margin-bottom: 40px;
+                max-width: 700px;
+                margin-left: auto;
+                margin-right: auto;
+            }
 
         .hero-buttons {
             display: flex;
@@ -144,10 +327,10 @@
             transition: all 0.3s;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-        }
+            .btn-primary:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+            }
 
         .btn-secondary {
             background: transparent;
@@ -165,10 +348,10 @@
             transition: all 0.3s;
         }
 
-        .btn-secondary:hover {
-            background: white;
-            color: #3FA9F5;
-        }
+            .btn-secondary:hover {
+                background: white;
+                color: #3FA9F5;
+            }
 
         /* Section Styles */
         .section {
@@ -182,19 +365,19 @@
             margin-bottom: 60px;
         }
 
-        .section-header h2 {
-            font-size: 2.5em;
-            color: #2E8BC0;
-            margin-bottom: 15px;
-            font-weight: 700;
-        }
+            .section-header h2 {
+                font-size: 2.5em;
+                color: #2E8BC0;
+                margin-bottom: 15px;
+                font-weight: 700;
+            }
 
-        .section-header p {
-            font-size: 1.1em;
-            color: #666;
-            max-width: 600px;
-            margin: 0 auto;
-        }
+            .section-header p {
+                font-size: 1.1em;
+                color: #666;
+                max-width: 600px;
+                margin: 0 auto;
+            }
 
         /* Pet Cards */
         .pet-grid {
@@ -212,10 +395,10 @@
             cursor: pointer;
         }
 
-        .pet-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(63, 169, 245, 0.3);
-        }
+            .pet-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(63, 169, 245, 0.3);
+            }
 
         .pet-image {
             width: 100%;
@@ -286,10 +469,10 @@
             margin-top: 10px;
         }
 
-        .btn-meet:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(63, 169, 245, 0.4);
-        }
+            .btn-meet:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(63, 169, 245, 0.4);
+            }
 
         /* How to Adopt Section */
         .steps-grid {
@@ -354,23 +537,23 @@
             list-style: none;
         }
 
-        .why-list li {
-            color: #333;
-            margin-bottom: 20px;
-            padding-left: 35px;
-            position: relative;
-            font-size: 1.05em;
-            line-height: 1.6;
-        }
+            .why-list li {
+                color: #333;
+                margin-bottom: 20px;
+                padding-left: 35px;
+                position: relative;
+                font-size: 1.05em;
+                line-height: 1.6;
+            }
 
-        .why-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #3FA9F5;
-            font-weight: bold;
-            font-size: 1.3em;
-        }
+                .why-list li:before {
+                    content: "✓";
+                    position: absolute;
+                    left: 0;
+                    color: #3FA9F5;
+                    font-weight: bold;
+                    font-size: 1.3em;
+                }
 
         .why-image {
             width: 100%;
@@ -409,9 +592,9 @@
             line-height: 1.8;
         }
 
-        .footer-section a:hover {
-            color: #3FA9F5;
-        }
+            .footer-section a:hover {
+                color: #3FA9F5;
+            }
 
         .footer-bottom {
             text-align: center;
@@ -449,13 +632,45 @@
             </div>
             <div class="nav-links">
                 <a href="@Url.Action("Index", "Home")">Home</a>
-                <a href="@Url.Action("Dogs", "Pets")">Dogs</a>
-                <a href="@Url.Action("Cats", "Pets")">Cats</a>
                 <a href="#contact">Contact</a>
-                <a href="@Url.Action("Login", "Account")" class="btn-adopt">Sign In</a>
+                @if (ViewBag.IsLoggedIn == true)
+                {
+                    <div class="user-menu">
+                        @if (!string.IsNullOrEmpty(ViewBag.UserProfilePicture))
+                        {
+                            <img src="@ViewBag.UserProfilePicture" alt="Profile" class="user-avatar-small">
+                        }
+                        else
+                        {
+                            <div class="user-avatar-small">@ViewBag.UserName.Substring(0, 1)</div>
+                        }
+                        <span class="user-name-nav">@ViewBag.UserName</span>
+                        <div class="dropdown-menu">
+                            <a href="@Url.Action("Profile", "Account")"><i class="fas fa-user"></i> My Profile</a>
+                            <a href="@Url.Action("Logout", "Account")"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                        </div>
+                    </div>
+                }
+                else
+                {
+                    <a href="@Url.Action("Login", "Account")" class="btn-adopt">Sign In</a>
+                }
             </div>
         </div>
     </nav>
+
+    @if (ViewBag.HasUnreadNotifications == true)
+    {
+        <div class="notification-popup" id="notificationPopup">
+            <div class="notification-content">
+                <button class="notification-close" onclick="closeNotification()">&times;</button>
+                <div class="notification-icon">🎉</div>
+                <h3>@ViewBag.UnreadNotifications[0].Title</h3>
+                <p>@ViewBag.UnreadNotifications[0].Message</p>
+                <button class="btn-notification" onclick="markAsRead(@ViewBag.UnreadNotifications[0].NotificationId)">Got it!</button>
+            </div>
+        </div>
+    }
 
     <!-- Hero Section -->
     <section class="hero">
@@ -463,14 +678,21 @@
         <p>Connecting loving homes with pets in need. Browse our adorable dogs and cats waiting for their forever families.</p>
         <div class="hero-buttons">
             <a href="@Url.Action("Dogs", "Pets")" class="btn-primary">
-                🐕 Browse Dogs
+                <i class="fas fa-dog"></i> Browse Dogs
             </a>
             <a href="@Url.Action("Cats", "Pets")" class="btn-secondary">
-                🐱 Browse Cats
+                <i class="fas fa-cat"></i> Browse Cats
             </a>
+            @if (ViewBag.IsLoggedIn == true)
+            {
+                <a href="@Url.Action("PostForAdoption", "Pets")" class="btn-secondary" style="background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%); color: #2E8BC0;">
+                    <i class="fas fa-heart"></i> Post Pet for Adoption
+                </a>
+            }
         </div>
     </section>
 
+    <!-- Featured Pets Section -->
     <!-- Featured Pets Section -->
     <section class="section">
         <div class="section-header">
@@ -478,115 +700,60 @@
             <p>These adorable friends are looking for their forever homes. Could it be yours?</p>
         </div>
 
-        <div class="pet-grid">
-            <!-- Charlie -->
-            <div class="pet-card" onclick="location.href='@Url.Action("Details", "Pets", new { id = 1 })'">
-                <img src="https://images.unsplash.com/photo-1537151608828-ea2b11777ee8?w=500" alt="Charlie" class="pet-image">
-                <div class="pet-info">
-                    <div class="pet-header">
-                        <div class="pet-name">Charlie</div>
-                        <div class="pet-type">Dog</div>
+        @if (ViewBag.FeaturedPets != null && ViewBag.FeaturedPets.Count > 0)
+        {
+            <div class="pet-grid">
+                @foreach (var pet in ViewBag.FeaturedPets)
+                {
+                    <div class="pet-card" onclick="location.href='@Url.Action("Details", "Pets", new { id = pet.PetId })'">
+                        <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/500x500?text=" + pet.Name : pet.ImageUrl)"
+                             alt="@pet.Name"
+                             class="pet-image">
+                        <div class="pet-info">
+                            <div class="pet-header">
+                                <div class="pet-name">@pet.Name</div>
+                                <div class="pet-type">@pet.PetType.TypeName</div>
+                            </div>
+                            <div class="pet-details">@pet.Breed • @pet.Age year@(pet.Age != 1 ? "s" : "") • @pet.Gender</div>
+
+                            @if (!string.IsNullOrEmpty(pet.Traits))
+                            {
+                                <div class="pet-traits">
+                                    @{
+                                        var traitArray = pet.Traits.Split(',');
+                                        int count = 0;
+                                    }
+                                    @foreach (var trait in traitArray)
+                                    {
+                                        if (count >= 3) { break; }
+                                        <span class="trait">@trait.Trim()</span>
+                                        count++;
+                                    }
+                                </div>
+                            }
+                            }
+                            <button class="btn-meet" onclick="event.stopPropagation(); location.href='@Url.Action("Details", "Pets", new { id = pet.PetId })'">
+                                Meet @pet.Name
+                            </button>
+                        </div>
                     </div>
-                    <div class="pet-details">Poodle Mix • 1 year • Male</div>
-                    <div class="pet-traits">
-                        <span class="trait">Gentle</span>
-                        <span class="trait">Quiet</span>
-                        <span class="trait">Affectionate</span>
-                    </div>
-                    <button class="btn-meet" onclick="event.stopPropagation(); location.href='@Url.Action("Details", "Pets", new { id = 1 })'">Meet Charlie</button>
-                </div>
+                }
             </div>
 
-            <!-- Max -->
-            <div class="pet-card" onclick="location.href='@Url.Action("Details", "Pets", new { id = 2 })'">
-                <img src="https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=500" alt="Max" class="pet-image">
-                <div class="pet-info">
-                    <div class="pet-header">
-                        <div class="pet-name">Max</div>
-                        <div class="pet-type">Dog</div>
-                    </div>
-                    <div class="pet-details">Golden Retriever • 3 years • Male</div>
-                    <div class="pet-traits">
-                        <span class="trait">Friendly</span>
-                        <span class="trait">Energetic</span>
-                        <span class="trait">Good with kids</span>
-                    </div>
-                    <button class="btn-meet" onclick="event.stopPropagation(); location.href='@Url.Action("Details", "Pets", new { id = 2 })'">Meet Max</button>
-                </div>
+            <div style="text-align: center; margin-top: 40px;">
+                <a href="@Url.Action("Index", "Pets")" class="btn-primary" style="color: #3FA9F5;">View All Pets</a>
             </div>
-
-            <!-- Buddy -->
-            <div class="pet-card" onclick="location.href='@Url.Action("Details", "Pets", new { id = 3 })'">
-                <img src="https://images.unsplash.com/photo-1543466835-00a7907e9de1?w=500" alt="Buddy" class="pet-image">
-                <div class="pet-info">
-                    <div class="pet-header">
-                        <div class="pet-name">Buddy</div>
-                        <div class="pet-type">Dog</div>
-                    </div>
-                    <div class="pet-details">Beagle • 2 years • Male</div>
-                    <div class="pet-traits">
-                        <span class="trait">Playful</span>
-                        <span class="trait">Curious</span>
-                        <span class="trait">Affectionate</span>
-                    </div>
-                    <button class="btn-meet" onclick="event.stopPropagation(); location.href='@Url.Action("Details", "Pets", new { id = 3 })'">Meet Buddy</button>
-                </div>
+        }
+        else
+        {
+            <div style="text-align: center; padding: 60px 20px; background: white; border-radius: 20px; box-shadow: 0 5px 20px rgba(0,0,0,0.1);">
+                <i class="fas fa-paw" style="font-size: 5em; color: #cbd5e1; margin-bottom: 20px;"></i>
+                <h3 style="color: #64748b; margin-bottom: 10px; font-size: 1.8em;">No Pets Available Yet</h3>
+                <p style="color: #94a3b8; font-size: 1.1em;">Check back soon for adorable pets looking for homes!</p>
             </div>
-
-            <!-- Bella -->
-            <div class="pet-card" onclick="location.href='@Url.Action("Details", "Pets", new { id = 4 })'">
-                <img src="https://images.unsplash.com/photo-1574158622682-e40e69881006?w=500" alt="Bella" class="pet-image">
-                <div class="pet-info">
-                    <div class="pet-header">
-                        <div class="pet-name">Bella</div>
-                        <div class="pet-type">Cat</div>
-                    </div>
-                    <div class="pet-details">Calico • 1 year • Female</div>
-                    <div class="pet-traits">
-                        <span class="trait">Playful</span>
-                        <span class="trait">Energetic</span>
-                        <span class="trait">Curious</span>
-                    </div>
-                    <button class="btn-meet" onclick="event.stopPropagation(); location.href='@Url.Action("Details", "Pets", new { id = 4 })'">Meet Bella</button>
-                </div>
-            </div>
-        </div>
-
-        <div style="text-align: center; margin-top: 40px;">
-            <a href="@Url.Action("Index", "Pets")" class="btn-primary" style="color: #3FA9F5;">View All Pets</a>
-        </div>
+        }
     </section>
 
-    <!-- How to Adopt Section -->
-    <section class="section">
-        <div class="section-header">
-            <h2>How to Adopt</h2>
-            <p>Our simple adoption process is designed to match pets with their perfect homes.</p>
-        </div>
-
-        <div class="steps-grid">
-            <div class="step">
-                <div class="step-icon">🔍</div>
-                <h3>Browse & Find</h3>
-                <p>Search through our available pets to find your perfect match.</p>
-            </div>
-            <div class="step">
-                <div class="step-icon">💝</div>
-                <h3>Meet & Greet</h3>
-                <p>Schedule a visit to meet your potential new family member.</p>
-            </div>
-            <div class="step">
-                <div class="step-icon">📋</div>
-                <h3>Apply & Approve</h3>
-                <p>Complete our adoption application and approval process.</p>
-            </div>
-            <div class="step">
-                <div class="step-icon">🏠</div>
-                <h3>Welcome Home</h3>
-                <p>Take your new pet home and begin your life together.</p>
-            </div>
-        </div>
-    </section>
 
     <!-- Why Adopt Section -->
     <div class="why-adopt">
@@ -601,7 +768,7 @@
                     <li>Save a life and make room for another pet in need</li>
                 </ul>
                 <div style="margin-top: 30px;">
-                    <p class="stats">🎉 10,000+ successful adoptions since 2023</p>
+                    <p class="stats"><i class="fas fa-trophy"></i> 10,000+ successful adoptions since 2023</p>
                 </div>
             </div>
             <div>
@@ -627,14 +794,32 @@
             </div>
             <div class="footer-section">
                 <h3>Contact Us</h3>
-                <p>📞 (555) 123-4567</p>
-                <p>📧 adopt@pawfinder.com</p>
-                <p>📍 123 Pet Street, Anytown, USA</p>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p><i class="fas fa-envelope"></i> adopt@pawfinder.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Pet Street, Anytown, USA</p>
             </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2025 FurEver Home. All rights reserved.</p>
         </div>
     </footer>
+
+    <script>
+        function closeNotification() {
+            document.getElementById('notificationPopup').style.display = 'none';
+        }
+
+        function markAsRead(notificationId) {
+            fetch('@Url.Action("MarkNotificationAsRead", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: notificationId })
+            }).then(() => {
+                closeNotification();
+            });
+        }
+    </script>
 </body>
 </html>

@@ -15,6 +15,8 @@ namespace FurEver_Home.Models
         public DbSet<PetType> PetTypes { get; set; }
         public DbSet<AdoptionApplication> AdoptionApplications { get; set; }
 
+        public DbSet<UserNotification> UserNotifications { get; set; }
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             // Optional: Configure relationships and constraints

@@ -1,0 +1,817 @@
+﻿@model List<FurEver_Home.Models.Pet>
+@{
+    ViewBag.Title = "Browse " + (ViewBag.PetType ?? "Pets") + " - FurEver Home";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #3FA9F5;
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            padding: 10px 25px;
+            border-radius: 25px;
+            font-weight: 700;
+            text-decoration: none;
+            transition: transform 0.3s;
+        }
+
+        .btn-home:hover {
+            transform: translateY(-2px);
+            color: white;
+        }
+
+        /* Hero Section */
+        .hero {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            padding: 60px 20px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 900;
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            margin-bottom: 30px;
+        }
+
+        .hero-stats {
+            display: flex;
+            justify-content: center;
+            gap: 40px;
+            flex-wrap: wrap;
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .stat-icon {
+            font-size: 2em;
+        }
+
+        .stat-text {
+            text-align: left;
+        }
+
+        .stat-number {
+            font-size: 1.8em;
+            font-weight: 700;
+        }
+
+        .stat-label {
+            opacity: 0.9;
+            font-size: 0.9em;
+        }
+
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 30px 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            position: sticky;
+            top: 70px;
+            z-index: 999;
+        }
+
+        .filter-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .filter-group {
+            flex: 1;
+            min-width: 200px;
+        }
+
+        .filter-group label {
+            display: block;
+            color: #334155;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.9em;
+        }
+
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+        }
+
+        .filter-group input:focus,
+        .filter-group select:focus {
+            border-color: #3FA9F5;
+            box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.1);
+        }
+
+        .btn-reset {
+            padding: 12px 30px;
+            background: #e2e8f0;
+            color: #334155;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 24px;
+        }
+
+        .btn-reset:hover {
+            background: #cbd5e1;
+        }
+
+        /* Pet Type Tabs */
+        .pet-type-tabs {
+            max-width: 1400px;
+            margin: 30px auto;
+            padding: 0 20px;
+            display: flex;
+            gap: 15px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 15px;
+            background: white;
+            border: 3px solid #e2e8f0;
+            border-radius: 15px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-decoration: none;
+            color: #64748b;
+        }
+
+        .tab-btn:hover {
+            border-color: #3FA9F5;
+            color: #3FA9F5;
+            transform: translateY(-2px);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border-color: #3FA9F5;
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 30px 20px;
+        }
+
+        .content-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 30px;
+        }
+
+        .results-info {
+            font-size: 1.1em;
+            color: #64748b;
+        }
+
+        .results-count {
+            font-weight: 700;
+            color: #2E8BC0;
+            font-size: 1.3em;
+        }
+
+        .sort-group {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .sort-group label {
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        .sort-group select {
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 14px;
+            outline: none;
+            cursor: pointer;
+        }
+
+        /* Pet Grid */
+        .pets-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 30px;
+            margin-bottom: 50px;
+        }
+
+        .pet-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            transition: all 0.3s;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .pet-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 15px 40px rgba(63, 169, 245, 0.25);
+        }
+
+        .pet-image {
+            width: 100%;
+            height: 280px;
+            object-fit: cover;
+            background: linear-gradient(135deg, #E8F4FC 0%, #FFF9E6 100%);
+        }
+
+        .pet-badge {
+            position: absolute;
+            top: 15px;
+            right: 15px;
+            background: #FFD93D;
+            color: #2E8BC0;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.85em;
+        }
+
+        .pet-info {
+            padding: 25px;
+        }
+
+        .pet-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: start;
+            margin-bottom: 12px;
+        }
+
+        .pet-name {
+            font-size: 1.6em;
+            color: #2E8BC0;
+            font-weight: 700;
+        }
+
+        .pet-age {
+            background: #E8F4FC;
+            color: #3FA9F5;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.85em;
+            font-weight: 600;
+        }
+
+        .pet-breed {
+            color: #64748b;
+            font-size: 1em;
+            margin-bottom: 8px;
+        }
+
+        .pet-details {
+            display: flex;
+            gap: 15px;
+            color: #64748b;
+            font-size: 0.95em;
+            margin-bottom: 15px;
+        }
+
+        .pet-detail-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .pet-description {
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 15px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .pet-traits {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 15px;
+        }
+
+        .trait {
+            background: #FFF9E6;
+            color: #F6C90E;
+            padding: 5px 12px;
+            border-radius: 15px;
+            font-size: 0.8em;
+            font-weight: 600;
+        }
+
+        .pet-actions {
+            display: flex;
+            gap: 10px;
+        }
+
+        .btn-view {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-view:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(63, 169, 245, 0.4);
+            color: white;
+        }
+
+        .btn-adopt {
+            flex: 1;
+            padding: 12px;
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            color: #2E8BC0;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-adopt:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 217, 61, 0.4);
+            color: #2E8BC0;
+        }
+
+        /* Empty State */
+        .empty-state {
+            text-align: center;
+            padding: 80px 20px;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+        }
+
+        .empty-icon {
+            font-size: 5em;
+            margin-bottom: 20px;
+            opacity: 0.3;
+        }
+
+        .empty-state h3 {
+            color: #2E8BC0;
+            font-size: 1.8em;
+            margin-bottom: 10px;
+        }
+
+        .empty-state p {
+            color: #64748b;
+            font-size: 1.1em;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .filter-container {
+                flex-direction: column;
+            }
+
+            .filter-group {
+                width: 100%;
+            }
+
+            .pets-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pet-type-tabs {
+                flex-direction: column;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="@Url.Action("Index", "Home")" class="logo">
+                <img src="~/Content/Images/full_furever.png" alt="FurEver Home" style="height: 50px;">
+            </a>
+            <div class="nav-links">
+                <a href="@Url.Action("Index", "Pets")">All Pets</a>
+                <a href="@Url.Action("Dogs", "Pets")">Dogs</a>
+                <a href="@Url.Action("Cats", "Pets")">Cats</a>
+                <a href="@Url.Action("Index", "Home")" class="btn-home">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <h1>
+            @if (ViewBag.PetType == "Dogs")
+            {
+                <text>🐕 Browse Our Adorable Dogs</text>
+            }
+            else if (ViewBag.PetType == "Cats")
+            {
+                <text>🐱 Browse Our Lovely Cats</text>
+            }
+            else
+            {
+                <text>🐾 Browse All Pets</text>
+            }
+        </h1>
+        <p>Find your perfect furry companion today!</p>
+
+        <div class="hero-stats">
+            <div class="stat-item">
+                <div class="stat-icon">🏠</div>
+                <div class="stat-text">
+                    <div class="stat-number">@Model.Count</div>
+                    <div class="stat-label">Available Pets</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">❤️</div>
+                <div class="stat-text">
+                    <div class="stat-number">10,000+</div>
+                    <div class="stat-label">Happy Adoptions</div>
+                </div>
+            </div>
+            <div class="stat-item">
+                <div class="stat-icon">⭐</div>
+                <div class="stat-text">
+                    <div class="stat-number">100%</div>
+                    <div class="stat-label">Vaccinated & Healthy</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pet Type Tabs -->
+    <div class="pet-type-tabs">
+        <a href="@Url.Action("Index", "Pets")" class="tab-btn @(ViewBag.PetType == null ? "active" : "")">
+            <i class="fas fa-paw"></i> All Pets
+        </a>
+        <a href="@Url.Action("Dogs", "Pets")" class="tab-btn @(ViewBag.PetType == "Dogs" ? "active" : "")">
+            <i class="fas fa-dog"></i> Dogs Only
+        </a>
+        <a href="@Url.Action("Cats", "Pets")" class="tab-btn @(ViewBag.PetType == "Cats" ? "active" : "")">
+            <i class="fas fa-cat"></i> Cats Only
+        </a>
+    </div>
+
+    <!-- Filter Section -->
+    <div class="filter-section">
+        <div class="filter-container">
+            <div class="filter-group">
+                <label><i class="fas fa-search"></i> Search by Name</label>
+                <input type="text" id="searchInput" placeholder="Search pets...">
+            </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-venus-mars"></i> Gender</label>
+                <select id="genderFilter">
+                    <option value="">All Genders</option>
+                    <option value="Male">Male</option>
+                    <option value="Female">Female</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-ruler"></i> Size</label>
+                <select id="sizeFilter">
+                    <option value="">All Sizes</option>
+                    <option value="Small">Small</option>
+                    <option value="Medium">Medium</option>
+                    <option value="Large">Large</option>
+                </select>
+            </div>
+
+            <div class="filter-group">
+                <label><i class="fas fa-birthday-cake"></i> Age</label>
+                <select id="ageFilter">
+                    <option value="">All Ages</option>
+                    <option value="0-1">Puppy/Kitten (0-1 year)</option>
+                    <option value="1-3">Young (1-3 years)</option>
+                    <option value="3-7">Adult (3-7 years)</option>
+                    <option value="7-20">Senior (7+ years)</option>
+                </select>
+            </div>
+
+            <button class="btn-reset" onclick="resetFilters()">
+                <i class="fas fa-redo"></i> Reset Filters
+            </button>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main-content">
+        <div class="content-header">
+            <div class="results-info">
+                Showing <span class="results-count" id="resultsCount">@Model.Count</span> pets
+            </div>
+
+            <div class="sort-group">
+                <label><i class="fas fa-sort"></i> Sort by:</label>
+                <select id="sortSelect">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="name">Name (A-Z)</option>
+                    <option value="age-asc">Age (Low to High)</option>
+                    <option value="age-desc">Age (High to Low)</option>
+                </select>
+            </div>
+        </div>
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <div class="empty-icon">
+                    @if (ViewBag.PetType == "Dogs")
+                    {
+                        <i class="fas fa-dog"></i>
+                    }
+                    else if (ViewBag.PetType == "Cats")
+                    {
+                        <i class="fas fa-cat"></i>
+                    }
+                    else
+                    {
+                        <i class="fas fa-paw"></i>
+                    }
+                </div>
+                <h3>No Pets Available</h3>
+                <p>Check back soon for new furry friends looking for homes!</p>
+            </div>
+        }
+        else
+        {
+            <div class="pets-grid" id="petsGrid">
+                @foreach (var pet in Model)
+                {
+                    <div class="pet-card"
+                         data-name="@pet.Name.ToLower()"
+                         data-gender="@pet.Gender"
+                         data-size="@pet.Size"
+                         data-age="@pet.Age"
+                         data-date="@pet.DateAdded.ToString("yyyyMMdd")">
+
+                        <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/300x280?text=" + pet.Name : pet.ImageUrl)"
+                             alt="@pet.Name"
+                             class="pet-image">
+
+                        <div class="pet-badge">@pet.Age year@(pet.Age != 1 ? "s" : "") old</div>
+
+                        <div class="pet-info">
+                            <div class="pet-header">
+                                <div class="pet-name">@pet.Name</div>
+                            </div>
+
+                            <div class="pet-breed">@pet.Breed</div>
+
+                            <div class="pet-details">
+                                <div class="pet-detail-item">
+                                    <i class="fas fa-@(pet.Gender == "Male" ? "mars" : "venus")"></i>
+                                    @pet.Gender
+                                </div>
+                                <div class="pet-detail-item">
+                                    <i class="fas fa-ruler"></i>
+                                    @pet.Size
+                                </div>
+                            </div>
+
+                            <p class="pet-description">@pet.Description</p>
+
+                            @if (!string.IsNullOrEmpty(pet.Traits))
+                            {
+                                <div class="pet-traits">
+                                    @foreach (var trait in pet.Traits.Split(',').Take(3))
+                                    {
+                                        <span class="trait">@trait.Trim()</span>
+                                    }
+                                </div>
+                            }
+
+                            <div class="pet-actions">
+                                <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="btn-view">
+                                    <i class="fas fa-eye"></i> View Details
+                                </a>
+                                <a href="@Url.Action("Apply", "Pets", new { id = pet.PetId })" class="btn-adopt">
+                                    <i class="fas fa-heart"></i> Adopt Me
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script>
+        // Filter and Search functionality
+        function filterPets() {
+            const searchTerm = $('#searchInput').val().toLowerCase();
+            const gender = $('#genderFilter').val();
+            const size = $('#sizeFilter').val();
+            const ageRange = $('#ageFilter').val();
+
+            let visibleCount = 0;
+
+            $('.pet-card').each(function() {
+                const card = $(this);
+                const name = card.data('name');
+                const petGender = card.data('gender');
+                const petSize = card.data('size');
+                const petAge = parseInt(card.data('age'));
+
+                let show = true;
+
+                // Search filter
+                if (searchTerm && !name.includes(searchTerm)) {
+                    show = false;
+                }
+
+                // Gender filter
+                if (gender && petGender !== gender) {
+                    show = false;
+                }
+
+                // Size filter
+                if (size && petSize !== size) {
+                    show = false;
+                }
+
+                // Age filter
+                if (ageRange) {
+                    const [min, max] = ageRange.split('-').map(Number);
+                    if (petAge < min || petAge > max) {
+                        show = false;
+                    }
+                }
+
+                if (show) {
+                    card.show();
+                    visibleCount++;
+                } else {
+                    card.hide();
+                }
+            });
+
+            $('#resultsCount').text(visibleCount);
+        }
+
+        // Sort functionality
+        function sortPets() {
+            const sortValue = $('#sortSelect').val();
+            const grid = $('#petsGrid');
+            const cards = grid.children('.pet-card').get();
+
+            cards.sort(function(a, b) {
+                switch(sortValue) {
+                    case 'newest':
+                        return $(b).data('date') - $(a).data('date');
+                    case 'oldest':
+                        return $(a).data('date') - $(b).data('date');
+                    case 'name':
+                        return $(a).data('name').localeCompare($(b).data('name'));
+                    case 'age-asc':
+                        return $(a).data('age') - $(b).data('age');
+                    case 'age-desc':
+                        return $(b).data('age') - $(a).data('age');
+                    default:
+                        return 0;
+                }
+            });
+
+            $.each(cards, function(idx, card) {
+                grid.append(card);
+            });
+        }
+
+        // Reset filters
+        function resetFilters() {
+            $('#searchInput').val('');
+            $('#genderFilter').val('');
+            $('#sizeFilter').val('');
+            $('#ageFilter').val('');
+            filterPets();
+        }
+
+        // Event listeners
+        $(document).ready(function() {
+            $('#searchInput').on('keyup', filterPets);
+            $('#genderFilter, #sizeFilter, #ageFilter').on('change', filterPets);
+            $('#sortSelect').on('change', sortPets);
+        });
+    </script>
+</body>
+</html>

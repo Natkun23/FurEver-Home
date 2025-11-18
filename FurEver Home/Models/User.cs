@@ -72,5 +72,9 @@ namespace FurEver_Home.Models
 
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
+
+        [Column("profile_picture_url")]
+        [StringLength(500)]
+        public string ProfilePictureUrl { get; set; }
     }
 }

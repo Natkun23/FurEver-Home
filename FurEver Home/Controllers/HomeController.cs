@@ -1,30 +1,76 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Web;
+﻿using System.Linq;
 using System.Web.Mvc;
+using FurEver_Home.Models;
+using System.Data.Entity;
 
 namespace FurEver_Home.Controllers
 {
     public class HomeController : Controller
     {
+        private FurEverHomeContext db = new FurEverHomeContext();
+
         public ActionResult Index()
         {
+            // Check if user is logged in
+            if (Session["UserId"] != null)
+            {
+                int userId = (int)Session["UserId"];
+                var user = db.Users.Find(userId);
+
+                if (user != null)
+                {
+                    ViewBag.IsLoggedIn = true;
+                    ViewBag.UserName = user.FullName;
+                    ViewBag.UserProfilePicture = user.ProfilePictureUrl;
+
+                    // Check for unread notifications
+                    var unreadNotifications = db.UserNotifications
+                        .Where(n => n.UserId == userId && !n.IsRead)
+                        .OrderByDescending(n => n.CreatedAt)
+                        .ToList();
+
+                    ViewBag.UnreadNotifications = unreadNotifications;
+                    ViewBag.HasUnreadNotifications = unreadNotifications.Any();
+                }
+            }
+            else
+            {
+                ViewBag.IsLoggedIn = false;
+            }
+
+            // GET FEATURED PETS FROM DATABASE (Latest 4 pets)
+            var featuredPets = db.Pets
+                .Include(p => p.PetType)
+                .Where(p => !p.IsAdopted)
+                .OrderByDescending(p => p.DateAdded)
+                .Take(4)
+                .ToList();
+
+            ViewBag.FeaturedPets = featuredPets;
+
             return View();
         }
 
-        public ActionResult About()
+        // Mark notification as read
+        [HttpPost]
+        public ActionResult MarkNotificationAsRead(int id)
         {
-            ViewBag.Message = "Your application description page.";
-
-            return View();
+            var notification = db.UserNotifications.Find(id);
+            if (notification != null)
+            {
+                notification.IsRead = true;
+                db.SaveChanges();
+            }
+            return Json(new { success = true });
         }
 
-        public ActionResult Contact()
+        protected override void Dispose(bool disposing)
         {
-            ViewBag.Message = "Your contact page.";
-
-            return View();
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }
