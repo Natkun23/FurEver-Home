@@ -72,5 +72,25 @@ namespace FurEver_Home.Models
 
         [ForeignKey("ReviewedBy")]
         public virtual User Reviewer { get; set; }
+
+
+        [Column("rejection_reason")]
+        public string RejectionReason { get; set; }
+
+        [Column("is_ready_for_pickup")]
+        public bool IsReadyForPickup { get; set; } = false;
+
+        [Column("pickup_location")]
+        [StringLength(500)]
+        public string PickupLocation { get; set; }
+
+        [Column("pickup_date")]
+        public DateTime? PickupDate { get; set; }
+
+        [Column("pickup_notes")]
+        public string PickupNotes { get; set; }
+
+        [Column("claimed_date")]
+        public DateTime? ClaimedDate { get; set; }
     }
 }

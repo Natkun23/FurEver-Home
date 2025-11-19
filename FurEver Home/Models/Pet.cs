@@ -29,6 +29,10 @@ namespace FurEver_Home.Models
         [Column("age")]
         public int Age { get; set; }
 
+        [Column("age_unit")]
+        [StringLength(10)]
+        public string AgeUnit { get; set; } = "Years"; // NEW: "Months" or "Years"
+
         [Required]
         [Column("gender")]
         [StringLength(10)]
@@ -91,6 +95,23 @@ namespace FurEver_Home.Models
             get
             {
                 return PetTypeId == 1 ? "Dog" : "Cat";
+            }
+        }
+
+        // NEW: Display age with proper unit
+        [NotMapped]
+        public string AgeDisplay
+        {
+            get
+            {
+                if (AgeUnit == "Months")
+                {
+                    return Age == 1 ? "1 month" : $"{Age} months";
+                }
+                else
+                {
+                    return Age == 1 ? "1 year" : $"{Age} years";
+                }
             }
         }
 

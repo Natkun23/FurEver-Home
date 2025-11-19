@@ -194,57 +194,64 @@
         {
             @Html.AntiForgeryToken()
 
-            <div class="form-grid">
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Name, "Pet Name")
-                    @Html.TextBoxFor(m => m.Name, new { placeholder = "Enter pet name" })
-                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "field-validation-error" })
-                </div>
+    <div class="form-grid">
+        <div class="form-group">
+            <label>Pet Name *</label>
+            @Html.TextBoxFor(m => m.Name, new { placeholder = "Enter pet's name", required = "required" })
+            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "field-validation-error" })
+        </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.PetTypeId, "Pet Type")
-                    @Html.DropDownListFor(m => m.PetTypeId,
-                        new SelectList(ViewBag.PetTypes, "PetTypeId", "TypeName"),
-                        "-- Select Type --",
-                        new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.PetTypeId, "", new { @class = "field-validation-error" })
-                </div>
+        <div class="form-group">
+            <label>Age Unit</label>
+            @Html.DropDownListFor(m => m.AgeUnit,
+                new SelectList(new[] { "Months", "Years" }),
+                new { @class = "form-control" })
+        </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Breed)
-                    @Html.TextBoxFor(m => m.Breed, new { placeholder = "Enter breed" })
-                    @Html.ValidationMessageFor(m => m.Breed, "", new { @class = "field-validation-error" })
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.PetTypeId, "Pet Type")
+            @Html.DropDownListFor(m => m.PetTypeId,
+                new SelectList(ViewBag.PetTypes, "PetTypeId", "TypeName"),
+                "-- Select Type --",
+                new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.PetTypeId, "", new { @class = "field-validation-error" })
+        </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Age, "Age (years)")
-                    @Html.TextBoxFor(m => m.Age, new { type = "number", min = "0", max = "20", placeholder = "Age" })
-                    @Html.ValidationMessageFor(m => m.Age, "", new { @class = "field-validation-error" })
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Breed)
+            @Html.TextBoxFor(m => m.Breed, new { placeholder = "Enter breed" })
+            @Html.ValidationMessageFor(m => m.Breed, "", new { @class = "field-validation-error" })
+        </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Gender)
-                    @Html.DropDownListFor(m => m.Gender,
-                        new SelectList(new[] { "Male", "Female" }),
-                        "-- Select Gender --",
-                        new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "field-validation-error" })
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Age, "Age (years)")
+            @Html.TextBoxFor(m => m.Age, new { type = "number", min = "0", max = "20", placeholder = "Age" })
+            @Html.ValidationMessageFor(m => m.Age, "", new { @class = "field-validation-error" })
+        </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.Size)
-                    @Html.DropDownListFor(m => m.Size,
-                        new SelectList(new[] { "Small", "Medium", "Large" }),
-                        "-- Select Size --",
-                        new { @class = "form-control" })
-                    @Html.ValidationMessageFor(m => m.Size, "", new { @class = "field-validation-error" })
-                </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Gender)
+            @Html.DropDownListFor(m => m.Gender,
+                new SelectList(new[] { "Male", "Female" }),
+                "-- Select Gender --",
+                new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "field-validation-error" })
+        </div>
 
-                <div class="form-group">
-                    @Html.LabelFor(m => m.DaysInCenter, "Days in Center")
-                    @Html.TextBoxFor(m => m.DaysInCenter, new { type = "number", min = "0", placeholder = "0", Value = "0" })
-                </div>
-            </div>
+        <div class="form-group">
+            @Html.LabelFor(m => m.Size)
+            @Html.DropDownListFor(m => m.Size,
+                new SelectList(new[] { "Small", "Medium", "Large" }),
+                "-- Select Size --",
+                new { @class = "form-control" })
+            @Html.ValidationMessageFor(m => m.Size, "", new { @class = "field-validation-error" })
+        </div>
+
+        <div class="form-group">
+            @Html.LabelFor(m => m.DaysInCenter, "Days in Center")
+            @Html.TextBoxFor(m => m.DaysInCenter, new { type = "number", min = "0", placeholder = "0", Value = "0" })
+        </div>
+    </div>
 
             <div class="form-group full-width">
                 @Html.LabelFor(m => m.Description)

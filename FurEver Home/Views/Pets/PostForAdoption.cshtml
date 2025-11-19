@@ -248,122 +248,129 @@
 
             @using (Html.BeginForm("PostForAdoption", "Pets", FormMethod.Post, new { enctype = "multipart/form-data" }))
             {
-            @Html.AntiForgeryToken()
+                @Html.AntiForgeryToken()
 
-            <div class="form-grid">
-                <div class="form-group">
-                    <label>Pet Name *</label>
-                    @Html.TextBoxFor(m => m.Name, new { placeholder = "Enter pet's name", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "field-validation-error" })
-                </div>
-
-                <div class="form-group">
-                    <label>Pet Type *</label>
-                    @Html.DropDownListFor(m => m.PetTypeId,
-                    new SelectList(ViewBag.PetTypes, "PetTypeId", "TypeName"),
-                    "-- Select Type --",
-                    new { required = "required" })
-                    @Html.ValidationMessageFor(m => m.PetTypeId, "", new { @class = "field-validation-error" })
-                </div>
-
-                <div class="form-group">
-                    <label>Breed *</label>
-                    @Html.TextBoxFor(m => m.Breed, new { placeholder = "Enter breed", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Breed, "", new { @class = "field-validation-error" })
-                </div>
-
-                <div class="form-group">
-                    <label>Age (years) *</label>
-                    @Html.TextBoxFor(m => m.Age, new { type = "number", min = "0", max = "20", placeholder = "Age", required = "required" })
-                    @Html.ValidationMessageFor(m => m.Age, "", new { @class = "field-validation-error" })
-                </div>
-
-                <div class="form-group">
-                    <label>Gender *</label>
-                    @Html.DropDownListFor(m => m.Gender,
-                    new SelectList(new[] { "Male", "Female" }),
-                    "-- Select Gender --",
-                    new { required = "required" })
-                    @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "field-validation-error" })
-                </div>
-
-                <div class="form-group">
-                    <label>Size *</label>
-                    @Html.DropDownListFor(m => m.Size,
-                    new SelectList(new[] { "Small", "Medium", "Large" }),
-                    "-- Select Size --",
-                    new { required = "required" })
-                    @Html.ValidationMessageFor(m => m.Size, "", new { @class = "field-validation-error" })
-                </div>
-            </div>
-
-            <div class="form-group full-width">
-                <label>Description *</label>
-                @Html.TextAreaFor(m => m.Description, new { placeholder = "Describe your pet's personality, habits, and story...", rows = "4", required = "required" })
-                @Html.ValidationMessageFor(m => m.Description, "", new { @class = "field-validation-error" })
-            </div>
-
-            <div class="form-group full-width">
-                <label>Personality Traits (comma-separated)</label>
-                @Html.TextBoxFor(m => m.Traits, new { placeholder = "e.g., Friendly, Playful, Gentle" })
-                <small style="color: #64748b;">Separate traits with commas</small>
-            </div>
-
-            <div class="form-group full-width">
-                <label>Vaccination Info</label>
-                @Html.TextAreaFor(m => m.Vaccines, new { placeholder = "List all vaccines your pet has received...", rows = "3" })
-            </div>
-
-            <div class="form-group full-width">
-                <label>Why should someone adopt this pet?</label>
-                @Html.TextAreaFor(m => m.WhyAdoptMe, new { placeholder = "e.g., Great with kids, Fully trained, Loves to play (comma-separated)", rows = "3" })
-                <small style="color: #64748b;">Separate reasons with commas</small>
-            </div>
-
-            <div class="form-group full-width">
-                <label>Health Status</label>
-                <div class="checkbox-group">
-                    <div class="checkbox-item">
-                        @Html.CheckBoxFor(m => m.IsHealthy, new { @checked = "checked" })
-                        <label for="IsHealthy" style="margin: 0; font-weight: normal;">Healthy</label>
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label>Pet Name *</label>
+                        @Html.TextBoxFor(m => m.Name, new { placeholder = "Enter pet's name", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Name, "", new { @class = "field-validation-error" })
                     </div>
-                    <div class="checkbox-item">
-                        @Html.CheckBoxFor(m => m.IsNeutered, new { @checked = "checked" })
-                        <label for="IsNeutered" style="margin: 0; font-weight: normal;">Spayed/Neutered</label>
+
+                    <div class="form-group">
+                        <label>Pet Type *</label>
+                        @Html.DropDownListFor(m => m.PetTypeId,
+                        new SelectList(ViewBag.PetTypes, "PetTypeId", "TypeName"),
+                        "-- Select Type --",
+                        new { required = "required" })
+                        @Html.ValidationMessageFor(m => m.PetTypeId, "", new { @class = "field-validation-error" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Breed *</label>
+                        @Html.TextBoxFor(m => m.Breed, new { placeholder = "Enter breed", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Breed, "", new { @class = "field-validation-error" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Age *</label>
+                        @Html.TextBoxFor(m => m.Age, new { type = "number", min = "0", max = "20", placeholder = "Enter age", required = "required" })
+                        @Html.ValidationMessageFor(m => m.Age, "", new { @class = "field-validation-error" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Age Unit *</label>
+                        @Html.DropDownListFor(m => m.AgeUnit,
+                            new SelectList(new[] { "Months", "Years" }),
+                            new { required = "required" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Gender *</label>
+                        @Html.DropDownListFor(m => m.Gender,
+                        new SelectList(new[] { "Male", "Female" }),
+                        "-- Select Gender --",
+                        new { required = "required" })
+                        @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "field-validation-error" })
+                    </div>
+
+                    <div class="form-group">
+                        <label>Size *</label>
+                        @Html.DropDownListFor(m => m.Size,
+                        new SelectList(new[] { "Small", "Medium", "Large" }),
+                        "-- Select Size --",
+                        new { required = "required" })
+                        @Html.ValidationMessageFor(m => m.Size, "", new { @class = "field-validation-error" })
                     </div>
                 </div>
-            </div>
 
-            <div class="form-group full-width">
-                <label>Pet Photo *</label>
-                <div class="file-upload" onclick="document.getElementById('petImage').click()">
-                    <div class="file-upload-icon"><i class="fas fa-camera"></i></div>
-                    <div style="font-size: 1.1em; color: #334155; font-weight: 600; margin-bottom: 5px;">Upload Pet Photo</div>
-                    <small style="color: #64748b;">Click to browse or drag and drop</small><br>
-                    <small style="color: #64748b;">JPG, PNG (Max 5MB)</small>
-                    <input type="file" id="petImage" name="PetImage" accept="image/*" required>
-                    <div id="fileName" style="margin-top: 15px; color: #FFD93D; font-weight: 600;"></div>
+                <div class="form-group full-width">
+                    <label>Description *</label>
+                    @Html.TextAreaFor(m => m.Description, new { placeholder = "Describe your pet's personality, habits, and story...", rows = "4", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Description, "", new { @class = "field-validation-error" })
                 </div>
-            </div>
 
-            <div class="info-box">
-                <h4><i class="fas fa-info-circle"></i> Important Information</h4>
-                <ul>
-                    <li>All posted pets will be reviewed by our admin team</li>
-                    <li>Provide accurate and honest information about your pet</li>
-                    <li>You'll be notified once your pet listing is approved</li>
-                    <li>We'll help match your pet with the perfect adopter</li>
-                </ul>
-            </div>
+                <div class="form-group full-width">
+                    <label>Personality Traits (comma-separated)</label>
+                    @Html.TextBoxFor(m => m.Traits, new { placeholder = "e.g., Friendly, Playful, Gentle" })
+                    <small style="color: #64748b;">Separate traits with commas</small>
+                </div>
 
-            <div class="action-buttons">
-                <a href="@Url.Action("Index", "Home")" class="btn btn-back">
-                    <i class="fas fa-times"></i> Cancel
-                </a>
-                <button type="submit" class="btn btn-submit">
-                    <i class="fas fa-heart"></i> Post for Adoption
-                </button>
-            </div>
+                <div class="form-group full-width">
+                    <label>Vaccination Info</label>
+                    @Html.TextAreaFor(m => m.Vaccines, new { placeholder = "List all vaccines your pet has received...", rows = "3" })
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Why should someone adopt this pet?</label>
+                    @Html.TextAreaFor(m => m.WhyAdoptMe, new { placeholder = "e.g., Great with kids, Fully trained, Loves to play (comma-separated)", rows = "3" })
+                    <small style="color: #64748b;">Separate reasons with commas</small>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Health Status</label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            @Html.CheckBoxFor(m => m.IsHealthy, new { @checked = "checked" })
+                            <label for="IsHealthy" style="margin: 0; font-weight: normal;">Healthy</label>
+                        </div>
+                        <div class="checkbox-item">
+                            @Html.CheckBoxFor(m => m.IsNeutered, new { @checked = "checked" })
+                            <label for="IsNeutered" style="margin: 0; font-weight: normal;">Spayed/Neutered</label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group full-width">
+                    <label>Pet Photo *</label>
+                    <div class="file-upload" onclick="document.getElementById('petImage').click()">
+                        <div class="file-upload-icon"><i class="fas fa-camera"></i></div>
+                        <div style="font-size: 1.1em; color: #334155; font-weight: 600; margin-bottom: 5px;">Upload Pet Photo</div>
+                        <small style="color: #64748b;">Click to browse or drag and drop</small><br>
+                        <small style="color: #64748b;">JPG, PNG (Max 5MB)</small>
+                        <input type="file" id="petImage" name="PetImage" accept="image/*" required>
+                        <div id="fileName" style="margin-top: 15px; color: #FFD93D; font-weight: 600;"></div>
+                    </div>
+                </div>
+
+                <div class="info-box">
+                    <h4><i class="fas fa-info-circle"></i> Important Information</h4>
+                    <ul>
+                        <li>All posted pets will be reviewed by our admin team</li>
+                        <li>Provide accurate and honest information about your pet</li>
+                        <li>You'll be notified once your pet listing is approved</li>
+                        <li>We'll help match your pet with the perfect adopter</li>
+                    </ul>
+                </div>
+
+                <div class="action-buttons">
+                    <a href="@Url.Action("Index", "Home")" class="btn btn-back">
+                        <i class="fas fa-times"></i> Cancel
+                    </a>
+                    <button type="submit" class="btn btn-submit">
+                        <i class="fas fa-heart"></i> Post for Adoption
+                    </button>
+                </div>
             }
         </div>
     </div>
@@ -372,7 +379,7 @@
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script>
-        document.getElementById('petImage').addEventListener('change', function(e) {
+        document.getElementById('petImage').addEventListener('change', function (e) {
             var fileName = e.target.files[0]?.name;
             if (fileName) {
                 document.getElementById('fileName').textContent = '✓ ' + fileName;
@@ -380,4 +387,7 @@
         });
     </script>
 </body>
-</html> 
+</html>
+
+
+

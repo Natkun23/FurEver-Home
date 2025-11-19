@@ -1,22 +1,25 @@
-﻿using FurEver_Home.Models;
+﻿
+using FurEver_Home.Models;
 using System;
 using System.Data.Entity;
 using System.IO;
 using System.Linq;
 using System.Web;
 using System.Web.Mvc;
+using FurEver_Home.Filters;
 
 namespace FurEver_Home.Controllers
 {
-    public class AdminController : Controller
+    public class AdminController : BaseController
     {
         private FurEverHomeContext db = new FurEverHomeContext();
 
-        // GET: Admin/Dashboard
         public ActionResult Dashboard()
         {
             ViewBag.TotalUsers = db.Users.Count(u => u.Role == "Client");
             ViewBag.TotalPets = db.Pets.Count(p => !p.IsAdopted);
+            ViewBag.TotalDogs = db.Pets.Count(p => p.PetTypeId == 1 && !p.IsAdopted);
+            ViewBag.TotalCats = db.Pets.Count(p => p.PetTypeId == 2 && !p.IsAdopted);
             ViewBag.PendingVerifications = db.Users.Count(u => u.IDStatus == "Pending");
             ViewBag.PendingApplications = db.AdoptionApplications.Count(a => a.Status == "Pending");
 
@@ -127,6 +130,7 @@ namespace FurEver_Home.Controllers
         public ActionResult Pets()
         {
             var pets = db.Pets.Include(p => p.PetType).ToList();
+            ViewBag.AdoptedCount = db.Pets.Count(p => p.IsAdopted); // Add this
             return View(pets);
         }
 
@@ -251,19 +255,6 @@ namespace FurEver_Home.Controllers
             return View(model);
         }
 
-        // POST: Admin/DeletePet/5
-        [HttpPost]
-        public ActionResult DeletePet(int id)
-        {
-            var pet = db.Pets.Find(id);
-            if (pet != null)
-            {
-                db.Pets.Remove(pet);
-                db.SaveChanges();
-                TempData["Success"] = $"Pet '{pet.Name}' has been deleted.";
-            }
-            return RedirectToAction("Pets");
-        }
 
         // ========== ADOPTION APPLICATIONS ==========
 
@@ -294,6 +285,31 @@ namespace FurEver_Home.Controllers
             return View(application);
         }
 
+        // GET: Admin/AdoptedPets
+        public ActionResult AdoptedPets()
+        {
+            var adoptedPetsData = db.Pets
+                .Include(p => p.PetType)
+                .Include(p => p.Creator)
+                .Where(p => p.IsAdopted == true)
+                .OrderByDescending(p => p.UpdatedAt)
+                .ToList()
+                .Select(pet => new AdoptedPetViewModel
+                {
+                    Pet = pet,
+                    Application = db.AdoptionApplications
+                        .Include(a => a.User)
+                        .FirstOrDefault(a => a.PetId == pet.PetId && a.Status == "Completed")
+                })
+                .ToList();
+
+            // For the badge count across all admin pages
+            ViewBag.AdoptedCount = db.Pets.Count(p => p.IsAdopted);
+
+            return View(adoptedPetsData);
+        }
+
+
         // POST: Admin/ApproveApplication/5
         [HttpPost]
         public ActionResult ApproveApplication(int id)
@@ -303,7 +319,7 @@ namespace FurEver_Home.Controllers
             {
                 application.Status = "Approved";
                 application.ReviewedDate = DateTime.Now;
-                application.ReviewedBy = 1; // TODO: Get from session
+                application.ReviewedBy = (int)Session["UserId"];
 
                 var pet = db.Pets.Find(application.PetId);
                 if (pet != null)
@@ -312,36 +328,158 @@ namespace FurEver_Home.Controllers
                     pet.UpdatedAt = DateTime.Now;
                 }
 
+                // CREATE NOTIFICATION FOR USER
+                var notification = new UserNotification
+                {
+                    UserId = application.UserId,
+                    NotificationType = "Application_Approved",
+                    Title = "Adoption Application Approved! 🎉",
+                    Message = $"Congratulations! Your application to adopt {pet.Name} has been approved! Please proceed to claim your new companion.",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                db.UserNotifications.Add(notification);
+
                 db.SaveChanges();
-                TempData["Success"] = "Application has been approved!";
+                TempData["Success"] = $"Application approved! {pet.Name} is now ready for pickup.";
             }
             return RedirectToAction("Applications");
         }
 
+
+
         // POST: Admin/RejectApplication/5
         [HttpPost]
-        public ActionResult RejectApplication(int id)
+        public ActionResult RejectApplication(int id, string rejectionReason)
         {
             var application = db.AdoptionApplications.Find(id);
             if (application != null)
             {
                 application.Status = "Rejected";
+                application.RejectionReason = rejectionReason;
                 application.ReviewedDate = DateTime.Now;
-                application.ReviewedBy = 1; // TODO: Get from session
+                application.ReviewedBy = (int)Session["UserId"];
+
+                // CREATE NOTIFICATION FOR USER
+                var notification = new UserNotification
+                {
+                    UserId = application.UserId,
+                    NotificationType = "Application_Rejected",
+                    Title = "Adoption Application Update",
+                    Message = $"Unfortunately, your application to adopt {application.Pet.Name} was not approved. Reason: {rejectionReason}",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                db.UserNotifications.Add(notification);
 
                 db.SaveChanges();
-                TempData["Success"] = "Application has been rejected.";
+                TempData["Success"] = "Application has been rejected with reason provided.";
             }
             return RedirectToAction("Applications");
         }
 
-        protected override void Dispose(bool disposing)
+
+        // GET: Admin/SetPickupDetails/5
+        public ActionResult SetPickupDetails(int id)
         {
-            if (disposing)
+            var application = db.AdoptionApplications
+                                .Include(a => a.User)
+                                .Include(a => a.Pet)
+                                .FirstOrDefault(a => a.ApplicationId == id);
+
+            if (application == null || application.Status != "Approved")
             {
-                db.Dispose();
+                return HttpNotFound();
             }
-            base.Dispose(disposing);
+
+            return View(application);
+        }
+
+        // POST: Admin/SetPickupDetails/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult SetPickupDetails(int id, string pickupLocation, DateTime pickupDate, string pickupNotes)
+        {
+            var application = db.AdoptionApplications.Find(id);
+            if (application != null && application.Status == "Approved")
+            {
+                application.IsReadyForPickup = true;
+                application.PickupLocation = pickupLocation;
+                application.PickupDate = pickupDate;
+                application.PickupNotes = pickupNotes;
+                application.UpdatedAt = DateTime.Now;
+
+                // NOTIFY USER
+                var notification = new UserNotification
+                {
+                    UserId = application.UserId,
+                    NotificationType = "Pickup_Ready",
+                    Title = "Your Pet is Ready for Pickup! 🐾",
+                    Message = $"{application.Pet.Name} is ready! Pickup at: {pickupLocation} on {pickupDate.ToString("MMM dd, yyyy")}. {pickupNotes}",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                db.UserNotifications.Add(notification);
+
+                db.SaveChanges();
+                TempData["Success"] = $"Pickup details set! {application.User.FullName} has been notified.";
+                return RedirectToAction("Applications");
+            }
+
+            TempData["Error"] = "Unable to set pickup details.";
+            return RedirectToAction("ApplicationDetails", new { id = id });
+        }
+
+        // POST: Admin/ConfirmTurnover/5
+        [HttpPost]
+        public ActionResult ConfirmTurnover(int id)
+        {
+            var application = db.AdoptionApplications.Find(id);
+            if (application != null && application.IsReadyForPickup)
+            {
+                application.ClaimedDate = DateTime.Now;
+                application.Status = "Completed";
+                application.UpdatedAt = DateTime.Now;
+
+                // FINAL NOTIFICATION
+                var notification = new UserNotification
+                {
+                    UserId = application.UserId,
+                    NotificationType = "Adoption_Complete",
+                    Title = "Adoption Complete! 🎊",
+                    Message = $"Congratulations! {application.Pet.Name} is now officially yours. Thank you for giving a loving home!",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                db.UserNotifications.Add(notification);
+
+                db.SaveChanges();
+                TempData["Success"] = $"Turnover completed! {application.Pet.Name} has been successfully adopted.";
+            }
+            return RedirectToAction("Applications");
+        }
+
+        // POST: Admin/DeletePet/5 - FIXED VERSION
+        [HttpPost]
+        public ActionResult DeletePet(int id)
+        {
+            var pet = db.Pets.Find(id);
+            if (pet != null)
+            {
+                // CHECK IF PET HAS APPLICATIONS
+                var hasApplications = db.AdoptionApplications.Any(a => a.PetId == id);
+
+                if (hasApplications)
+                {
+                    TempData["Error"] = $"Cannot delete '{pet.Name}' because there are adoption applications associated with this pet. Please handle the applications first.";
+                    return RedirectToAction("Pets");
+                }
+
+                db.Pets.Remove(pet);
+                db.SaveChanges();
+                TempData["Success"] = $"Pet '{pet.Name}' has been deleted.";
+            }
+            return RedirectToAction("Pets");
         }
     }
 }

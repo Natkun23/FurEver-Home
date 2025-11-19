@@ -1,0 +1,378 @@
+﻿@model List<FurEver_Home.Models.AdoptedPetViewModel>
+@{
+    ViewBag.Title = "Adopted Pets - FurEver Home Admin";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #f0f2f5; display: flex; min-height: 100vh; }
+
+        /* Sidebar */
+        .sidebar { width: 280px; background: linear-gradient(180deg, #2E8BC0 0%, #1a5a7d 100%); color: white; position: fixed; height: 100vh; overflow-y: auto; box-shadow: 2px 0 10px rgba(0,0,0,0.1); z-index: 1000; }
+        .sidebar-header { padding: 30px 20px; background: rgba(0,0,0,0.2); text-align: center; }
+        .sidebar-header img { max-width: 200px; margin: 0 auto 15px; display: block; }
+        .sidebar-subtitle { font-size: 0.9em; opacity: 0.9; text-align: center; color: white; font-weight: 500; }
+        .sidebar-menu { padding: 10px 0; }
+        .menu-item { padding: 16px 25px; color: white; text-decoration: none; display: flex; align-items: center; gap: 15px; transition: all 0.3s ease; border-left: 4px solid transparent; }
+        .menu-item:hover { background: rgba(255,255,255,0.08); padding-left: 28px; }
+        .menu-item.active { background: rgba(255,255,255,0.12); border-left-color: #FFD93D; }
+        .menu-icon { font-size: 1.2em; width: 20px; color: white; text-align: center; }
+        .menu-text { font-weight: 600; color: white; font-size: 0.95em; }
+        .badge { margin-left: auto; background: #FFD93D; color: #2E8BC0; padding: 4px 10px; border-radius: 12px; font-size: 0.8em; font-weight: 700; }
+
+        /* Main Content */
+        .main-content { margin-left: 280px; flex: 1; padding: 30px; min-height: 100vh; }
+        .top-bar { background: linear-gradient(135deg, #2E8BC0 0%, #3FA9F5 100%); padding: 30px 40px; border-radius: 20px; box-shadow: 0 4px 20px rgba(46, 139, 192, 0.2); margin-bottom: 30px; }
+        .page-title { font-size: 2.2em; color: white; font-weight: 700; display: flex; align-items: center; gap: 15px; margin: 0; }
+        .page-title i { font-size: 1.2em; animation: heartbeat 1.5s infinite; }
+        
+        @@keyframes heartbeat {
+            0%, 100% { transform: scale(1); }
+            25% { transform: scale(1.1); }
+            50% { transform: scale(1); }
+        }
+
+        .stats-bar { background: white; padding: 20px 30px; border-radius: 15px; box-shadow: 0 2px 10px rgba(0,0,0,0.05); margin-bottom: 30px; display: flex; align-items: center; gap: 20px; }
+        .stat-item { display: flex; align-items: center; gap: 12px; padding: 10px 20px; background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); border-radius: 12px; }
+        .stat-icon { font-size: 1.8em; color: #2E8BC0; }
+        .stat-info { display: flex; flex-direction: column; }
+        .stat-number { font-size: 1.5em; font-weight: 700; color: #2E8BC0; line-height: 1; }
+        .stat-label { font-size: 0.85em; color: #64748b; }
+
+        .adopted-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(450px, 1fr)); gap: 25px; }
+        .adopted-card { background: white; border-radius: 20px; padding: 0; box-shadow: 0 4px 20px rgba(0,0,0,0.08); transition: all 0.3s; overflow: hidden; position: relative; }
+        .adopted-card:hover { transform: translateY(-5px); box-shadow: 0 8px 30px rgba(46, 139, 192, 0.15); }
+        
+        .card-header { 
+            background: linear-gradient(135deg, #e0f2fe 0%, #f0f9ff 100%); 
+            padding: 25px;
+            display: grid;
+            grid-template-columns: 180px 1fr;
+            gap: 25px;
+            align-items: center;
+        }
+        
+        .adopted-image { 
+            width: 180px; 
+            height: 180px; 
+            border-radius: 20px; 
+            object-fit: cover; 
+            border: 4px solid white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
+        
+        .pet-info-header {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+        
+        .pet-name-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        
+        .pet-name { 
+            font-size: 2em; 
+            color: #2E8BC0; 
+            font-weight: 700; 
+            margin: 0;
+            line-height: 1;
+        }
+        
+        .celebration-emoji {
+            font-size: 2em;
+            animation: bounce 1s infinite;
+        }
+        
+        @@keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .pet-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 8px 16px;
+            border-radius: 25px;
+            font-weight: 600;
+            font-size: 0.9em;
+            box-shadow: 0 2px 10px rgba(16, 185, 129, 0.3);
+        }
+
+        .card-body { padding: 25px; }
+        
+        .details-grid {
+            display: grid;
+            gap: 12px;
+            margin-bottom: 20px;
+        }
+        
+        .detail-row { 
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+            font-size: 1em;
+        }
+        
+        .detail-icon { 
+            font-size: 1.5em;
+            color: #2E8BC0;
+            width: 30px;
+            text-align: center;
+        }
+        
+        .detail-text {
+            color: #475569;
+            font-weight: 500;
+            flex: 1;
+        }
+
+        .adopter-section {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            padding: 20px;
+            border-radius: 15px;
+            margin-top: 20px;
+            border: 2px solid #6ee7b7;
+        }
+        
+        .adopter-header {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #065f46;
+            font-size: 1.2em;
+            font-weight: 700;
+            margin-bottom: 15px;
+        }
+        
+        .adopter-header i {
+            font-size: 1.5em;
+        }
+        
+        .adopter-details {
+            display: grid;
+            gap: 8px;
+        }
+        
+        .adopter-detail {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            color: #065f46;
+            font-size: 0.95em;
+            padding: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 8px;
+        }
+        
+        .adopter-detail i {
+            font-size: 1.2em;
+            width: 25px;
+            text-align: center;
+        }
+        
+        .adopter-detail strong {
+            min-width: 80px;
+        }
+
+        .empty-state { 
+            background: white; 
+            border-radius: 20px; 
+            padding: 100px 40px; 
+            text-align: center; 
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08); 
+        }
+        .empty-state i { 
+            font-size: 6em; 
+            color: #cbd5e1; 
+            margin-bottom: 25px; 
+            display: block;
+        }
+        .empty-state h3 {
+            color: #64748b;
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        .empty-state p {
+            color: #94a3b8;
+            font-size: 1.1em;
+        }
+
+        @@media (max-width: 1024px) {
+            .sidebar { width: 0; transform: translateX(-100%); }
+            .main-content { margin-left: 0; }
+            .adopted-grid { grid-template-columns: 1fr; }
+            .card-header { grid-template-columns: 1fr; text-align: center; }
+            .adopted-image { margin: 0 auto; }
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="~/Content/Images/fur_everhome.png" alt="FurEver Home">
+            <div class="sidebar-subtitle">Admin Panel</div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="@Url.Action("Dashboard", "Admin")" class="menu-item">
+                <i class="fas fa-chart-line menu-icon"></i>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="@Url.Action("Users", "Admin")" class="menu-item">
+                <i class="fas fa-users menu-icon"></i>
+                <span class="menu-text">Users</span>
+            </a>
+            <a href="@Url.Action("VerifyIDs", "Admin")" class="menu-item">
+                <i class="fas fa-id-card menu-icon"></i>
+                <span class="menu-text">Verify IDs</span>
+            </a>
+            <a href="@Url.Action("Pets", "Admin")" class="menu-item">
+                <i class="fas fa-paw menu-icon"></i>
+                <span class="menu-text">Manage Pets</span>
+            </a>
+            <a href="@Url.Action("Applications", "Admin")" class="menu-item">
+                <i class="fas fa-file-alt menu-icon"></i>
+                <span class="menu-text">Applications</span>
+            </a>
+            <a href="@Url.Action("AdoptedPets", "Admin")" class="menu-item active">
+                <i class="fas fa-heart menu-icon"></i>
+                <span class="menu-text">Adopted Pets</span>
+                <span class="badge">@ViewBag.AdoptedCount</span>
+            </a>
+            <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
+            <a href="@Url.Action("Logout", "Account")" class="menu-item">
+                <i class="fas fa-sign-out-alt menu-icon"></i>
+                <span class="menu-text">Logout</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h1 class="page-title">
+                <i class="fas fa-heart"></i>
+                Adopted Pets - Forever Homes Found
+            </h1>
+        </div>
+
+        @if (Model.Count > 0)
+        {
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <i class="fas fa-check-circle stat-icon"></i>
+                    <div class="stat-info">
+                        <span class="stat-number">@Model.Count</span>
+                        <span class="stat-label">Successfully Adopted</span>
+                    </div>
+                </div>
+            </div>
+        }
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <i class="fas fa-heart-broken"></i>
+                <h3>No Adopted Pets Yet</h3>
+                <p>Adopted pets will appear here once adoption is completed</p>
+            </div>
+        }
+        else
+        {
+            <div class="adopted-grid">
+                @foreach (var item in Model)
+                {
+                    var pet = item.Pet;
+                    var application = item.Application;
+
+                    <div class="adopted-card">
+                        <div class="card-header">
+                            <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/180?text=" + pet.Name : pet.ImageUrl)"
+                                 alt="@pet.Name" class="adopted-image">
+
+                            <div class="pet-info-header">
+                                <div class="pet-name-row">
+                                    <h3 class="pet-name">@pet.Name</h3>
+                                    <span class="celebration-emoji">🎉</span>
+                                </div>
+                                <div class="pet-badge">
+                                    <i class="fas fa-home"></i>
+                                    <span>Successfully Adopted</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="card-body">
+                            <div class="details-grid">
+                                <div class="detail-row">
+                                    <i class="fas fa-paw detail-icon"></i>
+                                    <span class="detail-text">@pet.Breed • @pet.AgeDisplay • @pet.Gender</span>
+                                </div>
+                                <div class="detail-row">
+                                    <i class="fas fa-calendar-plus detail-icon"></i>
+                                    <span class="detail-text">Added on @pet.DateAdded.ToString("MMMM dd, yyyy")</span>
+                                </div>
+                                <div class="detail-row">
+                                    <i class="fas fa-heart detail-icon"></i>
+                                    <span class="detail-text">Adopted on @pet.UpdatedAt.ToString("MMMM dd, yyyy")</span>
+                                </div>
+                            </div>
+
+                            @if (application != null && application.User != null)
+                            {
+                                <div class="adopter-section">
+                                    <div class="adopter-header">
+                                        <i class="fas fa-user-check"></i>
+                                        <span>Adopted By</span>
+                                    </div>
+                                    <div class="adopter-details">
+                                        <div class="adopter-detail">
+                                            <i class="fas fa-user"></i>
+                                            <strong>Name:</strong>
+                                            <span>@application.User.FullName</span>
+                                        </div>
+                                        <div class="adopter-detail">
+                                            <i class="fas fa-envelope"></i>
+                                            <strong>Email:</strong>
+                                            <span>@application.User.Email</span>
+                                        </div>
+                                        <div class="adopter-detail">
+                                            <i class="fas fa-phone"></i>
+                                            <strong>Phone:</strong>
+                                            <span>@application.PhoneNumber</span>
+                                        </div>
+                                        @if (application.ClaimedDate != null)
+                                        {
+                                            <div class="adopter-detail">
+                                                <i class="fas fa-calendar-check"></i>
+                                                <strong>Claimed:</strong>
+                                                <span>@application.ClaimedDate.Value.ToString("MMMM dd, yyyy")</span>
+                                            </div>
+                                        }
+                                    </div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+</body>
+</html>

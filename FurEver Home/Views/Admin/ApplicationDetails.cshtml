@@ -1,0 +1,456 @@
+﻿@model FurEver_Home.Models.AdoptionApplication
+@{
+    ViewBag.Title = "Application Details - FurEver Home Admin";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+        }
+
+        .details-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            padding: 40px;
+            color: white;
+            display: flex;
+            align-items: center;
+            gap: 30px;
+        }
+
+        .pet-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 20px;
+            object-fit: cover;
+            border: 5px solid white;
+        }
+
+        .header-text h1 {
+            font-size: 2em;
+            margin-bottom: 10px;
+        }
+
+        .header-text p {
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .info-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            margin-bottom: 30px;
+        }
+
+        .info-item label {
+            display: block;
+            color: #64748b;
+            font-size: 0.85em;
+            margin-bottom: 8px;
+            text-transform: uppercase;
+            font-weight: 600;
+        }
+
+        .info-item .value {
+            font-size: 1.1em;
+            color: #334155;
+            font-weight: 600;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .status-approved {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .status-rejected {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .status-completed {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #2E8BC0;
+            margin: 30px 0 15px;
+            font-weight: 700;
+        }
+
+        .message-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 10px;
+            border-left: 4px solid #3FA9F5;
+            margin-bottom: 30px;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 1em;
+        }
+
+        .btn-approve {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-pickup {
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            color: #2E8BC0;
+        }
+
+        .btn-turnover {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .pickup-box {
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFD93D 30%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 20px 0;
+        }
+
+            .pickup-box h3 {
+                color: #92400e;
+                margin-bottom: 20px;
+            }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                color: #334155;
+                margin-bottom: 8px;
+                font-weight: 600;
+            }
+
+            .form-group input, .form-group textarea {
+                width: 100%;
+                padding: 12px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                font-size: 15px;
+            }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #10b981;
+        }
+
+        .rejection-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+            .modal-content h3 {
+                color: #2E8BC0;
+                margin-bottom: 20px;
+            }
+
+            .modal-content textarea {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                min-height: 120px;
+                font-size: 15px;
+            }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="details-card">
+            <div class="header">
+                <img src="@(string.IsNullOrEmpty(Model.Pet.ImageUrl) ? "https://via.placeholder.com/120?text=Pet" : Model.Pet.ImageUrl)"
+                     alt="@Model.Pet.Name" class="pet-image">
+                <div class="header-text">
+                    <h1>@Model.User.FullName wants to adopt @Model.Pet.Name</h1>
+                    <p><i class="fas fa-calendar"></i> Applied on @Model.ApplicationDate.ToString("MMMM dd, yyyy")</p>
+                </div>
+            </div>
+
+            <div class="content">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert-success">
+                        <i class="fas fa-check-circle"></i> @TempData["Success"]
+                    </div>
+                }
+
+                <div class="info-grid">
+                    <div class="info-item">
+                        <label>Applicant Name</label>
+                        <div class="value">@Model.User.FullName</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Email</label>
+                        <div class="value">@Model.User.Email</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Phone Number</label>
+                        <div class="value">@Model.PhoneNumber</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Housing Type</label>
+                        <div class="value">@Model.HousingType</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Has Other Pets</label>
+                        <div class="value">@Model.HasPets</div>
+                    </div>
+                    <div class="info-item">
+                        <label>Application Status</label>
+                        <div class="value">
+                            <span class="status-badge status-@Model.Status.ToLower()">@Model.Status</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="section-title">Address</div>
+                <div class="message-box">@Model.Address</div>
+
+                <div class="section-title">Why They Want to Adopt</div>
+                <div class="message-box">@Model.Message</div>
+
+                @if (!string.IsNullOrEmpty(Model.RejectionReason))
+                {
+                    <div class="section-title">Rejection Reason</div>
+                    <div class="message-box" style="border-left-color: #ef4444; background: #fee2e2;">
+                        @Model.RejectionReason
+                    </div>
+                }
+
+                @if (Model.Status == "Approved" && !Model.IsReadyForPickup)
+                {
+                    <div class="pickup-box">
+                        <h3><i class="fas fa-map-marker-alt"></i> Set Pickup Details for @Model.User.FullName</h3>
+
+                        @using (Html.BeginForm("SetPickupDetails", "Admin", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.ApplicationId" />
+
+                            <div class="form-group">
+                                <label>Pickup Location *</label>
+                                <input type="text" name="pickupLocation" placeholder="Enter exact address/location" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Pickup Date & Time *</label>
+                                <input type="datetime-local" name="pickupDate" required />
+                            </div>
+
+                            <div class="form-group">
+                                <label>Additional Notes</label>
+                                <textarea name="pickupNotes" placeholder="Any special instructions for the adopter..."></textarea>
+                            </div>
+
+                            <button type="submit" class="btn btn-pickup" style="width: 100%;">
+                                <i class="fas fa-check-circle"></i> Notify Adopter - Set Pickup Details
+                            </button>
+                        }
+                    </div>
+                }
+
+                @if (Model.IsReadyForPickup && Model.ClaimedDate == null)
+                {
+                    <div class="pickup-box" style="background: linear-gradient(135deg, #d1fae5 0%, #10b981 30%);">
+                        <h3 style="color: #065f46;"><i class="fas fa-info-circle"></i> Pickup Details Set</h3>
+                        <p style="color: #065f46; margin-bottom: 15px;">
+                            <strong>Location:</strong> @Model.PickupLocation<br>
+                            <strong>Date:</strong> @Model.PickupDate?.ToString("MMMM dd, yyyy hh:mm tt")<br>
+                            @if (!string.IsNullOrEmpty(Model.PickupNotes))
+                            {
+                                <strong>Notes:</strong> @Model.PickupNotes
+                            }
+                        </p>
+
+                        @using (Html.BeginForm("ConfirmTurnover", "Admin", FormMethod.Post))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.ApplicationId" />
+                            <button type="submit" class="btn btn-turnover" style="width: 100%;" onclick="return confirm('Confirm that @Model.Pet.Name has been turned over to @Model.User.FullName?')">
+                                <i class="fas fa-handshake"></i> Confirm Turnover - Pet Claimed!
+                            </button>
+                        }
+                    </div>
+                }
+
+                @if (Model.ClaimedDate != null)
+                {
+                    <div class="pickup-box" style="background: linear-gradient(135deg, #dbeafe 0%, #3b82f6 30%);">
+                        <h3 style="color: #1e40af;"><i class="fas fa-check-circle"></i> Adoption Completed!</h3>
+                        <p style="color: #1e40af;">
+                            <strong>Pet Claimed On:</strong> @Model.ClaimedDate?.ToString("MMMM dd, yyyy hh:mm tt")<br>
+                            @Model.Pet.Name has been successfully adopted by @Model.User.FullName! 🎉
+                        </p>
+                    </div>
+                }
+
+                @if (Model.Status == "Pending")
+                {
+                    <div class="action-buttons">
+                        <a href="@Url.Action("Applications", "Admin")" class="btn btn-back">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+
+                        @using (Html.BeginForm("ApproveApplication", "Admin", FormMethod.Post, new { style = "flex: 1;" }))
+                        {
+                            @Html.AntiForgeryToken()
+                            <input type="hidden" name="id" value="@Model.ApplicationId" />
+                            <button type="submit" class="btn btn-approve" onclick="return confirm('Approve this application?')">
+                                <i class="fas fa-check"></i> Approve Application
+                            </button>
+                        }
+
+                        <button type="button" class="btn btn-reject" onclick="showRejectModal()">
+                            <i class="fas fa-times"></i> Reject Application
+                        </button>
+                    </div>
+                }
+                else
+                {
+                    <div class="action-buttons">
+                        <a href="@Url.Action("Applications", "Admin")" class="btn btn-back" style="flex: none;">
+                            <i class="fas fa-arrow-left"></i> Back to Applications
+                        </a>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Rejection Modal -->
+    <div id="rejectModal" class="rejection-modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-exclamation-circle"></i> Reject Application</h3>
+            <p style="color: #64748b; margin-bottom: 20px;">Please provide a reason for rejection:</p>
+
+            @using (Html.BeginForm("RejectApplication", "Admin", FormMethod.Post, new { id = "rejectForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.ApplicationId" />
+                <textarea name="rejectionReason" placeholder="Enter reason for rejection..." required></textarea>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-back" onclick="hideRejectModal()">Cancel</button>
+                    <button type="submit" class="btn btn-reject">Reject with Reason</button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        function showRejectModal() {
+            document.getElementById('rejectModal').style.display = 'flex';
+        }
+        function hideRejectModal() {
+            document.getElementById('rejectModal').style.display = 'none';
+        }
+    </script>
+</body>
+</html>

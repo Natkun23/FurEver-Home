@@ -129,11 +129,14 @@
     <Compile Include="App_Start\RouteConfig.cs" />
     <Compile Include="Controllers\AccountController.cs" />
     <Compile Include="Controllers\AdminController.cs" />
+    <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
     <Compile Include="Controllers\PetsController.cs" />
+    <Compile Include="Filters\AuthorizeAndNoCacheAttribute.cs" />
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\AdoptedPetViewModel.cs" />
     <Compile Include="Models\AdoptionApplication.cs" />
     <Compile Include="Models\ForgotPasswordViewModel.cs" />
     <Compile Include="Models\FurEverHomeContext.cs" />
@@ -188,6 +191,11 @@
     <Content Include="Scripts\jquery.validate.unobtrusive.min.js" />
     <Content Include="Scripts\modernizr-2.8.3.js" />
     <Content Include="Views\Pets\Index.cshtml" />
+    <Content Include="Views\Admin\ApplicationDetails.cshtml" />
+    <Content Include="Views\Pets\MyApplications.cshtml" />
+    <Content Include="Views\Admin\SetPickupDetails.cshtml" />
+    <Content Include="Views\Pets\ClaimPet.cshtml" />
+    <Content Include="Views\Admin\AdoptedPets.cshtml" />
     <None Include="Views\Pets\PostForAdoption.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -208,7 +216,7 @@
     <Content Include="Views\Pets\Details.cshtml" />
     <Content Include="Views\Admin\Dashboard.cshtml" />
     <Content Include="Views\Admin\VerifyIDs.cshtml" />
-    <Content Include="Views\Account\ForgetPassword.cshtml" />
+    <Content Include="Views\Account\ForgotPassword.cshtml" />
     <Content Include="Views\Account\ResetPassword.cshtml" />
     <Content Include="Views\Admin\Users.cshtml" />
     <Content Include="Views\Admin\UserDetails.cshtml" />
@@ -217,10 +225,11 @@
     <Content Include="Views\Admin\EditPet.cshtml" />
     <Content Include="Views\Admin\Applications.cshtml" />
     <Content Include="Views\Account\Profile.cshtml" />
-    <Content Include="Views\Account\Apply.cshtml" />
+    <Content Include="Views\Pets\Apply.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Data\" />
+    <Folder Include="Views\Base\" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\bootstrap.rtl.min.css.map" />

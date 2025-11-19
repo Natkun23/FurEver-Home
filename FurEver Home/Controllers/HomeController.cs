@@ -2,10 +2,11 @@
 using System.Web.Mvc;
 using FurEver_Home.Models;
 using System.Data.Entity;
+using FurEver_Home.Filters;
 
 namespace FurEver_Home.Controllers
 {
-    public class HomeController : Controller
+    public class HomeController : BaseController
     {
         private FurEverHomeContext db = new FurEverHomeContext();
 
@@ -74,3 +75,4 @@ namespace FurEver_Home.Controllers
         }
     }
 }
+

@@ -444,6 +444,7 @@
                     <span class="badge">@ViewBag.PendingApplications</span>
                 }
             </a>
+
             <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
             <a href="@Url.Action("Logout", "Account")" class="menu-item">
                 <i class="fas fa-sign-out-alt menu-icon"></i>
@@ -494,7 +495,7 @@
                 <div class="stat-info">
                     <div class="stat-label">Available Pets</div>
                     <div class="stat-value">@ViewBag.TotalPets</div>
-                    <div class="stat-change">8 Dogs, 4 Cats</div>
+                    <div class="stat-change">@ViewBag.TotalDogs Dogs, @ViewBag.TotalCats Cats</div>
                 </div>
             </div>
 
@@ -575,5 +576,12 @@
             </ul>
         </div>
     </div>
+
+    <script>// Prevent back button after logout
+    window.history.forward();
+    function noBack() {
+        window.history.forward();
+    }</script>
+
 </body>
 </html>

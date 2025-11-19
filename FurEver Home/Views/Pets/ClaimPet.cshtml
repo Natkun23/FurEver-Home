@@ -1,0 +1,237 @@
+﻿@model FurEver_Home.Models.AdoptionApplication
+@{
+    ViewBag.Title = "Claim Your Pet - FurEver Home";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .claim-container {
+            max-width: 600px;
+            width: 100%;
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15);
+            overflow: hidden;
+        }
+
+        .claim-header {
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            padding: 40px;
+            text-align: center;
+            color: #2E8BC0;
+        }
+
+            .claim-header i {
+                font-size: 4em;
+                margin-bottom: 20px;
+            }
+
+            .claim-header h1 {
+                font-size: 2em;
+                margin-bottom: 10px;
+            }
+
+        .claim-body {
+            padding: 40px;
+        }
+
+        .pet-info-box {
+            background: #E8F4FC;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .pet-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            object-fit: cover;
+            margin: 0 auto 15px;
+            border: 5px solid white;
+        }
+
+        .pet-name {
+            font-size: 1.8em;
+            color: #2E8BC0;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .pet-breed {
+            color: #64748b;
+            font-size: 1.1em;
+        }
+
+        .pickup-details {
+            background: #FFF9E6;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 4px solid #FFD93D;
+        }
+
+            .pickup-details h3 {
+                color: #92400e;
+                margin-bottom: 15px;
+            }
+
+            .pickup-details p {
+                color: #334155;
+                margin-bottom: 10px;
+                line-height: 1.6;
+            }
+
+            .pickup-details strong {
+                color: #2E8BC0;
+            }
+
+        .checklist {
+            background: #f8fafc;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+        }
+
+            .checklist h3 {
+                color: #2E8BC0;
+                margin-bottom: 15px;
+            }
+
+            .checklist ul {
+                list-style: none;
+                padding: 0;
+            }
+
+            .checklist li {
+                padding: 10px 0;
+                color: #334155;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+                .checklist li i {
+                    color: #10b981;
+                    font-size: 1.2em;
+                }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1em;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            text-align: center;
+            transition: all 0.3s;
+        }
+
+        .btn-claim {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+            .btn-claim:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+                color: white;
+            }
+
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+    <div class="claim-container">
+        <div class="claim-header">
+            <i class="fas fa-gift"></i>
+            <h1>Claim Your New Companion!</h1>
+            <p>You're just one step away from bringing @Model.Pet.Name home!</p>
+        </div>
+
+        <div class="claim-body">
+            <div class="pet-info-box">
+                <img src="@(string.IsNullOrEmpty(Model.Pet.ImageUrl) ? "https://via.placeholder.com/120?text=Pet" : Model.Pet.ImageUrl)"
+                     alt="@Model.Pet.Name" class="pet-image">
+                <div class="pet-name">@Model.Pet.Name</div>
+                <div class="pet-breed">@Model.Pet.Breed • @Model.Pet.AgeDisplay • @Model.Pet.Gender</div>
+            </div>
+
+            <div class="pickup-details">
+                <h3><i class="fas fa-map-marker-alt"></i> Pickup Details</h3>
+                <p><strong>Location:</strong> @Model.PickupLocation</p>
+                <p><strong>Date & Time:</strong> @Model.PickupDate?.ToString("MMMM dd, yyyy") at @Model.PickupDate?.ToString("hh:mm tt")</p>
+                @if (!string.IsNullOrEmpty(Model.PickupNotes))
+                {
+                    <p><strong>Special Notes:</strong> @Model.PickupNotes</p>
+                }
+            </div>
+
+            <div class="checklist">
+                <h3><i class="fas fa-clipboard-check"></i> Before You Claim</h3>
+                <ul>
+                    <li><i class="fas fa-check-circle"></i> Bring a valid ID for verification</li>
+                    <li><i class="fas fa-check-circle"></i> Prepare a pet carrier or leash</li>
+                    <li><i class="fas fa-check-circle"></i> Have your contact information ready</li>
+                    <li><i class="fas fa-check-circle"></i> Arrive at the scheduled pickup time</li>
+                    <li><i class="fas fa-check-circle"></i> Complete any final paperwork on-site</li>
+                </ul>
+            </div>
+
+            @using (Html.BeginForm("ConfirmClaim", "Pets", FormMethod.Post))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.ApplicationId" />
+
+                <div class="action-buttons">
+                    <a href="@Url.Action("MyApplications", "Pets")" class="btn btn-back">
+                        <i class="fas fa-arrow-left"></i> Go Back
+                    </a>
+                    <button type="submit" class="btn btn-claim" onclick="return confirm('Confirm that you have picked up @Model.Pet.Name?')">
+                        <i class="fas fa-heart"></i> I've Claimed @Model.Pet.Name!
+                    </button>
+                </div>
+            }
+
+            <p style="text-align: center; color: #94a3b8; font-size: 0.9em; margin-top: 20px;">
+                Only click "I've Claimed" after you have physically picked up your pet
+            </p>
+        </div>
+    </div>
+</body>
+</html>

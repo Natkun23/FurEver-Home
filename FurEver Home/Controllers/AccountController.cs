@@ -4,6 +4,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using FurEver_Home.Models;
+using FurEver_Home.Filters;
 
 namespace FurEver_Home.Controllers
 {
@@ -16,6 +17,17 @@ namespace FurEver_Home.Controllers
         // GET: Account/Login
         public ActionResult Login()
         {
+            // Prevent caching
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1));
+            Response.Cache.SetNoStore();
+
+            // If already logged in, redirect to home
+            if (Session["UserId"] != null)
+            {
+                return RedirectToAction("Index", "Home");
+            }
+
             return View();
         }
 
@@ -177,11 +189,17 @@ namespace FurEver_Home.Controllers
                     user.UpdatedAt = DateTime.Now;
                     db.SaveChanges();
 
-                    // In production, send email with reset link
-                    // For now, we'll just show the link in success message
-                    var resetUrl = Url.Action("ResetPassword", "Account", new { token = token, email = user.Email }, Request.Url.Scheme);
+                    // Create reset URL
+                    var resetUrl = Url.Action("ResetPassword", "Account",
+                        new { token = token, email = user.Email },
+                        Request.Url.Scheme);
 
-                    TempData["Success"] = $"Password reset instructions have been sent to your email. For testing: {resetUrl}";
+                    // For testing: Display the link
+                    TempData["Success"] = $"Password reset link has been generated! Click here to reset: <a href='{resetUrl}' style='color: #3FA9F5; text-decoration: underline; font-weight: 700;'>Reset Password</a>";
+
+                    // In production, you would send an email here
+                    // SendEmail(user.Email, "Password Reset", $"Click here to reset your password: {resetUrl}");
+
                     return View();
                 }
 
@@ -252,23 +270,22 @@ namespace FurEver_Home.Controllers
         // GET: Account/Logout
         public ActionResult Logout()
         {
+            // Clear session
             Session.Clear();
             Session.Abandon();
+
+            // Prevent caching
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1));
+            Response.Cache.SetNoStore();
+            Response.AppendHeader("Pragma", "no-cache");
+
             TempData["Success"] = "You have been logged out successfully.";
             return RedirectToAction("Login");
         }
 
-        protected override void Dispose(bool disposing)
-        {
-            if (disposing)
-            {
-                db.Dispose();
-            }
-            base.Dispose(disposing);
-        }
-
-    // GET: Account/Profile
-public ActionResult Profile()
+        // GET: Account/Profile
+        public ActionResult Profile()
         {
             if (Session["UserId"] == null)
             {

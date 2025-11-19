@@ -1,4 +1,5 @@
-﻿@model FurEver_Home.Models.Pet
+﻿
+@model FurEver_Home.Models.Pet
 @{
     ViewBag.Title = Model.Name + " - FurEver Home";
     Layout = null;
@@ -75,9 +76,9 @@
             gap: 5px;
         }
 
-        .back-link:hover {
-            text-decoration: underline;
-        }
+            .back-link:hover {
+                text-decoration: underline;
+            }
 
         /* Pet Details */
         .pet-details-container {
@@ -138,19 +139,19 @@
             overflow-y: auto;
         }
 
-        .pet-info-section::-webkit-scrollbar {
-            width: 8px;
-        }
+            .pet-info-section::-webkit-scrollbar {
+                width: 8px;
+            }
 
-        .pet-info-section::-webkit-scrollbar-track {
-            background: #f1f1f1;
-            border-radius: 10px;
-        }
+            .pet-info-section::-webkit-scrollbar-track {
+                background: #f1f1f1;
+                border-radius: 10px;
+            }
 
-        .pet-info-section::-webkit-scrollbar-thumb {
-            background: #3FA9F5;
-            border-radius: 10px;
-        }
+            .pet-info-section::-webkit-scrollbar-thumb {
+                background: #3FA9F5;
+                border-radius: 10px;
+            }
 
         .pet-name-header {
             margin-bottom: 30px;
@@ -238,16 +239,16 @@
             margin-bottom: 30px;
         }
 
-        .vaccines-box h4 {
-            color: #2e7d32;
-            margin-bottom: 10px;
-            font-size: 1.1em;
-        }
+            .vaccines-box h4 {
+                color: #2e7d32;
+                margin-bottom: 10px;
+                font-size: 1.1em;
+            }
 
-        .vaccines-box p {
-            color: #333;
-            line-height: 1.8;
-        }
+            .vaccines-box p {
+                color: #333;
+                line-height: 1.8;
+            }
 
         .why-adopt-box {
             background: #FFF9E6;
@@ -257,33 +258,33 @@
             margin-bottom: 30px;
         }
 
-        .why-adopt-box h4 {
-            color: #F6C90E;
-            margin-bottom: 15px;
-            font-size: 1.3em;
-        }
+            .why-adopt-box h4 {
+                color: #F6C90E;
+                margin-bottom: 15px;
+                font-size: 1.3em;
+            }
 
         .why-adopt-list {
             list-style: none;
             padding: 0;
         }
 
-        .why-adopt-list li {
-            color: #333;
-            margin-bottom: 10px;
-            padding-left: 30px;
-            position: relative;
-            line-height: 1.6;
-        }
+            .why-adopt-list li {
+                color: #333;
+                margin-bottom: 10px;
+                padding-left: 30px;
+                position: relative;
+                line-height: 1.6;
+            }
 
-        .why-adopt-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #FFD93D;
-            font-weight: bold;
-            font-size: 1.3em;
-        }
+                .why-adopt-list li:before {
+                    content: "✓";
+                    position: absolute;
+                    left: 0;
+                    color: #FFD93D;
+                    font-weight: bold;
+                    font-size: 1.3em;
+                }
 
         .adoption-box {
             background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
@@ -293,15 +294,15 @@
             margin-top: 30px;
         }
 
-        .adoption-box h3 {
-            font-size: 1.5em;
-            margin-bottom: 15px;
-        }
+            .adoption-box h3 {
+                font-size: 1.5em;
+                margin-bottom: 15px;
+            }
 
-        .adoption-box p {
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
+            .adoption-box p {
+                margin-bottom: 20px;
+                line-height: 1.6;
+            }
 
         .btn-adopt-now {
             width: 100%;
@@ -319,11 +320,11 @@
             text-align: center;
         }
 
-        .btn-adopt-now:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 25px rgba(0,0,0,0.2);
-            color: #3FA9F5;
-        }
+            .btn-adopt-now:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+                color: #3FA9F5;
+            }
 
         .info-grid {
             display: grid;
@@ -362,15 +363,15 @@
             margin: 20px 0;
         }
 
-        .days-badge .label {
-            font-size: 0.9em;
-            margin-bottom: 5px;
-        }
+            .days-badge .label {
+                font-size: 0.9em;
+                margin-bottom: 5px;
+            }
 
-        .days-badge .value {
-            font-size: 2em;
-            font-weight: 900;
-        }
+            .days-badge .value {
+                font-size: 2em;
+                font-weight: 900;
+            }
 
         @@media (max-width: 968px) {
             .pet-details-grid {
@@ -399,9 +400,18 @@
             <a href="@Url.Action("Index", "Home")" class="logo">
                 <img src="~/Content/Images/full_furever.png" alt="FurEver Home" style="height: 50px;">
             </a>
-            <a href="@Url.Action("Index", "Pets")" class="back-link">
-                ← Back to @Model.Type@(Model.Type == "Dog" ? "s" : "s")
-            </a>
+            @if (Session["UserRole"] != null && Session["UserRole"].ToString() == "Admin")
+            {
+                <a href="@Url.Action("Pets", "Admin")" class="back-link">
+                    ← Back to Admin Pets
+                </a>
+            }
+            else
+            {
+                <a href="@Url.Action("Index", "Pets")" class="back-link">
+                    ← Back to All Pets
+                </a>
+            }
         </div>
     </nav>
 
@@ -431,7 +441,7 @@
                     <div class="stat-box">
                         <div class="stat-icon">🎂</div>
                         <div class="stat-label">Age</div>
-                        <div class="stat-value">@Model.Age year@(Model.Age > 1 ? "s" : "") old</div>
+                        <div class="stat-value">@Model.AgeDisplay old</div>
                     </div>
                     <div class="stat-box">
                         <div class="stat-icon">@(Model.Gender == "Male" ? "♂️" : "♀️")</div>
@@ -521,10 +531,53 @@
 
                 <div class="adoption-box">
                     <h3>Ready to Adopt @Model.Name?</h3>
-                    <p>@Model.Name is ready to find their forever home! Complete our simple adoption application and we'll be in touch shortly.</p>
-                    <a href="@Url.Action("Apply", "Pets", new { id = Model.PetId })" class="btn-adopt-now">
-                        🏠 Apply to Adopt @Model.Name
-                    </a>
+
+                    @{
+                        var isAdmin = Session["UserRole"] != null && Session["UserRole"].ToString() == "Admin";
+                    }
+
+                    @if (isAdmin)
+                    {
+                        <p style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px;">
+                            <i class="fas fa-user-shield"></i> You are viewing this as an admin.
+                        </p>
+                        <a href="@Url.Action("Pets", "Admin")" class="btn-adopt-now">
+                            <i class="fas fa-arrow-left"></i> Back to Admin Dashboard
+                        </a>
+                    }
+                    else
+                    {
+                        if (ViewBag.PendingApplicationsCount > 0)
+                        {
+                            <div style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                                <i class="fas fa-info-circle"></i>
+                                <strong>@ViewBag.PendingApplicationsCount</strong>
+                                @(ViewBag.PendingApplicationsCount == 1 ? "person is" : "people are")
+                                currently interested in adopting @Model.Name.
+                            </div>
+                        }
+
+                       if (ViewBag.UserHasApplied == true)
+                        {
+                            <p style="background: rgba(255,255,255,0.2); padding: 15px; border-radius: 10px; margin-bottom: 15px;">
+                                ✅ You have already applied to adopt @Model.Name.
+                                <a href="@Url.Action("MyApplications", "Pets")" style="color: white; text-decoration: underline; font-weight: 700;">
+                                    Check your application status
+                                </a>
+                            </p>
+                            <a href="@Url.Action("Index", "Pets")" class="btn-adopt-now">
+                                🐾 Browse More Pets
+                            </a>
+                        }
+                        else
+                        {
+                            <p>@Model.Name is ready to find their forever home! Complete our simple adoption application and we'll be in touch shortly.</p>
+                            <a href="@Url.Action("Apply", "Pets", new { id = Model.PetId })" class="btn-adopt-now">
+                                🏠 Apply to Adopt @Model.Name
+                            </a>
+                        }
+                    }
+                  
                 </div>
             </div>
         </div>

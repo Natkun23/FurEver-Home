@@ -1,0 +1,157 @@
+﻿@model FurEver_Home.Models.AdoptionApplication
+@{
+    ViewBag.Title = "Set Pickup Details - FurEver Home Admin";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 30px;
+        }
+
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            padding: 40px;
+        }
+
+        .page-title {
+            font-size: 2em;
+            color: #2E8BC0;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .subtitle {
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .pet-info {
+            background: #E8F4FC;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            text-align: center;
+        }
+
+            .pet-info h3 {
+                color: #2E8BC0;
+                margin-bottom: 5px;
+            }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+            .form-group label {
+                display: block;
+                color: #334155;
+                margin-bottom: 8px;
+                font-weight: 600;
+            }
+
+            .form-group input, .form-group textarea {
+                width: 100%;
+                padding: 14px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                font-size: 15px;
+            }
+
+                .form-group input:focus, .form-group textarea:focus {
+                    border-color: #FFD93D;
+                    outline: none;
+                }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1em;
+            text-decoration: none;
+            text-align: center;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            color: #2E8BC0;
+        }
+
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1 class="page-title"><i class="fas fa-map-marker-alt"></i> Set Pickup Details</h1>
+        <p class="subtitle">Arrange where and when @Model.User.FullName can claim @Model.Pet.Name</p>
+
+        <div class="pet-info">
+            <h3>@Model.Pet.Name (@Model.Pet.Breed)</h3>
+            <p>Adopter: @Model.User.FullName | @Model.User.Email</p>
+        </div>
+
+        @using (Html.BeginForm("SetPickupDetails", "Admin", FormMethod.Post))
+        {
+            @Html.AntiForgeryToken()
+            <input type="hidden" name="id" value="@Model.ApplicationId" />
+
+            <div class="form-group">
+                <label><i class="fas fa-map-marker-alt"></i> Pickup Location *</label>
+                <input type="text" name="pickupLocation" placeholder="Enter exact address/location" required />
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-calendar"></i> Pickup Date & Time *</label>
+                <input type="datetime-local" name="pickupDate" required />
+            </div>
+
+            <div class="form-group">
+                <label><i class="fas fa-info-circle"></i> Additional Notes (Optional)</label>
+                <textarea name="pickupNotes" rows="4" placeholder="Any special instructions, documents to bring, contact person, etc..."></textarea>
+            </div>
+
+            <div class="action-buttons">
+                <a href="@Url.Action("ApplicationDetails", "Admin", new { id = Model.ApplicationId })" class="btn btn-back">
+                    <i class="fas fa-times"></i> Cancel
+                </a>
+                <button type="submit" class="btn btn-submit">
+                    <i class="fas fa-check"></i> Set Pickup Details
+                </button>
+            </div>
+        }
+    </div>
+</body>
+</html>
