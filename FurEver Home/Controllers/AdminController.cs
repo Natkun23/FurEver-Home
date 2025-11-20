@@ -1,5 +1,4 @@
-﻿
-using FurEver_Home.Models;
+﻿using FurEver_Home.Models;
 using System;
 using System.Data.Entity;
 using System.IO;
@@ -22,6 +21,7 @@ namespace FurEver_Home.Controllers
             ViewBag.TotalCats = db.Pets.Count(p => p.PetTypeId == 2 && !p.IsAdopted);
             ViewBag.PendingVerifications = db.Users.Count(u => u.IDStatus == "Pending");
             ViewBag.PendingApplications = db.AdoptionApplications.Count(a => a.Status == "Pending");
+            ViewBag.PendingCancellations = db.AdoptionApplications.Count(a => a.CancellationRequested && !a.CancellationApproved); // ⭐ NEW
 
             return View();
         }
@@ -129,22 +129,22 @@ namespace FurEver_Home.Controllers
         // GET: Admin/Pets
         public ActionResult Pets()
         {
-            var pets = db.Pets.Include(p => p.PetType).ToList();
-            ViewBag.AdoptedCount = db.Pets.Count(p => p.IsAdopted); // Add this
+            var pets = db.Pets.Include(p => p.PetType).Include(p => p.Creator).ToList();
+            ViewBag.AdoptedCount = db.Pets.Count(p => p.IsAdopted);
             return View(pets);
         }
 
-        // GET: Admin/AddPet
+        // GET: Admin/AddPet ⭐ UPDATED
         public ActionResult AddPet()
         {
             ViewBag.PetTypes = db.PetTypes.ToList();
             return View();
         }
 
-        // POST: Admin/AddPet
+        // POST: Admin/AddPet ⭐ UPDATED WITH ORGANIZATION
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddPet(Pet model, HttpPostedFileBase PetImage)
+        public ActionResult AddPet(Pet model, HttpPostedFileBase PetImage, string OrganizationName)
         {
             if (ModelState.IsValid)
             {
@@ -173,7 +173,13 @@ namespace FurEver_Home.Controllers
                 model.CreatedAt = DateTime.Now;
                 model.UpdatedAt = DateTime.Now;
                 model.IsAdopted = false;
-                model.CreatedBy = 1; // TODO: Get from session
+                model.CreatedBy = (int)Session["UserId"];
+
+                // ⭐ NEW: Set as organization post
+                model.PostedByType = "Organization";
+                model.OrganizationName = string.IsNullOrWhiteSpace(OrganizationName)
+                    ? "FurEver Home Admin"
+                    : OrganizationName.Trim();
 
                 db.Pets.Add(model);
                 db.SaveChanges();
@@ -185,7 +191,7 @@ namespace FurEver_Home.Controllers
             return View(model);
         }
 
-        // GET: Admin/EditPet/5
+        // GET: Admin/EditPet/5 ⭐ UPDATED
         public ActionResult EditPet(int id)
         {
             var pet = db.Pets.Find(id);
@@ -197,10 +203,10 @@ namespace FurEver_Home.Controllers
             return View(pet);
         }
 
-        // POST: Admin/EditPet/5
+        // POST: Admin/EditPet/5 ⭐ UPDATED WITH ORGANIZATION
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult EditPet(Pet model, HttpPostedFileBase PetImage)
+        public ActionResult EditPet(Pet model, HttpPostedFileBase PetImage, string OrganizationName)
         {
             if (ModelState.IsValid)
             {
@@ -233,6 +239,7 @@ namespace FurEver_Home.Controllers
                     pet.PetTypeId = model.PetTypeId;
                     pet.Breed = model.Breed;
                     pet.Age = model.Age;
+                    pet.AgeUnit = model.AgeUnit;
                     pet.Gender = model.Gender;
                     pet.Size = model.Size;
                     pet.Description = model.Description;
@@ -243,7 +250,14 @@ namespace FurEver_Home.Controllers
                     pet.IsHealthy = model.IsHealthy;
                     pet.IsNeutered = model.IsNeutered;
                     pet.UpdatedAt = DateTime.Now;
-                    pet.UpdatedBy = 1; // TODO: Get from session
+                    pet.UpdatedBy = (int)Session["UserId"];
+
+                    // ⭐ NEW: Update organization name if provided
+                    if (!string.IsNullOrWhiteSpace(OrganizationName))
+                    {
+                        pet.PostedByType = "Organization";
+                        pet.OrganizationName = OrganizationName.Trim();
+                    }
 
                     db.SaveChanges();
                     TempData["Success"] = $"Pet '{pet.Name}' has been updated successfully!";
@@ -255,6 +269,28 @@ namespace FurEver_Home.Controllers
             return View(model);
         }
 
+        // POST: Admin/DeletePet/5
+        [HttpPost]
+        public ActionResult DeletePet(int id)
+        {
+            var pet = db.Pets.Find(id);
+            if (pet != null)
+            {
+                // CHECK IF PET HAS APPLICATIONS
+                var hasApplications = db.AdoptionApplications.Any(a => a.PetId == id);
+
+                if (hasApplications)
+                {
+                    TempData["Error"] = $"Cannot delete '{pet.Name}' because there are adoption applications associated with this pet. Please handle the applications first.";
+                    return RedirectToAction("Pets");
+                }
+
+                db.Pets.Remove(pet);
+                db.SaveChanges();
+                TempData["Success"] = $"Pet '{pet.Name}' has been deleted.";
+            }
+            return RedirectToAction("Pets");
+        }
 
         // ========== ADOPTION APPLICATIONS ==========
 
@@ -303,18 +339,20 @@ namespace FurEver_Home.Controllers
                 })
                 .ToList();
 
-            // For the badge count across all admin pages
             ViewBag.AdoptedCount = db.Pets.Count(p => p.IsAdopted);
 
             return View(adoptedPetsData);
         }
 
-
-        // POST: Admin/ApproveApplication/5
+        // POST: Admin/ApproveApplication/5 ⭐ UPDATED - Archives rejected apps
         [HttpPost]
         public ActionResult ApproveApplication(int id)
         {
-            var application = db.AdoptionApplications.Find(id);
+            var application = db.AdoptionApplications
+                .Include(a => a.Pet)
+                .Include(a => a.Pet.PetType)
+                .FirstOrDefault(a => a.ApplicationId == id);
+
             if (application != null)
             {
                 application.Status = "Approved";
@@ -339,20 +377,21 @@ namespace FurEver_Home.Controllers
                     CreatedAt = DateTime.Now
                 };
                 db.UserNotifications.Add(notification);
-
                 db.SaveChanges();
                 TempData["Success"] = $"Application approved! {pet.Name} is now ready for pickup.";
             }
             return RedirectToAction("Applications");
         }
 
-
-
-        // POST: Admin/RejectApplication/5
+        // POST: Admin/RejectApplication/5 ⭐ UPDATED - Archives to history
         [HttpPost]
         public ActionResult RejectApplication(int id, string rejectionReason)
         {
-            var application = db.AdoptionApplications.Find(id);
+            var application = db.AdoptionApplications
+                .Include(a => a.Pet)
+                .Include(a => a.Pet.PetType)
+                .FirstOrDefault(a => a.ApplicationId == id);
+
             if (application != null)
             {
                 application.Status = "Rejected";
@@ -372,12 +411,14 @@ namespace FurEver_Home.Controllers
                 };
                 db.UserNotifications.Add(notification);
 
+                // ⭐ Archive to history
+                ArchiveApplicationToHistory(application, "Rejected");
+
                 db.SaveChanges();
                 TempData["Success"] = "Application has been rejected with reason provided.";
             }
             return RedirectToAction("Applications");
         }
-
 
         // GET: Admin/SetPickupDetails/5
         public ActionResult SetPickupDetails(int id)
@@ -400,7 +441,11 @@ namespace FurEver_Home.Controllers
         [ValidateAntiForgeryToken]
         public ActionResult SetPickupDetails(int id, string pickupLocation, DateTime pickupDate, string pickupNotes)
         {
-            var application = db.AdoptionApplications.Find(id);
+            var application = db.AdoptionApplications
+                .Include(a => a.Pet)
+                .Include(a => a.User)
+                .FirstOrDefault(a => a.ApplicationId == id);
+
             if (application != null && application.Status == "Approved")
             {
                 application.IsReadyForPickup = true;
@@ -434,7 +479,11 @@ namespace FurEver_Home.Controllers
         [HttpPost]
         public ActionResult ConfirmTurnover(int id)
         {
-            var application = db.AdoptionApplications.Find(id);
+            var application = db.AdoptionApplications
+                .Include(a => a.Pet)
+                .Include(a => a.User)
+                .FirstOrDefault(a => a.ApplicationId == id);
+
             if (application != null && application.IsReadyForPickup)
             {
                 application.ClaimedDate = DateTime.Now;
@@ -459,27 +508,202 @@ namespace FurEver_Home.Controllers
             return RedirectToAction("Applications");
         }
 
-        // POST: Admin/DeletePet/5 - FIXED VERSION
-        [HttpPost]
-        public ActionResult DeletePet(int id)
-        {
-            var pet = db.Pets.Find(id);
-            if (pet != null)
-            {
-                // CHECK IF PET HAS APPLICATIONS
-                var hasApplications = db.AdoptionApplications.Any(a => a.PetId == id);
+        // ==================== ⭐ NEW: CANCELLATION REQUESTS MANAGEMENT ====================
 
-                if (hasApplications)
+        // GET: Admin/CancellationRequests
+        public ActionResult CancellationRequests()
+        {
+            var cancellationRequests = db.AdoptionApplications
+                .Include(a => a.User)
+                .Include(a => a.Pet)
+                .Include(a => a.Pet.PetType)
+                .Where(a => a.CancellationRequested && !a.CancellationApproved && a.Status == "Approved")
+                .OrderByDescending(a => a.CancellationRequestedDate)
+                .ToList();
+
+            return View(cancellationRequests);
+        }
+
+        // POST: Admin/ApproveCancellation/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ApproveCancellation(int id)
+        {
+            var application = db.AdoptionApplications
+                .Include(a => a.Pet)
+                .Include(a => a.Pet.PetType)
+                .Include(a => a.User)
+                .FirstOrDefault(a => a.ApplicationId == id);
+
+            if (application != null && application.CancellationRequested)
+            {
+                application.CancellationApproved = true;
+                application.CancellationReviewedBy = (int)Session["UserId"];
+                application.CancellationReviewedDate = DateTime.Now;
+                application.Status = "Cancelled";
+                application.UpdatedAt = DateTime.Now;
+
+                // Mark pet as available again
+                var pet = db.Pets.Find(application.PetId);
+                if (pet != null)
                 {
-                    TempData["Error"] = $"Cannot delete '{pet.Name}' because there are adoption applications associated with this pet. Please handle the applications first.";
-                    return RedirectToAction("Pets");
+                    pet.IsAdopted = false;
+                    pet.UpdatedAt = DateTime.Now;
                 }
 
-                db.Pets.Remove(pet);
+                // Notify user
+                var notification = new UserNotification
+                {
+                    UserId = application.UserId,
+                    NotificationType = "Cancellation_Approved",
+                    Title = "Cancellation Request Approved",
+                    Message = $"Your cancellation request for {application.Pet.Name} has been approved. The pet is now available for other adopters.",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                db.UserNotifications.Add(notification);
+
+                // ⭐ Archive to history
+                ArchiveApplicationToHistory(application, "Cancelled");
+
                 db.SaveChanges();
-                TempData["Success"] = $"Pet '{pet.Name}' has been deleted.";
+                TempData["Success"] = $"Cancellation approved. {application.Pet.Name} is now available for adoption again.";
             }
-            return RedirectToAction("Pets");
+
+            return RedirectToAction("CancellationRequests");
+        }
+
+        // POST: Admin/DenyCancellation/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult DenyCancellation(int id, string denialReason)
+        {
+            var application = db.AdoptionApplications
+                .Include(a => a.Pet)
+                .Include(a => a.User)
+                .FirstOrDefault(a => a.ApplicationId == id);
+
+            if (application != null && application.CancellationRequested)
+            {
+                application.CancellationRequested = false;
+                application.CancellationReason = null;
+                application.CancellationRequestedDate = null;
+                application.CancellationReviewedBy = (int)Session["UserId"];
+                application.CancellationReviewedDate = DateTime.Now;
+                application.AdminNotes = $"Cancellation denied: {denialReason}";
+                application.UpdatedAt = DateTime.Now;
+
+                // Notify user
+                var notification = new UserNotification
+                {
+                    UserId = application.UserId,
+                    NotificationType = "Cancellation_Denied",
+                    Title = "Cancellation Request Denied",
+                    Message = $"Your cancellation request for {application.Pet.Name} has been denied. Reason: {denialReason}. Please proceed with the adoption.",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                db.UserNotifications.Add(notification);
+
+                db.SaveChanges();
+                TempData["Success"] = "Cancellation request denied. User has been notified.";
+            }
+
+            return RedirectToAction("CancellationRequests");
+        }
+
+        // ==================== ⭐ NEW: ADOPTION HISTORY (ADMIN VIEW - PERMANENT) ====================
+
+        // GET: Admin/AdoptionHistory
+        public ActionResult AdoptionHistory()
+        {
+            var allHistory = db.AdoptionHistories
+                .Include(h => h.User)
+                .OrderByDescending(h => h.ArchivedAt)
+                .ToList();
+
+            // Statistics
+            ViewBag.TotalCompleted = allHistory.Count(h => h.FinalStatus == "Completed");
+            ViewBag.TotalWithdrawn = allHistory.Count(h => h.FinalStatus == "Withdrawn");
+            ViewBag.TotalCancelled = allHistory.Count(h => h.FinalStatus == "Cancelled");
+            ViewBag.TotalRejected = allHistory.Count(h => h.FinalStatus == "Rejected");
+
+            return View(allHistory);
+        }
+
+        // GET: Admin/HistoryDetails/5
+        public ActionResult HistoryDetails(int id)
+        {
+            var history = db.AdoptionHistories
+                .Include(h => h.User)
+                .Include(h => h.CancellationApprover)
+                .FirstOrDefault(h => h.HistoryId == id);
+
+            if (history == null)
+            {
+                return HttpNotFound();
+            }
+
+            return View(history);
+        }
+
+        // ==================== ⭐ HELPER METHOD: Archive to History ====================
+
+        private void ArchiveApplicationToHistory(AdoptionApplication application, string finalStatus)
+        {
+            var history = new AdoptionHistory
+            {
+                ApplicationId = application.ApplicationId,
+                UserId = application.UserId,
+                PetId = application.PetId,
+
+                // Pet snapshot
+                PetName = application.Pet.Name,
+                PetBreed = application.Pet.Breed,
+                PetType = application.Pet.PetType?.TypeName,
+                PetImageUrl = application.Pet.ImageUrl,
+
+                // Application snapshot
+                PhoneNumber = application.PhoneNumber,
+                Address = application.Address,
+                HousingType = application.HousingType,
+
+                // Timeline
+                ApplicationDate = application.ApplicationDate,
+                ApprovalDate = application.ReviewedDate,
+                ClaimedDate = application.ClaimedDate,
+                CompletedDate = finalStatus == "Completed" ? DateTime.Now : (DateTime?)null,
+
+                // Status
+                FinalStatus = finalStatus,
+
+                // Cancellation/Withdrawal
+                CancellationReason = application.CancellationReason,
+                WithdrawalReason = application.WithdrawalReason,
+                CancellationRequestedDate = application.CancellationRequestedDate,
+                CancellationApprovedBy = application.CancellationReviewedBy,
+                CancellationApprovedDate = application.CancellationReviewedDate,
+
+                // Admin data
+                AdminNotes = application.AdminNotes,
+                RejectionReason = application.RejectionReason,
+
+                // Metadata
+                CreatedAt = DateTime.Now,
+                ArchivedAt = DateTime.Now,
+                AutoDeleteAfter = finalStatus == "Completed" ? DateTime.Now.AddMonths(6) : (DateTime?)null // Only completed adoptions auto-delete
+            };
+
+            db.AdoptionHistories.Add(history);
+        }
+
+        protected override void Dispose(bool disposing)
+        {
+            if (disposing)
+            {
+                db.Dispose();
+            }
+            base.Dispose(disposing);
         }
     }
 }

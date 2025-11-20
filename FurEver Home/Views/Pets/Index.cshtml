@@ -82,6 +82,67 @@
                 color: white;
             }
 
+        /* User Menu */
+        .user-menu {
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            padding: 8px 16px;
+            background: #f8fafc;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+
+        .user-avatar-small {
+            width: 35px;
+            height: 35px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 1em;
+            object-fit: cover;
+        }
+
+        .user-name-nav {
+            font-weight: 600;
+            color: #334155;
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: 55px;
+            right: 0;
+            background: white;
+            padding: 12px 0;
+            width: 180px;
+            border-radius: 15px;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+            display: none;
+        }
+
+        .user-menu:hover .dropdown-menu {
+            display: block;
+        }
+
+        .dropdown-menu a {
+            display: block;
+            padding: 12px 18px;
+            color: #334155;
+            text-decoration: none;
+            font-weight: 600;
+            transition: 0.2s;
+        }
+
+            .dropdown-menu a:hover {
+                background: #f1f5f9;
+                color: #3FA9F5;
+            }
+
         /* Hero Section */
         .hero {
             background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
@@ -131,6 +192,27 @@
             opacity: 0.9;
             font-size: 0.9em;
         }
+
+        .btn-secondary {
+            background: transparent;
+            color: white;
+            padding: 15px 40px;
+            border-radius: 30px;
+            font-weight: 700;
+            font-size: 1.1em;
+            border: 3px solid white;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.3s;
+        }
+
+            .btn-secondary:hover {
+                background: white;
+                color: #3FA9F5;
+            }
 
         /* Filter Section */
         .filter-section {
@@ -248,6 +330,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 30px;
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .results-info {
@@ -284,7 +368,7 @@
         /* Pet Grid */
         .pets-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
             gap: 30px;
             margin-bottom: 50px;
         }
@@ -322,6 +406,27 @@
             font-weight: 700;
             font-size: 0.85em;
         }
+
+        .posted-by-card-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.75em;
+            font-weight: 600;
+            color: #2E8BC0;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+
+            .posted-by-card-badge i {
+                font-size: 1.1em;
+            }
 
         .pet-info {
             padding: 25px;
@@ -367,6 +472,48 @@
             display: flex;
             align-items: center;
             gap: 5px;
+        }
+
+        .posted-by-info {
+            background: #f8fafc;
+            padding: 12px 16px;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            border-left: 3px solid #3FA9F5;
+        }
+
+        .posted-by-icon-small {
+            width: 32px;
+            height: 32px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9em;
+            font-weight: 700;
+        }
+
+        .posted-by-text {
+            flex: 1;
+        }
+
+        .posted-by-label {
+            font-size: 0.75em;
+            color: #94a3b8;
+            text-transform: uppercase;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+
+        .posted-by-name {
+            font-size: 0.9em;
+            color: #334155;
+            font-weight: 700;
         }
 
         .pet-description {
@@ -465,65 +612,113 @@
             color: #64748b;
             font-size: 1.1em;
         }
-        /* GLOBAL DROPDOWN MENU FIX (DESKTOP & MOBILE) */
-        .user-menu {
-            position: relative;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            padding: 8px 16px;
-            border-radius: 25px;
-            cursor: pointer;
+
+        /* Why Adopt Section */
+        .why-adopt {
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFD93D 100%);
+            padding: 80px 20px;
+            margin: 60px 0;
         }
 
-        .user-avatar-small {
-            width: 35px;
-            height: 35px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-            color: white;
-            display: flex;
+        .why-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 60px;
             align-items: center;
-            justify-content: center;
+        }
+
+        .why-text h2 {
+            font-size: 2.5em;
+            color: #2E8BC0;
+            margin-bottom: 30px;
             font-weight: 700;
-            font-size: 1em;
-            object-fit: cover;
         }
 
-        .dropdown-menu {
-            position: absolute;
-            top: 55px;
-            right: 0;
-            background: white;
-            padding: 12px 0;
-            width: 180px;
-            border-radius: 15px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
-            display: none; /* IMPORTANT */
+        .why-list {
+            list-style: none;
         }
 
-        .user-menu:hover .dropdown-menu {
-            display: block; /* IMPORTANT */
+            .why-list li {
+                color: #333;
+                margin-bottom: 20px;
+                padding-left: 35px;
+                position: relative;
+                font-size: 1.05em;
+                line-height: 1.6;
+            }
+
+                .why-list li:before {
+                    content: "✓";
+                    position: absolute;
+                    left: 0;
+                    color: #3FA9F5;
+                    font-weight: bold;
+                    font-size: 1.3em;
+                }
+
+        .why-image {
+            width: 100%;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
         }
 
-        .dropdown-menu a {
-            display: block;
-            padding: 12px 18px;
-            color: #334155;
-            text-decoration: none;
+        .stats {
+            color: #3FA9F5;
             font-weight: 600;
-            transition: 0.2s;
         }
 
-            .dropdown-menu a:hover {
-                background: #f1f5f9;
+        /* Footer */
+        .footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 60px 20px 30px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
+        }
+
+        .footer-section h3 {
+            color: #FFD93D;
+            margin-bottom: 20px;
+            font-size: 1.3em;
+        }
+
+        .footer-section p,
+        .footer-section a {
+            color: #ccc;
+            text-decoration: none;
+            display: block;
+            margin-bottom: 10px;
+            line-height: 1.8;
+        }
+
+            .footer-section a:hover {
                 color: #3FA9F5;
             }
+
+        .footer-bottom {
+            text-align: center;
+            padding-top: 30px;
+            border-top: 1px solid #333;
+            color: #999;
+        }
 
         /* Responsive */
         @@media (max-width: 768px) {
             .hero h1 {
                 font-size: 2em;
+            }
+
+            .why-content {
+                grid-template-columns: 1fr;
             }
 
             .filter-container {
@@ -546,67 +741,14 @@
                 display: none;
             }
 
-            .user-menu:hover .dropdown-menu {
-                opacity: 1 !important;
-                visibility: visible !important;
-                transform: translateY(0) !important;
+            .content-header {
+                flex-direction: column;
+                align-items: flex-start;
             }
-
-            .dropdown-menu a:hover {
-                background: #f8fafc !important;
-                color: #3FA9F5 !important;
-            }
-
-            .user-menu {
-                position: relative;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                padding: 8px 16px;
-                background: #f8fafc;
-                border-radius: 25px;
-                cursor: pointer;
-            }
-
-            .user-avatar-small {
-                width: 35px;
-                height: 35px;
-                border-radius: 50%;
-                background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-                color: white;
-                display: flex;
-                align-items: center;
-                justify-content: center;
-                font-weight: 700;
-                font-size: 1em;
-                object-fit: cover;
-            }
-
-            .user-name-nav {
-                font-weight: 600;
-                color: #334155;
-            }
-
-           
-
-            .dropdown-menu a {
-                display: block;
-                padding: 12px 18px;
-                color: #334155;
-                text-decoration: none;
-                font-weight: 600;
-                transition: 0.2s;
-            }
-
-                .dropdown-menu a:hover {
-                    background: #f1f5f9;
-                    color: #3FA9F5;
-                }
         }
     </style>
 </head>
 <body>
-    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="@Url.Action("Index", "Home")" class="logo">
@@ -642,13 +784,12 @@
                 }
                 else
                 {
-                    <a href="@Url.Action("Login", "Account")" class="btn-adopt">Sign In</a>
+                    <a href="@Url.Action("Login", "Account")" class="btn-home">Sign In</a>
                 }
             </div>
         </div>
     </nav>
 
-    <!-- Hero Section -->
     <section class="hero">
         <h1>
             @if (ViewBag.PetType == "Dogs")
@@ -665,6 +806,15 @@
             }
         </h1>
         <p>Find your perfect furry companion today!</p>
+
+        @if (Session["UserId"] != null)
+        {
+            <div style="margin-bottom: 30px;">
+                <a href="@Url.Action("PostForAdoption", "Pets")" class="btn-secondary" style="background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%); color: #2E8BC0;">
+                    <i class="fas fa-heart"></i> Post Pet for Adoption
+                </a>
+            </div>
+        }
 
         <div class="hero-stats">
             <div class="stat-item">
@@ -691,7 +841,6 @@
         </div>
     </section>
 
-    <!-- Pet Type Tabs -->
     <div class="pet-type-tabs">
         <a href="@Url.Action("Index", "Pets")" class="tab-btn @(ViewBag.PetType == null ? "active" : "")">
             <i class="fas fa-paw"></i> All Pets
@@ -704,7 +853,6 @@
         </a>
     </div>
 
-    <!-- Filter Section -->
     <div class="filter-section">
         <div class="filter-container">
             <div class="filter-group">
@@ -748,7 +896,6 @@
         </div>
     </div>
 
-    <!-- Main Content -->
     <div class="main-content">
         <div class="content-header">
             <div class="results-info">
@@ -800,12 +947,26 @@
                          data-age="@pet.Age"
                          data-date="@pet.DateAdded.ToString("yyyyMMdd")">
 
-                        <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/300x280?text=" + pet.Name : pet.ImageUrl)"
+                        <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/320x280?text=" + pet.Name : pet.ImageUrl)"
                              alt="@pet.Name"
                              class="pet-image">
-                        <div class="pet-details">@pet.Breed • @pet.AgeDisplay • @pet.Gender</div>
 
-                        <div class="pet-badge">@pet.Age year@(pet.Age != 1 ? "s" : "") old</div>
+                        @if (pet.PostedByType == "Organization")
+                        {
+                            <div class="posted-by-card-badge">
+                                <i class="fas fa-building"></i>
+                                <span>@pet.OrganizationName</span>
+                            </div>
+                        }
+                        else if (pet.Creator != null)
+                        {
+                            <div class="posted-by-card-badge">
+                                <i class="fas fa-user"></i>
+                                <span>@pet.Creator.FullName</span>
+                            </div>
+                        }
+
+                        <div class="pet-badge">@pet.AgeDisplay</div>
 
                         <div class="pet-info">
                             <div class="pet-header">
@@ -823,6 +984,39 @@
                                     <i class="fas fa-ruler"></i>
                                     @pet.Size
                                 </div>
+                            </div>
+
+                            <div class="posted-by-info">
+                                @if (pet.PostedByType == "Organization")
+                                {
+                                    <div class="posted-by-icon-small">
+                                        <i class="fas fa-building"></i>
+                                    </div>
+                                    <div class="posted-by-text">
+                                        <div class="posted-by-label">Organization</div>
+                                        <div class="posted-by-name">@pet.OrganizationName</div>
+                                    </div>
+                                }
+                                else if (pet.Creator != null)
+                                {
+                                    <div class="posted-by-icon-small">
+                                        @pet.Creator.FullName.Substring(0, 1).ToUpper()
+                                    </div>
+                                    <div class="posted-by-text">
+                                        <div class="posted-by-label">Posted by</div>
+                                        <div class="posted-by-name">@pet.Creator.FullName</div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="posted-by-icon-small">
+                                        <i class="fas fa-home"></i>
+                                    </div>
+                                    <div class="posted-by-text">
+                                        <div class="posted-by-label">Posted by</div>
+                                        <div class="posted-by-name">FurEver Home</div>
+                                    </div>
+                                }
                             </div>
 
                             <p class="pet-description">@pet.Description</p>
@@ -851,6 +1045,59 @@
             </div>
         }
     </div>
+
+    <!-- Why Adopt Section -->
+    <div class="why-adopt">
+        <div class="why-content">
+            <div class="why-text">
+                <h2>Why Adopt From FurEver Home?</h2>
+                <ul class="why-list">
+                    <li>All pets are vaccinated, spayed/neutered, and microchipped</li>
+                    <li>Post-adoption support and resources</li>
+                    <li>30-day health guarantee</li>
+                    <li>Thorough matching process to find your perfect companion</li>
+                    <li>Save a life and make room for another pet in need</li>
+                </ul>
+                <div style="margin-top: 30px;">
+                    <p class="stats"><i class="fas fa-trophy"></i> 10,000+ successful adoptions since 2023</p>
+                </div>
+            </div>
+            <div>
+                <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600" alt="Happy pets" class="why-image">
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer / Contact Section -->
+    <footer class="footer" id="contact">
+        <div class="footer-content">
+            <div class="footer-section">
+                <img src="~/Content/Images/circle_furever.png" alt="FurEver Home" style="width: 100px; margin-bottom: 15px;">
+                <p>Connecting loving homes with pets in need since 2023.</p>
+                <p class="stats">10,000+ successful adoptions</p>
+            </div>
+            <div class="footer-section">
+                <h3>Quick Links</h3>
+                <a href="@Url.Action("Index", "Pets")">Home</a>
+                <a href="@Url.Action("Dogs", "Pets")">Dogs</a>
+                <a href="@Url.Action("Cats", "Pets")">Cats</a>
+                @if (Session["UserId"] != null)
+                {
+                    <a href="@Url.Action("PostForAdoption", "Pets")">Post Pet for Adoption</a>
+                }
+                <a href="#contact">Contact</a>
+            </div>
+            <div class="footer-section">
+                <h3>Contact Us</h3>
+                <p><i class="fas fa-phone"></i> (555) 123-4567</p>
+                <p><i class="fas fa-envelope"></i> adopt@pawfinder.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Pet Street, Anytown, USA</p>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <p>&copy; 2025 FurEver Home. All rights reserved.</p>
+        </div>
+    </footer>
 
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script>

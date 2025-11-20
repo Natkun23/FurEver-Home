@@ -14,8 +14,10 @@ namespace FurEver_Home.Models
         public DbSet<Pet> Pets { get; set; }
         public DbSet<PetType> PetTypes { get; set; }
         public DbSet<AdoptionApplication> AdoptionApplications { get; set; }
-
         public DbSet<UserNotification> UserNotifications { get; set; }
+
+        // ⭐ ADD THIS LINE - NEW DbSet for History
+        public DbSet<AdoptionHistory> AdoptionHistories { get; set; }
 
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {

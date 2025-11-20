@@ -26,7 +26,7 @@
         }
 
         .container {
-            max-width: 800px;
+            max-width: 900px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
@@ -48,6 +48,36 @@
         .page-subtitle {
             color: #64748b;
         }
+
+        /* ✨ NEW: Organization Info Box */
+        .org-info-box {
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-left: 4px solid #3FA9F5;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+        }
+
+            .org-info-box h4 {
+                color: #1e40af;
+                margin-bottom: 10px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                font-size: 1.1em;
+            }
+
+            .org-info-box p {
+                color: #334155;
+                line-height: 1.6;
+                margin-bottom: 8px;
+            }
+
+            .org-info-box ul {
+                margin-left: 20px;
+                color: #475569;
+                line-height: 1.8;
+            }
 
         .form-grid {
             display: grid;
@@ -96,6 +126,42 @@
             .form-group textarea {
                 min-height: 100px;
                 resize: vertical;
+            }
+
+        /* ✨ HIGHLIGHTED: Organization Name Field */
+        .org-name-field {
+            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+            border: 2px solid #fbbf24;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+        }
+
+            .org-name-field label {
+                color: #92400e;
+                font-size: 1em;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                margin-bottom: 12px;
+            }
+
+            .org-name-field input {
+                background: white;
+                border: 2px solid #fbbf24;
+            }
+
+                .org-name-field input:focus {
+                    border-color: #f59e0b;
+                    box-shadow: 0 0 0 4px rgba(251, 191, 36, 0.2);
+                }
+
+            .org-name-field small {
+                display: block;
+                color: #78350f;
+                margin-top: 8px;
+                font-size: 0.9em;
             }
 
         .file-upload {
@@ -190,88 +256,121 @@
             <p class="page-subtitle">Fill in the details to add a new pet for adoption</p>
         </div>
 
+        <!-- ✨ NEW: Organization Information Box -->
+        <div class="org-info-box">
+            <h4>
+                <i class="fas fa-building"></i>
+                Posting as Organization
+            </h4>
+            <p>
+                <strong>As an admin, you can post pets on behalf of partner organizations.</strong>
+            </p>
+            <ul>
+                <li>Enter the organization name below (e.g., "Quezon City Dog Welfare")</li>
+                <li>Leave blank to post as "FurEver Home Admin"</li>
+                <li>Users will see who posted each pet</li>
+            </ul>
+        </div>
+
         @using (Html.BeginForm("AddPet", "Admin", FormMethod.Post, new { enctype = "multipart/form-data" }))
         {
             @Html.AntiForgeryToken()
 
-    <div class="form-grid">
-        <div class="form-group">
-            <label>Pet Name *</label>
-            @Html.TextBoxFor(m => m.Name, new { placeholder = "Enter pet's name", required = "required" })
-            @Html.ValidationMessageFor(m => m.Name, "", new { @class = "field-validation-error" })
-        </div>
+            <!-- ✨ HIGHLIGHTED: Organization Name Field -->
+            <div class="org-name-field">
+                <label>
+                    <i class="fas fa-building"></i>
+                    Organization Name (Optional)
+                </label>
+                <input type="text"
+                       name="OrganizationName"
+                       placeholder="e.g., Quezon City Dog Welfare, PAWS, Animal Kingdom Foundation"
+                       maxlength="255" />
+                <small>
+                    <i class="fas fa-info-circle"></i>
+                    If provided, this pet will be listed as posted by this organization.
+                    Leave blank to use "FurEver Home Admin" as default.
+                </small>
+            </div>
 
-        <div class="form-group">
-            <label>Age Unit</label>
-            @Html.DropDownListFor(m => m.AgeUnit,
-                new SelectList(new[] { "Months", "Years" }),
-                new { @class = "form-control" })
-        </div>
+            <div class="form-grid">
+                <div class="form-group">
+                    <label>Pet Name *</label>
+                    @Html.TextBoxFor(m => m.Name, new { placeholder = "Enter pet's name", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Name, "", new { @class = "field-validation-error" })
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.PetTypeId, "Pet Type")
-            @Html.DropDownListFor(m => m.PetTypeId,
-                new SelectList(ViewBag.PetTypes, "PetTypeId", "TypeName"),
-                "-- Select Type --",
-                new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.PetTypeId, "", new { @class = "field-validation-error" })
-        </div>
+                <div class="form-group">
+                    <label>Pet Type *</label>
+                    @Html.DropDownListFor(m => m.PetTypeId,
+                        new SelectList(ViewBag.PetTypes, "PetTypeId", "TypeName"),
+                        "-- Select Type --",
+                        new { required = "required" })
+                    @Html.ValidationMessageFor(m => m.PetTypeId, "", new { @class = "field-validation-error" })
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Breed)
-            @Html.TextBoxFor(m => m.Breed, new { placeholder = "Enter breed" })
-            @Html.ValidationMessageFor(m => m.Breed, "", new { @class = "field-validation-error" })
-        </div>
+                <div class="form-group">
+                    <label>Breed *</label>
+                    @Html.TextBoxFor(m => m.Breed, new { placeholder = "Enter breed", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Breed, "", new { @class = "field-validation-error" })
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Age, "Age (years)")
-            @Html.TextBoxFor(m => m.Age, new { type = "number", min = "0", max = "20", placeholder = "Age" })
-            @Html.ValidationMessageFor(m => m.Age, "", new { @class = "field-validation-error" })
-        </div>
+                <div class="form-group">
+                    <label>Age *</label>
+                    @Html.TextBoxFor(m => m.Age, new { type = "number", min = "0", max = "20", placeholder = "Age", required = "required" })
+                    @Html.ValidationMessageFor(m => m.Age, "", new { @class = "field-validation-error" })
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Gender)
-            @Html.DropDownListFor(m => m.Gender,
-                new SelectList(new[] { "Male", "Female" }),
-                "-- Select Gender --",
-                new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "field-validation-error" })
-        </div>
+                <div class="form-group">
+                    <label>Age Unit *</label>
+                    @Html.DropDownListFor(m => m.AgeUnit,
+                        new SelectList(new[] { "Months", "Years" }),
+                        new { required = "required" })
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.Size)
-            @Html.DropDownListFor(m => m.Size,
-                new SelectList(new[] { "Small", "Medium", "Large" }),
-                "-- Select Size --",
-                new { @class = "form-control" })
-            @Html.ValidationMessageFor(m => m.Size, "", new { @class = "field-validation-error" })
-        </div>
+                <div class="form-group">
+                    <label>Gender *</label>
+                    @Html.DropDownListFor(m => m.Gender,
+                        new SelectList(new[] { "Male", "Female" }),
+                        "-- Select Gender --",
+                        new { required = "required" })
+                    @Html.ValidationMessageFor(m => m.Gender, "", new { @class = "field-validation-error" })
+                </div>
 
-        <div class="form-group">
-            @Html.LabelFor(m => m.DaysInCenter, "Days in Center")
-            @Html.TextBoxFor(m => m.DaysInCenter, new { type = "number", min = "0", placeholder = "0", Value = "0" })
-        </div>
-    </div>
+                <div class="form-group">
+                    <label>Size *</label>
+                    @Html.DropDownListFor(m => m.Size,
+                        new SelectList(new[] { "Small", "Medium", "Large" }),
+                        "-- Select Size --",
+                        new { required = "required" })
+                    @Html.ValidationMessageFor(m => m.Size, "", new { @class = "field-validation-error" })
+                </div>
+
+                <div class="form-group">
+                    <label>Days in Center</label>
+                    @Html.TextBoxFor(m => m.DaysInCenter, new { type = "number", min = "0", placeholder = "0", Value = "0" })
+                </div>
+            </div>
 
             <div class="form-group full-width">
-                @Html.LabelFor(m => m.Description)
-                @Html.TextAreaFor(m => m.Description, new { placeholder = "Describe the pet's personality and story...", rows = "4" })
+                <label>Description *</label>
+                @Html.TextAreaFor(m => m.Description, new { placeholder = "Describe the pet's personality and story...", rows = "4", required = "required" })
                 @Html.ValidationMessageFor(m => m.Description, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group full-width">
-                @Html.LabelFor(m => m.Traits, "Personality Traits (comma-separated)")
+                <label>Personality Traits (comma-separated)</label>
                 @Html.TextBoxFor(m => m.Traits, new { placeholder = "e.g., Friendly, Playful, Gentle" })
                 <small style="color: #64748b;">Separate traits with commas</small>
             </div>
 
             <div class="form-group full-width">
-                @Html.LabelFor(m => m.Vaccines, "Vaccination Info")
+                <label>Vaccination Info</label>
                 @Html.TextAreaFor(m => m.Vaccines, new { placeholder = "List all vaccines...", rows = "3" })
             </div>
 
             <div class="form-group full-width">
-                @Html.LabelFor(m => m.WhyAdoptMe, "Why Adopt Me? (comma-separated)")
+                <label>Why Adopt Me? (comma-separated)</label>
                 @Html.TextAreaFor(m => m.WhyAdoptMe, new { placeholder = "e.g., Great with kids, Fully trained, Loves to play", rows = "3" })
                 <small style="color: #64748b;">Separate reasons with commas</small>
             </div>
@@ -291,12 +390,12 @@
             </div>
 
             <div class="form-group full-width">
-                <label>Pet Image</label>
+                <label>Pet Image *</label>
                 <div class="file-upload" onclick="document.getElementById('petImage').click()">
                     <div class="file-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
                     <div>Click to upload pet image</div>
                     <small style="color: #64748b;">PNG, JPG (Max 5MB)</small>
-                    <input type="file" id="petImage" name="PetImage" accept="image/*">
+                    <input type="file" id="petImage" name="PetImage" accept="image/*" required>
                     <div id="fileName" style="margin-top: 12px; color: #3FA9F5; font-weight: 600;"></div>
                 </div>
             </div>
@@ -316,7 +415,7 @@
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script>
-        document.getElementById('petImage').addEventListener('change', function(e) {
+        document.getElementById('petImage').addEventListener('change', function (e) {
             var fileName = e.target.files[0]?.name;
             if (fileName) {
                 document.getElementById('fileName').textContent = '✓ ' + fileName;

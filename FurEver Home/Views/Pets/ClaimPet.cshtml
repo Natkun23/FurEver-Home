@@ -13,11 +13,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -30,7 +26,7 @@
         }
 
         .claim-container {
-            max-width: 600px;
+            max-width: 650px;
             width: 100%;
             background: white;
             border-radius: 24px;
@@ -45,19 +41,10 @@
             color: #2E8BC0;
         }
 
-            .claim-header i {
-                font-size: 4em;
-                margin-bottom: 20px;
-            }
+        .claim-header i { font-size: 4em; margin-bottom: 20px; }
+        .claim-header h1 { font-size: 2em; margin-bottom: 10px; }
 
-            .claim-header h1 {
-                font-size: 2em;
-                margin-bottom: 10px;
-            }
-
-        .claim-body {
-            padding: 40px;
-        }
+        .claim-body { padding: 40px; }
 
         .pet-info-box {
             background: #E8F4FC;
@@ -83,9 +70,59 @@
             margin-bottom: 5px;
         }
 
-        .pet-breed {
-            color: #64748b;
-            font-size: 1.1em;
+        .pet-breed { color: #64748b; font-size: 1.1em; }
+
+        /* ⚠️ PERMANENT WARNING BOX */
+        .warning-box {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 3px solid #ef4444;
+            border-radius: 15px;
+            padding: 25px;
+            margin-bottom: 25px;
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .warning-box .warning-icon {
+            font-size: 3em;
+            color: #dc2626;
+            margin-bottom: 15px;
+            text-align: center;
+        }
+
+        .warning-box h3 {
+            color: #991b1b;
+            font-size: 1.4em;
+            margin-bottom: 15px;
+            text-align: center;
+            font-weight: 800;
+            text-transform: uppercase;
+        }
+
+        .warning-box ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .warning-box li {
+            color: #7f1d1d;
+            margin-bottom: 12px;
+            padding-left: 35px;
+            position: relative;
+            line-height: 1.6;
+            font-size: 1.05em;
+            font-weight: 600;
+        }
+
+        .warning-box li::before {
+            content: "⚠️";
+            position: absolute;
+            left: 0;
+            font-size: 1.3em;
         }
 
         .pickup-details {
@@ -96,20 +133,18 @@
             border-left: 4px solid #FFD93D;
         }
 
-            .pickup-details h3 {
-                color: #92400e;
-                margin-bottom: 15px;
-            }
+        .pickup-details h3 {
+            color: #92400e;
+            margin-bottom: 15px;
+        }
 
-            .pickup-details p {
-                color: #334155;
-                margin-bottom: 10px;
-                line-height: 1.6;
-            }
+        .pickup-details p {
+            color: #334155;
+            margin-bottom: 10px;
+            line-height: 1.6;
+        }
 
-            .pickup-details strong {
-                color: #2E8BC0;
-            }
+        .pickup-details strong { color: #2E8BC0; }
 
         .checklist {
             background: #f8fafc;
@@ -118,28 +153,28 @@
             margin-bottom: 25px;
         }
 
-            .checklist h3 {
-                color: #2E8BC0;
-                margin-bottom: 15px;
-            }
+        .checklist h3 {
+            color: #2E8BC0;
+            margin-bottom: 15px;
+        }
 
-            .checklist ul {
-                list-style: none;
-                padding: 0;
-            }
+        .checklist ul {
+            list-style: none;
+            padding: 0;
+        }
 
-            .checklist li {
-                padding: 10px 0;
-                color: #334155;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-            }
+        .checklist li {
+            padding: 10px 0;
+            color: #334155;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
 
-                .checklist li i {
-                    color: #10b981;
-                    font-size: 1.2em;
-                }
+        .checklist li i {
+            color: #10b981;
+            font-size: 1.2em;
+        }
 
         .action-buttons {
             display: flex;
@@ -164,15 +199,38 @@
             color: white;
         }
 
-            .btn-claim:hover {
-                transform: translateY(-2px);
-                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-                color: white;
-            }
+        .btn-claim:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            color: white;
+        }
 
         .btn-back {
             background: #e2e8f0;
             color: #334155;
+        }
+
+        .confirmation-checkbox {
+            background: #fef3c7;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border: 2px solid #fbbf24;
+        }
+
+        .confirmation-checkbox label {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            cursor: pointer;
+            color: #78350f;
+            font-weight: 600;
+        }
+
+        .confirmation-checkbox input[type="checkbox"] {
+            width: 20px;
+            height: 20px;
+            cursor: pointer;
         }
     </style>
 </head>
@@ -181,7 +239,7 @@
         <div class="claim-header">
             <i class="fas fa-gift"></i>
             <h1>Claim Your New Companion!</h1>
-            <p>You're just one step away from bringing @Model.Pet.Name home!</p>
+            <p>You're one step away from bringing @Model.Pet.Name home!</p>
         </div>
 
         <div class="claim-body">
@@ -190,6 +248,18 @@
                      alt="@Model.Pet.Name" class="pet-image">
                 <div class="pet-name">@Model.Pet.Name</div>
                 <div class="pet-breed">@Model.Pet.Breed • @Model.Pet.AgeDisplay • @Model.Pet.Gender</div>
+            </div>
+
+            <!-- ⚠️ PERMANENT ADOPTION WARNING -->
+            <div class="warning-box">
+                <div class="warning-icon">⚠️</div>
+                <h3>🚨 Important: This Decision is Permanent 🚨</h3>
+                <ul>
+                    <li>Once you claim this pet, the adoption becomes PERMANENT</li>
+                    <li>You CANNOT cancel, return, or undo this adoption</li>
+                    <li>This is a lifetime commitment to care for @Model.Pet.Name</li>
+                    <li>Please make absolutely sure you are ready before proceeding</li>
+                </ul>
             </div>
 
             <div class="pickup-details">
@@ -213,6 +283,14 @@
                 </ul>
             </div>
 
+            <!-- Confirmation Checkbox -->
+            <div class="confirmation-checkbox">
+                <label>
+                    <input type="checkbox" id="confirmPermanent" required>
+                    <span>I understand that this adoption is PERMANENT and cannot be cancelled after claiming</span>
+                </label>
+            </div>
+
             @using (Html.BeginForm("ConfirmClaim", "Pets", FormMethod.Post))
             {
                 @Html.AntiForgeryToken()
@@ -222,7 +300,7 @@
                     <a href="@Url.Action("MyApplications", "Pets")" class="btn btn-back">
                         <i class="fas fa-arrow-left"></i> Go Back
                     </a>
-                    <button type="submit" class="btn btn-claim" onclick="return confirm('Confirm that you have picked up @Model.Pet.Name?')">
+                    <button type="submit" class="btn btn-claim" id="claimButton" disabled onclick="return confirmClaim()">
                         <i class="fas fa-heart"></i> I've Claimed @Model.Pet.Name!
                     </button>
                 </div>
@@ -233,5 +311,16 @@
             </p>
         </div>
     </div>
+
+    <script>
+        // Enable button only if checkbox is checked
+        document.getElementById('confirmPermanent').addEventListener('change', function() {
+            document.getElementById('claimButton').disabled = !this.checked;
+        });
+
+        function confirmClaim() {
+            return confirm('⚠️ FINAL CONFIRMATION ⚠️\n\nAre you absolutely sure you have picked up ' + '@Model.Pet.Name' + '?\n\nThis action is PERMANENT and CANNOT be undone.\n\nClick OK only if you are ready to complete this adoption.');
+        }
+    </script>
 </body>
 </html>

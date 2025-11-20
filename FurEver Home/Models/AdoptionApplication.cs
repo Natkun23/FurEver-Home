@@ -92,5 +92,36 @@ namespace FurEver_Home.Models
 
         [Column("claimed_date")]
         public DateTime? ClaimedDate { get; set; }
+
+        // ADD THESE PROPERTIES TO YOUR EXISTING AdoptionApplication.cs
+
+        [Column("cancellation_requested")]
+        public bool CancellationRequested { get; set; } = false;
+
+        [Column("cancellation_reason")]
+        public string CancellationReason { get; set; }
+
+        [Column("cancellation_requested_date")]
+        public DateTime? CancellationRequestedDate { get; set; }
+
+        [Column("cancellation_reviewed_by")]
+        public int? CancellationReviewedBy { get; set; }
+
+        [Column("cancellation_reviewed_date")]
+        public DateTime? CancellationReviewedDate { get; set; }
+
+        [Column("cancellation_approved")]
+        public bool CancellationApproved { get; set; } = false;
+
+        [Column("withdrawal_reason")]
+        [StringLength(500)]
+        public string WithdrawalReason { get; set; }
+
+        [Column("withdrawal_date")]
+        public DateTime? WithdrawalDate { get; set; }
+
+        // Navigation for cancellation reviewer
+        [ForeignKey("CancellationReviewedBy")]
+        public virtual User CancellationReviewer { get; set; }
     }
 }

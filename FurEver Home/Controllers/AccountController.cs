@@ -25,7 +25,7 @@ namespace FurEver_Home.Controllers
             // If already logged in, redirect to home
             if (Session["UserId"] != null)
             {
-                return RedirectToAction("Index", "Home");
+                return RedirectToAction("Index", "Pets");
             }
 
             return View();
@@ -67,7 +67,7 @@ namespace FurEver_Home.Controllers
                         }
                         else
                         {
-                            return RedirectToAction("Index", "Home");
+                            return RedirectToAction("Index", "Pets");
                         }
                     }
                 }

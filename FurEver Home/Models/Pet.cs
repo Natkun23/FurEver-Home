@@ -123,5 +123,43 @@ namespace FurEver_Home.Models
 
         [ForeignKey("UpdatedBy")]
         public virtual User Updater { get; set; }
+
+
+        // ADD THESE PROPERTIES TO YOUR EXISTING Pet.cs
+
+        [Column("posted_by_type")]
+        [StringLength(50)]
+        public string PostedByType { get; set; } // "User" or "Organization"
+
+        [Column("organization_name")]
+        [StringLength(255)]
+        public string OrganizationName { get; set; } // If posted by admin as organization
+
+        // Computed property for display
+        [NotMapped]
+        public string PostedByDisplay
+        {
+            get
+            {
+                if (PostedByType == "Organization" && !string.IsNullOrEmpty(OrganizationName))
+                {
+                    return OrganizationName;
+                }
+                else if (Creator != null)
+                {
+                    return Creator.FullName;
+                }
+                return "Unknown";
+            }
+        }
+
+        [NotMapped]
+        public string PostedByLabel
+        {
+            get
+            {
+                return PostedByType == "Organization" ? "Posted by Organization" : "Posted by";
+            }
+        }
     }
 }

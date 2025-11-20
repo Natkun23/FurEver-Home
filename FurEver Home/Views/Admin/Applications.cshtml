@@ -286,6 +286,7 @@
             <a href="@Url.Action("Users", "Admin")" class="menu-item">
                 <i class="fas fa-users menu-icon"></i>
                 <span class="menu-text">Users</span>
+
             </a>
             <a href="@Url.Action("VerifyIDs", "Admin")" class="menu-item">
                 <i class="fas fa-id-card menu-icon"></i>
@@ -299,7 +300,11 @@
                 <i class="fas fa-file-alt menu-icon"></i>
                 <span class="menu-text">Applications</span>
             </a>
-           
+            <a href="@Url.Action("AdoptedPets", "Admin")" class="menu-item">
+                <i class="fas fa-heart menu-icon"></i>
+                <span class="menu-text">Adopted Pets</span>
+            </a>
+
             <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
             <a href="@Url.Action("Logout", "Account")" class="menu-item">
                 <i class="fas fa-sign-out-alt menu-icon"></i>
@@ -357,24 +362,7 @@
                             <a href="@Url.Action("ApplicationDetails", "Admin", new { id = app.ApplicationId })" class="btn-sm btn-view">
                                 <i class="fas fa-eye"></i> View Details
                             </a>
-                            @if (app.Status == "Pending")
-                            {
-                                <form action="@Url.Action("ApproveApplication", "Admin")" method="post" style="margin: 0">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@app.ApplicationId" />
-                                    <button type="submit" class="btn-sm btn-approve" onclick="return confirm('Approve this application?')">
-                                        <i class="fas fa-check"></i> Approve
-                                    </button>
-                                </form>
-
-                                <form action="@Url.Action("RejectApplication", "Admin")" method="post" style="margin: 0">
-                                    @Html.AntiForgeryToken()
-                                    <input type="hidden" name="id" value="@app.ApplicationId" />
-                                    <button type="submit" class="btn-sm btn-reject" onclick="return confirm('Reject this application?')">
-                                        <i class="fas fa-times"></i> Reject
-                                    </button>
-                                </form>
-                            }
+                                
                         </div>
                     </div>
                 }

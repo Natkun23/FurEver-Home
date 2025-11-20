@@ -138,6 +138,7 @@
     </Compile>
     <Compile Include="Models\AdoptedPetViewModel.cs" />
     <Compile Include="Models\AdoptionApplication.cs" />
+    <Compile Include="Models\AdoptionHistory.cs" />
     <Compile Include="Models\ForgotPasswordViewModel.cs" />
     <Compile Include="Models\FurEverHomeContext.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
@@ -210,7 +211,7 @@
     <Content Include="Views\Shared\_Layout.cshtml" />
     <Content Include="Views\Home\About.cshtml" />
     <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\Index.cshtml" />
+    <Content Include="Views\Home\xxIndex.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Pets\Details.cshtml" />

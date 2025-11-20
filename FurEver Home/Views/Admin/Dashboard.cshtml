@@ -444,7 +444,10 @@
                     <span class="badge">@ViewBag.PendingApplications</span>
                 }
             </a>
-
+            <a href="@Url.Action("AdoptedPets", "Admin")" class="menu-item">
+                <i class="fas fa-heart menu-icon"></i>
+                <span class="menu-text">Adopted Pets</span>
+            </a>
             <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
             <a href="@Url.Action("Logout", "Account")" class="menu-item">
                 <i class="fas fa-sign-out-alt menu-icon"></i>

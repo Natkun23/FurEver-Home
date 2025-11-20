@@ -1,5 +1,4 @@
-﻿@model List<FurEver_Home.Models.AdoptionApplication>
-@{
+﻿@{
     ViewBag.Title = "My Adoption Applications - FurEver Home";
     Layout = null;
 }
@@ -70,6 +69,16 @@
             font-weight: 700;
         }
 
+        .section-title {
+            font-size: 1.8em;
+            color: #2E8BC0;
+            margin: 40px 0 20px;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
         .applications-grid {
             display: grid;
             gap: 25px;
@@ -83,7 +92,7 @@
             display: grid;
             grid-template-columns: 100px 1fr auto;
             gap: 20px;
-            align-items: center;
+            align-items: start;
         }
 
         .pet-thumb {
@@ -111,6 +120,7 @@
             font-size: 0.9em;
             font-weight: 600;
             text-align: center;
+            white-space: nowrap;
         }
 
         .status-pending {
@@ -131,6 +141,16 @@
         .status-completed {
             background: #dbeafe;
             color: #1e40af;
+        }
+
+        .status-withdrawn {
+            background: #f3f4f6;
+            color: #4b5563;
+        }
+
+        .status-cancelled {
+            background: #fef2f2;
+            color: #b91c1c;
         }
 
         .pickup-box {
@@ -169,6 +189,31 @@
                 color: white;
             }
 
+        .btn-action {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+            display: inline-block;
+        }
+
+        .btn-withdraw {
+            background: #fef3c7;
+            color: #92400e;
+        }
+
+        .btn-cancel-request {
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .btn-action:hover {
+            transform: translateY(-2px);
+        }
+
         .empty-state {
             background: white;
             border-radius: 15px;
@@ -198,7 +243,21 @@
             color: #155724;
         }
 
-        .rejection-reason {
+        .alert-warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+        }
+
+        .alert-error {
+            background: #f8d7da;
+            border: 1px solid #f5c6cb;
+            color: #721c24;
+        }
+
+        .rejection-reason,
+        .cancellation-pending,
+        .permanent-notice {
             background: #fee2e2;
             padding: 15px;
             border-radius: 10px;
@@ -206,13 +265,118 @@
             color: #991b1b;
             border-left: 4px solid #ef4444;
         }
+
+        .cancellation-pending {
+            background: #fef3c7;
+            color: #92400e;
+            border-left-color: #f59e0b;
+        }
+
+        .permanent-notice {
+            background: #dbeafe;
+            color: #1e40af;
+            border-left-color: #3b82f6;
+            font-weight: 600;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 90%;
+        }
+
+            .modal-content h3 {
+                color: #2E8BC0;
+                margin-bottom: 20px;
+            }
+
+            .modal-content textarea {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                min-height: 120px;
+                font-size: 15px;
+                margin-bottom: 20px;
+            }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+        }
+
+        .btn-modal-cancel {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-modal-submit {
+            background: #ef4444;
+            color: white;
+        }
+
+        /* History Section */
+        .history-card {
+            background: #f8fafc;
+            border-radius: 15px;
+            padding: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            display: grid;
+            grid-template-columns: 80px 1fr;
+            gap: 15px;
+            margin-bottom: 15px;
+        }
+
+        .history-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 10px;
+            object-fit: cover;
+        }
+
+        .history-info h4 {
+            color: #64748b;
+            font-size: 1.1em;
+            margin-bottom: 6px;
+        }
+
+        .history-details {
+            color: #94a3b8;
+            font-size: 0.9em;
+            margin-bottom: 4px;
+        }
     </style>
 </head>
 <body>
     <nav class="navbar">
         <div class="nav-container">
             <img src="~/Content/Images/full_furever.png" alt="FurEver Home" style="height: 50px;">
-            <a href="@Url.Action("Index", "Home")" class="btn-back">
+            <a href="@Url.Action("Index", "Pets")" class="btn-back">
                 <i class="fas fa-home"></i> Back to Home
             </a>
         </div>
@@ -232,12 +396,26 @@
             </div>
         }
 
-        @if (Model.Count == 0)
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>@TempData["Error"]</span>
+            </div>
+        }
+
+        <!-- ACTIVE APPLICATIONS -->
+        <h2 class="section-title">
+            <i class="fas fa-file-alt"></i>
+            Active Applications
+        </h2>
+
+        @if (ViewBag.ActiveApplications.Count == 0)
         {
             <div class="empty-state">
                 <i class="fas fa-inbox"></i>
-                <h3 style="color: #64748b; margin-bottom: 10px;">No Applications Yet</h3>
-                <p style="color: #94a3b8;">You haven't applied to adopt any pets yet.</p>
+                <h3 style="color: #64748b; margin-bottom: 10px;">No Active Applications</h3>
+                <p style="color: #94a3b8;">You don't have any pending or approved applications.</p>
                 <a href="@Url.Action("Index", "Pets")" style="display: inline-block; margin-top: 20px; background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%); color: white; padding: 12px 30px; border-radius: 25px; text-decoration: none; font-weight: 600;">
                     Browse Pets
                 </a>
@@ -246,7 +424,7 @@
         else
         {
             <div class="applications-grid">
-                @foreach (var app in Model)
+                @foreach (var app in ViewBag.ActiveApplications)
                 {
                     <div class="application-card">
                         <img src="@(string.IsNullOrEmpty(app.Pet.ImageUrl) ? "https://via.placeholder.com/100?text=Pet" : app.Pet.ImageUrl)"
@@ -261,13 +439,40 @@
                                 <i class="fas fa-calendar"></i> Applied on @app.ApplicationDate.ToString("MMM dd, yyyy")
                             </div>
 
-                            @if (app.Status == "Approved" && !app.IsReadyForPickup)
+                            @* STATUS: PENDING - Can Withdraw *@
+                            @if (app.Status == "Pending")
+                            {
+                                <div class="app-details" style="color: #92400e; font-weight: 600; margin-top: 10px;">
+                                    <i class="fas fa-clock"></i> Awaiting admin review
+                                </div>
+                                <button class="btn-action btn-withdraw" onclick="showWithdrawModal(@app.ApplicationId, '@app.Pet.Name')">
+                                    <i class="fas fa-times-circle"></i> Withdraw Application
+                                </button>
+                            }
+
+                            @* STATUS: APPROVED - Waiting for Pickup Details *@
+                            @if (app.Status == "Approved" && !app.IsReadyForPickup && !app.CancellationRequested)
                             {
                                 <div class="app-details" style="color: #10b981; font-weight: 600; margin-top: 10px;">
                                     <i class="fas fa-check-circle"></i> Approved! Waiting for pickup details from admin...
                                 </div>
+                                <button class="btn-action btn-cancel-request" onclick="showCancelModal(@app.ApplicationId, '@app.Pet.Name')">
+                                    <i class="fas fa-ban"></i> Request Cancellation
+                                </button>
                             }
-                            else if (app.Status == "Approved" && app.IsReadyForPickup && app.ClaimedDate == null)
+
+                            @* STATUS: APPROVED - Cancellation Pending *@
+                            @if (app.Status == "Approved" && app.CancellationRequested && !app.CancellationApproved)
+                            {
+                                <div class="cancellation-pending">
+                                    <strong><i class="fas fa-hourglass-half"></i> Cancellation Pending</strong><br>
+                                    Your cancellation request is being reviewed by admin.<br>
+                                    <strong>Reason:</strong> @app.CancellationReason
+                                </div>
+                            }
+
+                            @* STATUS: APPROVED - Ready for Pickup *@
+                            @if (app.Status == "Approved" && app.IsReadyForPickup && app.ClaimedDate == null && !app.CancellationRequested)
                             {
                                 <div class="pickup-box">
                                     <h4><i class="fas fa-map-marker-alt"></i> Your Pet is Ready for Pickup!</h4>
@@ -281,24 +486,18 @@
                                         <i class="fas fa-heart"></i> Claim @app.Pet.Name Now!
                                     </a>
                                 </div>
+                                <div class="alert-warning" style="margin-top: 10px; font-size: 0.9em;">
+                                    <i class="fas fa-exclamation-triangle"></i>
+                                    <strong>Important:</strong> Once you claim this pet, the adoption becomes permanent and cannot be cancelled.
+                                </div>
                             }
-                            else if (app.ClaimedDate != null)
-                            {
-                        <div class="app-details" style="color: #1e40af; font-weight: 600; margin-top: 10px;">
-                            <i class="fas fa-check-circle"></i> Adoption Complete! Claimed on @(app.ClaimedDate?.ToString("MMM dd, yyyy"))
-                        </div>
-                            }
-                            else if (app.Status == "Rejected")
+
+                            @* STATUS: REJECTED *@
+                            @if (app.Status == "Rejected")
                             {
                                 <div class="rejection-reason">
                                     <strong><i class="fas fa-info-circle"></i> Rejection Reason:</strong><br>
                                     @(string.IsNullOrEmpty(app.RejectionReason) ? "Not specified" : app.RejectionReason)
-                                </div>
-                            }
-                            else
-                            {
-                                <div class="app-details">
-                                    <i class="fas fa-clock"></i> Awaiting admin review
                                 </div>
                             }
                         </div>
@@ -312,6 +511,137 @@
                 }
             </div>
         }
+
+        <!-- ADOPTION HISTORY (Last 6 Months) -->
+        @if (ViewBag.History.Count > 0)
+        {
+            <h2 class="section-title" style="margin-top: 50px;">
+                <i class="fas fa-history"></i>
+                Adoption History (Last 6 Months)
+            </h2>
+
+            <div style="background: #fffbeb; padding: 15px 20px; border-radius: 12px; margin-bottom: 20px; border-left: 4px solid #f59e0b;">
+                <i class="fas fa-info-circle" style="color: #d97706;"></i>
+                <strong style="color: #92400e;">Note:</strong>
+                <span style="color: #78350f;">Completed adoptions are automatically deleted after 6 months.</span>
+            </div>
+
+            foreach (var history in ViewBag.History)
+            {
+                <div class="history-card">
+                    <img src="@(string.IsNullOrEmpty(history.PetImageUrl) ? "https://via.placeholder.com/80?text=Pet" : history.PetImageUrl)"
+                         alt="@history.PetName" class="history-thumb">
+
+                    <div class="history-info">
+                        <h4>@history.PetName (@history.PetBreed)</h4>
+                        <div class="history-details">
+                            <i class="fas fa-calendar"></i> Applied: @history.ApplicationDate.ToString("MMM dd, yyyy")
+                        </div>
+                        <div class="history-details">
+                            <i class="fas fa-flag"></i> Status: <strong>@history.FinalStatus</strong>
+                        </div>
+
+                        @if (history.FinalStatus == "Completed" && history.CompletedDate != null)
+                        {
+                            <div class="history-details">
+                                <i class="fas fa-heart"></i> Completed: @history.CompletedDate?.ToString("MMM dd, yyyy")
+                            </div>
+                        }
+
+                        @if (history.FinalStatus == "Withdrawn" && !string.IsNullOrEmpty(history.WithdrawalReason))
+                        {
+                            <div class="history-details">
+                                <i class="fas fa-comment"></i> Reason: @history.WithdrawalReason
+                            </div>
+                        }
+
+                        @if (history.FinalStatus == "Cancelled" && !string.IsNullOrEmpty(history.CancellationReason))
+                        {
+                            <div class="history-details">
+                                <i class="fas fa-comment"></i> Reason: @history.CancellationReason
+                            </div>
+                        }
+
+                        @if (history.FinalStatus == "Rejected" && !string.IsNullOrEmpty(history.RejectionReason))
+                        {
+                            <div class="history-details">
+                                <i class="fas fa-comment"></i> Reason: @history.RejectionReason
+                            </div>
+                        }
+                    </div>
+                </div>
+            }
+        }
     </div>
+
+    <!-- Withdrawal Modal -->
+    <div id="withdrawModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-times-circle"></i> Withdraw Application</h3>
+            <p style="color: #64748b; margin-bottom: 20px;">
+                Are you sure you want to withdraw your application to adopt <strong id="withdrawPetName"></strong>?
+            </p>
+
+            @using (Html.BeginForm("WithdrawApplication", "Pets", FormMethod.Post, new { id = "withdrawForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="withdrawAppId" name="id" />
+                <textarea name="withdrawalReason" placeholder="Please tell us why you're withdrawing..." required></textarea>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-modal btn-modal-cancel" onclick="closeModal('withdrawModal')">Cancel</button>
+                    <button type="submit" class="btn-modal btn-modal-submit">Confirm Withdrawal</button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <!-- Cancellation Modal -->
+    <div id="cancelModal" class="modal">
+        <div class="modal-content">
+            <h3><i class="fas fa-ban"></i> Request Cancellation</h3>
+            <p style="color: #64748b; margin-bottom: 20px;">
+                Request to cancel your approved adoption of <strong id="cancelPetName"></strong>.
+                Admin will review your request.
+            </p>
+
+            @using (Html.BeginForm("RequestCancellation", "Pets", FormMethod.Post, new { id = "cancelForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" id="cancelAppId" name="id" />
+                <textarea name="cancellationReason" placeholder="Please explain why you need to cancel..." required></textarea>
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn-modal btn-modal-cancel" onclick="closeModal('cancelModal')">Cancel</button>
+                    <button type="submit" class="btn-modal btn-modal-submit">Submit Request</button>
+                </div>
+            }
+        </div>
+    </div>
+
+    <script>
+        function showWithdrawModal(appId, petName) {
+            document.getElementById('withdrawAppId').value = appId;
+            document.getElementById('withdrawPetName').textContent = petName;
+            document.getElementById('withdrawModal').style.display = 'flex';
+        }
+
+        function showCancelModal(appId, petName) {
+            document.getElementById('cancelAppId').value = appId;
+            document.getElementById('cancelPetName').textContent = petName;
+            document.getElementById('cancelModal').style.display = 'flex';
+        }
+
+        function closeModal(modalId) {
+            document.getElementById(modalId).style.display = 'none';
+        }
+
+        // Close modal on outside click
+        window.onclick = function(event) {
+            if (event.target.classList.contains('modal')) {
+                event.target.style.display = 'none';
+            }
+        }
+    </script>
 </body>
 </html>
