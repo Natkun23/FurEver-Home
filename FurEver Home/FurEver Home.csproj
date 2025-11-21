@@ -139,6 +139,7 @@
     <Compile Include="Models\AdoptedPetViewModel.cs" />
     <Compile Include="Models\AdoptionApplication.cs" />
     <Compile Include="Models\AdoptionHistory.cs" />
+    <Compile Include="Models\EmailService.cs" />
     <Compile Include="Models\ForgotPasswordViewModel.cs" />
     <Compile Include="Models\FurEverHomeContext.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
@@ -148,6 +149,7 @@
     <Compile Include="Models\ResetPasswordViewModel.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserNotification.cs" />
+    <Compile Include="Models\VerifyOtpViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -197,6 +199,7 @@
     <Content Include="Views\Admin\SetPickupDetails.cshtml" />
     <Content Include="Views\Pets\ClaimPet.cshtml" />
     <Content Include="Views\Admin\AdoptedPets.cshtml" />
+    <Content Include="Views\Account\VerifyOtp.cshtml" />
     <None Include="Views\Pets\PostForAdoption.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

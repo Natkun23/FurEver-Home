@@ -1,4 +1,5 @@
-﻿using System;
+﻿
+using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -53,13 +54,24 @@ namespace FurEver_Home.Models
         [Column("age")]
         public int? Age { get; set; }
 
-        // PASSWORD RESET PROPERTIES - ADD THESE
+        // PASSWORD RESET PROPERTIES
         [Column("reset_token")]
         [StringLength(255)]
         public string ResetToken { get; set; }
 
         [Column("reset_token_expiry")]
         public DateTime? ResetTokenExpiry { get; set; }
+
+        // OTP PROPERTIES - ADD THESE
+        [Column("otp_code")]
+        [StringLength(6)]
+        public string OtpCode { get; set; }
+
+        [Column("otp_expiry")]
+        public DateTime? OtpExpiry { get; set; }
+
+        [Column("otp_attempts")]
+        public int OtpAttempts { get; set; } = 0;
 
         [Column("date_registered")]
         public DateTime DateRegistered { get; set; } = DateTime.Now;

@@ -4,15 +4,16 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using FurEver_Home.Models;
-using FurEver_Home.Filters;
+using FurEver_Home.Services;
 
 namespace FurEver_Home.Controllers
 {
     public class AccountController : Controller
     {
         private readonly FurEverHomeContext db = new FurEverHomeContext();
+        private readonly EmailService emailService = new EmailService();
 
-        // ==================== LOGIN ====================
+        // ==================== LOGIN WITH OTP ====================
 
         // GET: Account/Login
         public ActionResult Login()
@@ -31,21 +32,23 @@ namespace FurEver_Home.Controllers
             return View();
         }
 
-        // POST: Account/Login
+        // POST: Account/Login (Step 1: Verify credentials and send OTP)
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // Find user by email
-                var user = db.Users.FirstOrDefault(u => u.Email == model.Email);
+                // Allow login with either Email OR Full Name
+                var user = db.Users.FirstOrDefault(u =>
+                    u.Email == model.Email ||
+                    u.FullName.ToLower() == model.Email.ToLower()
+                );
 
                 if (user != null)
                 {
-                    // TODO: In production, use proper password hashing (BCrypt, etc.)
-                    // For now, direct comparison
-                    if (user.Password == model.Password)
+                    // Verify password
+                    if (user.Password == model.Password) // TODO: Use proper password hashing in production!
                     {
                         // Check if account is active
                         if (!user.IsActive)
@@ -53,6 +56,100 @@ namespace FurEver_Home.Controllers
                             TempData["Error"] = "Your account has been deactivated. Please contact support.";
                             return View(model);
                         }
+
+                        // Generate 6-digit OTP
+                        Random random = new Random();
+                        string otpCode = random.Next(100000, 999999).ToString();
+
+                        // Save OTP to database
+                        user.OtpCode = otpCode;
+                        user.OtpExpiry = DateTime.Now.AddMinutes(5); // OTP valid for 5 minutes
+                        user.OtpAttempts = 0;
+                        user.UpdatedAt = DateTime.Now;
+                        db.SaveChanges();
+
+                        // Send OTP via email
+                        bool emailSent = emailService.SendOtpEmail(user.Email, user.FullName, otpCode);
+
+                        if (emailSent)
+                        {
+                            // Store email in TempData for OTP verification
+                            TempData["OtpEmail"] = user.Email;
+                            TempData["Success"] = "OTP code has been sent to your email. Please check your inbox.";
+                            return RedirectToAction("VerifyOtp");
+                        }
+                        else
+                        {
+                            TempData["Error"] = "Failed to send OTP email. Please try again or contact support.";
+                            return View(model);
+                        }
+                    }
+                }
+
+                TempData["Error"] = "Invalid email or password.";
+            }
+
+            return View(model);
+        }
+
+        // GET: Account/VerifyOtp
+        public ActionResult VerifyOtp()
+        {
+            if (TempData["OtpEmail"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var model = new VerifyOtpViewModel
+            {
+                Email = TempData["OtpEmail"].ToString()
+            };
+
+            // Keep the email for the next request
+            TempData.Keep("OtpEmail");
+
+            return View(model);
+        }
+
+        // POST: Account/VerifyOtp (Step 2: Verify OTP and complete login)
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult VerifyOtp(VerifyOtpViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = db.Users.FirstOrDefault(u => u.Email == model.Email);
+
+                if (user != null)
+                {
+                    // Check if OTP has expired
+                    if (user.OtpExpiry < DateTime.Now)
+                    {
+                        TempData["Error"] = "OTP has expired. Please login again to receive a new code.";
+                        return RedirectToAction("Login");
+                    }
+
+                    // Check OTP attempts (max 3 attempts)
+                    if (user.OtpAttempts >= 3)
+                    {
+                        // Clear OTP
+                        user.OtpCode = null;
+                        user.OtpExpiry = null;
+                        user.OtpAttempts = 0;
+                        db.SaveChanges();
+
+                        TempData["Error"] = "Maximum OTP attempts exceeded. Please login again.";
+                        return RedirectToAction("Login");
+                    }
+
+                    // Verify OTP
+                    if (user.OtpCode == model.OtpCode)
+                    {
+                        // Clear OTP
+                        user.OtpCode = null;
+                        user.OtpExpiry = null;
+                        user.OtpAttempts = 0;
+                        db.SaveChanges();
 
                         // Create session
                         Session["UserId"] = user.UserId;
@@ -70,12 +167,61 @@ namespace FurEver_Home.Controllers
                             return RedirectToAction("Index", "Pets");
                         }
                     }
+                    else
+                    {
+                        // Increment OTP attempts
+                        user.OtpAttempts++;
+                        db.SaveChanges();
+
+                        int remainingAttempts = 3 - user.OtpAttempts;
+                        TempData["Error"] = $"Invalid OTP code. {remainingAttempts} attempt(s) remaining.";
+                        TempData["OtpEmail"] = model.Email;
+                        return View(model);
+                    }
                 }
 
-                TempData["Error"] = "Invalid email or password.";
+                TempData["Error"] = "User not found.";
+                return RedirectToAction("Login");
             }
 
+            TempData["OtpEmail"] = model.Email;
             return View(model);
+        }
+
+        // POST: Account/ResendOtp
+        [HttpPost]
+        public ActionResult ResendOtp(string email)
+        {
+            var user = db.Users.FirstOrDefault(u => u.Email == email);
+
+            if (user != null)
+            {
+                // Generate new OTP
+                Random random = new Random();
+                string otpCode = random.Next(100000, 999999).ToString();
+
+                // Update OTP
+                user.OtpCode = otpCode;
+                user.OtpExpiry = DateTime.Now.AddMinutes(5);
+                user.OtpAttempts = 0;
+                user.UpdatedAt = DateTime.Now;
+                db.SaveChanges();
+
+                // Send OTP via email
+                bool emailSent = emailService.SendOtpEmail(user.Email, user.FullName, otpCode);
+
+                if (emailSent)
+                {
+                    TempData["Success"] = "New OTP code has been sent to your email.";
+                }
+                else
+                {
+                    TempData["Error"] = "Failed to send OTP. Please try again.";
+                }
+            }
+
+            TempData["OtpEmail"] = email;
+            return RedirectToAction("VerifyOtp");
         }
 
         // ==================== REGISTER ====================
@@ -104,7 +250,6 @@ namespace FurEver_Home.Controllers
                 string idImagePath = null;
                 if (IDImage != null && IDImage.ContentLength > 0)
                 {
-                    // Validate file type
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
                     var extension = Path.GetExtension(IDImage.FileName).ToLower();
 
@@ -114,25 +259,20 @@ namespace FurEver_Home.Controllers
                         return View(model);
                     }
 
-                    // Validate file size (max 5MB)
                     if (IDImage.ContentLength > 5 * 1024 * 1024)
                     {
                         ModelState.AddModelError("IDImage", "File size must be less than 5MB.");
                         return View(model);
                     }
 
-                    // Create uploads directory if it doesn't exist
                     var uploadsDir = Server.MapPath("~/Content/Uploads/IDs");
                     if (!Directory.Exists(uploadsDir))
                     {
                         Directory.CreateDirectory(uploadsDir);
                     }
 
-                    // Generate unique filename
                     var fileName = Guid.NewGuid().ToString() + extension;
                     var filePath = Path.Combine(uploadsDir, fileName);
-
-                    // Save file
                     IDImage.SaveAs(filePath);
                     idImagePath = "/Content/Uploads/IDs/" + fileName;
                 }
@@ -163,7 +303,7 @@ namespace FurEver_Home.Controllers
             return View(model);
         }
 
-        // ==================== FORGOT PASSWORD ====================
+        // ==================== FORGOT PASSWORD WITH EMAIL ====================
 
         // GET: Account/ForgotPassword
         public ActionResult ForgotPassword()
@@ -194,11 +334,17 @@ namespace FurEver_Home.Controllers
                         new { token = token, email = user.Email },
                         Request.Url.Scheme);
 
-                    // For testing: Display the link
-                    TempData["Success"] = $"Password reset link has been generated! Click here to reset: <a href='{resetUrl}' style='color: #3FA9F5; text-decoration: underline; font-weight: 700;'>Reset Password</a>";
+                    // Send password reset email
+                    bool emailSent = emailService.SendPasswordResetEmail(user.Email, user.FullName, resetUrl);
 
-                    // In production, you would send an email here
-                    // SendEmail(user.Email, "Password Reset", $"Click here to reset your password: {resetUrl}");
+                    if (emailSent)
+                    {
+                        TempData["Success"] = "Password reset instructions have been sent to your email. Please check your inbox.";
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Failed to send password reset email. Please try again or contact support.";
+                    }
 
                     return View();
                 }
@@ -283,6 +429,8 @@ namespace FurEver_Home.Controllers
             TempData["Success"] = "You have been logged out successfully.";
             return RedirectToAction("Login");
         }
+
+        // ==================== PROFILE ====================
 
         // GET: Account/Profile
         public ActionResult Profile()

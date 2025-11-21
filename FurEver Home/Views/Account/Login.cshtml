@@ -88,6 +88,13 @@
             font-size: 14px;
         }
 
+        .label-hint {
+            color: #94a3b8;
+            font-weight: 400;
+            font-size: 12px;
+            margin-left: 4px;
+        }
+
         .input-wrapper {
             position: relative;
         }
@@ -257,6 +264,8 @@
             color: #3FA9F5;
         }
 
+       
+
         @@media (max-width: 480px) {
             .login-container {
                 padding: 36px 28px;
@@ -281,6 +290,8 @@
         <h1 class="welcome-text">Welcome Back</h1>
         <p class="subtitle">Sign in to continue to FurEver Home</p>
 
+        
+
         @if (TempData["Success"] != null)
         {
             <div class="alert alert-success">
@@ -302,10 +313,13 @@
             @Html.AntiForgeryToken()
 
             <div class="form-group">
-                @Html.LabelFor(m => m.Email)
+                <label for="Email">
+                    Email or Full Name
+                    <span class="label-hint">(e.g., john@email.com or John Doe)</span>
+                </label>
                 <div class="input-wrapper">
-                    <i class="fas fa-envelope input-icon"></i>
-                    @Html.TextBoxFor(m => m.Email, new { placeholder = "Enter your email", type = "email" })
+                    <i class="fas fa-user input-icon"></i>
+                    @Html.TextBoxFor(m => m.Email, new { placeholder = "Enter your email or full name", autocomplete = "username" })
                 </div>
                 @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
             </div>
@@ -314,7 +328,7 @@
                 @Html.LabelFor(m => m.Password)
                 <div class="input-wrapper">
                     <i class="fas fa-lock input-icon"></i>
-                    @Html.PasswordFor(m => m.Password, new { placeholder = "Enter your password" })
+                    @Html.PasswordFor(m => m.Password, new { placeholder = "Enter your password", autocomplete = "current-password" })
                 </div>
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
             </div>
@@ -335,8 +349,7 @@
         <div class="signup-link">
             Don't have an account? <a href="@Url.Action("Register", "Account")">Sign Up</a>
         </div>
-
-     
+    </div>
 
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script src="~/Scripts/jquery.validate.min.js"></script>
