@@ -13,7 +13,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
     <style>
-        * { margin: 0; padding: 0; box-sizing: border-box; }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
 
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
@@ -21,6 +25,7 @@
             min-height: 100vh;
         }
 
+        /* Navigation */
         .navbar {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
@@ -48,7 +53,9 @@
             transition: transform 0.3s;
         }
 
-        .logo:hover { transform: scale(1.05); }
+            .logo:hover {
+                transform: scale(1.05);
+            }
 
         .back-link {
             color: #2E8BC0;
@@ -64,12 +71,13 @@
             font-size: 1em;
         }
 
-        .back-link:hover {
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-            color: white;
-            transform: translateX(-5px);
-        }
+            .back-link:hover {
+                background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+                color: white;
+                transform: translateX(-5px);
+            }
 
+        /* Pet Details */
         .pet-details-container {
             max-width: 1400px;
             margin: 50px auto;
@@ -98,7 +106,9 @@
             transition: transform 0.5s;
         }
 
-        .pet-image-section:hover .pet-main-image { transform: scale(1.05); }
+        .pet-image-section:hover .pet-main-image {
+            transform: scale(1.05);
+        }
 
         .pet-type-badge {
             position: absolute;
@@ -131,62 +141,25 @@
             letter-spacing: 1px;
         }
 
-        /* ✨ NEW: POSTED BY BADGE */
-        .posted-by-badge {
-            position: absolute;
-            bottom: 30px;
-            left: 30px;
-            right: 30px;
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 20px 25px;
-            border-radius: 20px;
-            box-shadow: 0 8px 25px rgba(0,0,0,0.2);
-            display: flex;
-            align-items: center;
-            gap: 15px;
-        }
-
-        .posted-by-icon {
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5em;
-        }
-
-        .posted-by-info {
-            flex: 1;
-        }
-
-        .posted-by-label {
-            font-size: 0.85em;
-            color: #64748b;
-            font-weight: 600;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-            margin-bottom: 4px;
-        }
-
-        .posted-by-name {
-            font-size: 1.2em;
-            color: #2E8BC0;
-            font-weight: 700;
-        }
-
         .pet-info-section {
             padding: 60px 50px;
             max-height: 700px;
             overflow-y: auto;
         }
 
-        .pet-info-section::-webkit-scrollbar { width: 10px; }
-        .pet-info-section::-webkit-scrollbar-track { background: #f1f5f9; border-radius: 10px; }
-        .pet-info-section::-webkit-scrollbar-thumb { background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%); border-radius: 10px; }
+            .pet-info-section::-webkit-scrollbar {
+                width: 10px;
+            }
+
+            .pet-info-section::-webkit-scrollbar-track {
+                background: #f1f5f9;
+                border-radius: 10px;
+            }
+
+            .pet-info-section::-webkit-scrollbar-thumb {
+                background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+                border-radius: 10px;
+            }
 
         .pet-name-header {
             margin-bottom: 35px;
@@ -194,8 +167,15 @@
         }
 
         @@keyframes fadeInDown {
-            from { opacity: 0; transform: translateY(-20px); }
-            to { opacity: 1; transform: translateY(0); }
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         .pet-name {
@@ -218,13 +198,13 @@
             gap: 10px;
         }
 
-        .pet-breed::before {
-            content: "";
-            width: 40px;
-            height: 3px;
-            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
-            border-radius: 10px;
-        }
+            .pet-breed::before {
+                content: "";
+                width: 40px;
+                height: 3px;
+                background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+                border-radius: 10px;
+            }
 
         .pet-stats {
             display: grid;
@@ -242,11 +222,11 @@
             border: 2px solid transparent;
         }
 
-        .stat-box:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 10px 25px rgba(63, 169, 245, 0.2);
-            border-color: #3FA9F5;
-        }
+            .stat-box:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 10px 25px rgba(63, 169, 245, 0.2);
+                border-color: #3FA9F5;
+            }
 
         .stat-icon {
             font-size: 2.8em;
@@ -279,13 +259,13 @@
             gap: 12px;
         }
 
-        .section-title::before {
-            content: "";
-            width: 4px;
-            height: 30px;
-            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
-            border-radius: 10px;
-        }
+            .section-title::before {
+                content: "";
+                width: 4px;
+                height: 30px;
+                background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+                border-radius: 10px;
+            }
 
         .pet-description {
             color: #475569;
@@ -319,15 +299,15 @@
             gap: 8px;
         }
 
-        .trait::before {
-            content: "✨";
-            font-size: 1.2em;
-        }
+            .trait::before {
+                content: "✨";
+                font-size: 1.2em;
+            }
 
-        .trait:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 6px 20px rgba(255, 217, 61, 0.4);
-        }
+            .trait:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 6px 20px rgba(255, 217, 61, 0.4);
+            }
 
         .vaccines-box {
             background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
@@ -338,21 +318,21 @@
             box-shadow: 0 4px 15px rgba(16, 185, 129, 0.1);
         }
 
-        .vaccines-box h4 {
-            color: #065f46;
-            margin-bottom: 12px;
-            font-size: 1.3em;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+            .vaccines-box h4 {
+                color: #065f46;
+                margin-bottom: 12px;
+                font-size: 1.3em;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
 
-        .vaccines-box p {
-            color: #064e3b;
-            line-height: 1.8;
-            font-size: 1.05em;
-        }
+            .vaccines-box p {
+                color: #064e3b;
+                line-height: 1.8;
+                font-size: 1.05em;
+            }
 
         .why-adopt-box {
             background: linear-gradient(135deg, #FFF9E6 0%, #FEF3C7 100%);
@@ -363,45 +343,45 @@
             box-shadow: 0 4px 15px rgba(255, 217, 61, 0.15);
         }
 
-        .why-adopt-box h4 {
-            color: #92400e;
-            margin-bottom: 18px;
-            font-size: 1.4em;
-            font-weight: 800;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-        }
+            .why-adopt-box h4 {
+                color: #92400e;
+                margin-bottom: 18px;
+                font-size: 1.4em;
+                font-weight: 800;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
 
         .why-adopt-list {
             list-style: none;
             padding: 0;
         }
 
-        .why-adopt-list li {
-            color: #78350f;
-            margin-bottom: 12px;
-            padding-left: 35px;
-            position: relative;
-            line-height: 1.7;
-            font-size: 1.05em;
-        }
+            .why-adopt-list li {
+                color: #78350f;
+                margin-bottom: 12px;
+                padding-left: 35px;
+                position: relative;
+                line-height: 1.7;
+                font-size: 1.05em;
+            }
 
-        .why-adopt-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #FFD93D;
-            font-weight: bold;
-            font-size: 1.5em;
-            background: rgba(255, 217, 61, 0.2);
-            width: 28px;
-            height: 28px;
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
+                .why-adopt-list li:before {
+                    content: "✓";
+                    position: absolute;
+                    left: 0;
+                    color: #FFD93D;
+                    font-weight: bold;
+                    font-size: 1.5em;
+                    background: rgba(255, 217, 61, 0.2);
+                    width: 28px;
+                    height: 28px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
 
         .adoption-box {
             background: linear-gradient(135deg, #2E8BC0 0%, #3FA9F5 100%);
@@ -412,17 +392,17 @@
             box-shadow: 0 10px 40px rgba(46, 139, 192, 0.3);
         }
 
-        .adoption-box h3 {
-            font-size: 1.8em;
-            margin-bottom: 18px;
-            font-weight: 800;
-        }
+            .adoption-box h3 {
+                font-size: 1.8em;
+                margin-bottom: 18px;
+                font-weight: 800;
+            }
 
-        .adoption-box p {
-            margin-bottom: 25px;
-            line-height: 1.7;
-            font-size: 1.05em;
-        }
+            .adoption-box p {
+                margin-bottom: 25px;
+                line-height: 1.7;
+                font-size: 1.05em;
+            }
 
         .btn-adopt-now {
             width: 100%;
@@ -443,12 +423,12 @@
             box-shadow: 0 8px 20px rgba(0,0,0,0.15);
         }
 
-        .btn-adopt-now:hover {
-            transform: translateY(-4px);
-            box-shadow: 0 12px 30px rgba(0,0,0,0.25);
-            color: #2E8BC0;
-            background: #FFD93D;
-        }
+            .btn-adopt-now:hover {
+                transform: translateY(-4px);
+                box-shadow: 0 12px 30px rgba(0,0,0,0.25);
+                color: #2E8BC0;
+                background: #FFD93D;
+            }
 
         .info-grid {
             display: grid;
@@ -467,9 +447,13 @@
             transition: all 0.3s;
         }
 
-        .info-item:hover { background: rgba(255, 255, 255, 0.3); }
+            .info-item:hover {
+                background: rgba(255, 255, 255, 0.3);
+            }
 
-        .info-icon { font-size: 2em; }
+        .info-icon {
+            font-size: 2em;
+        }
 
         .info-label {
             font-size: 0.85em;
@@ -496,8 +480,13 @@
         }
 
         @@keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.03); }
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.03);
+            }
         }
 
         .days-badge .label {
@@ -523,23 +512,46 @@
             border: 2px solid rgba(255, 255, 255, 0.3);
         }
 
-        .alert-box i { margin-right: 8px; }
+            .alert-box i {
+                margin-right: 8px;
+            }
 
         @@media (max-width: 1200px) {
-            .pet-details-grid { grid-template-columns: 1fr; }
-            .pet-main-image { height: 500px; }
-            .pet-info-section { padding: 40px 30px; max-height: none; }
-            .pet-name { font-size: 2.8em; }
+            .pet-details-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pet-main-image {
+                height: 500px;
+            }
+
+            .pet-info-section {
+                padding: 40px 30px;
+                max-height: none;
+            }
+
+            .pet-name {
+                font-size: 2.8em;
+            }
         }
 
-        @@media (max-width: 768px) {
-            .pet-stats { grid-template-columns: 1fr; }
-            .info-grid { grid-template-columns: 1fr; }
-            .pet-name { font-size: 2.2em; }
+       @@media (max-width: 768px) {
+            .pet-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .pet-name {
+                font-size: 2.2em;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Navigation -->
     <nav class="navbar">
         <div class="nav-container">
             <a href="@Url.Action("Index", "Home")" class="logo">
@@ -560,6 +572,7 @@
         </div>
     </nav>
 
+    <!-- Pet Details -->
     <div class="pet-details-container">
         <div class="pet-details-grid">
             <div class="pet-image-section">
@@ -571,43 +584,8 @@
                 {
                     <img src="https://images.unsplash.com/photo-1633722715463-d30f4f325e24?w=600" alt="@Model.Name" class="pet-main-image">
                 }
-
                 <div class="pet-id-badge">@Model.Type.ToUpper() @Model.PetId</div>
                 <div class="pet-type-badge">@Model.Type</div>
-
-                <!-- ✨ NEW: POSTED BY INFORMATION -->
-                <div class="posted-by-badge">
-                    @if (Model.PostedByType == "Organization")
-                    {
-                        <div class="posted-by-icon">
-                            <i class="fas fa-building"></i>
-                        </div>
-                        <div class="posted-by-info">
-                            <div class="posted-by-label">Posted by Organization</div>
-                            <div class="posted-by-name">@Model.OrganizationName</div>
-                        </div>
-                    }
-                    else if (Model.Creator != null)
-                    {
-                        <div class="posted-by-icon">
-                            @Model.Creator.FullName.Substring(0, 1).ToUpper()
-                        </div>
-                        <div class="posted-by-info">
-                            <div class="posted-by-label">Posted by</div>
-                            <div class="posted-by-name">@Model.Creator.FullName</div>
-                        </div>
-                    }
-                    else
-                    {
-                        <div class="posted-by-icon">
-                            <i class="fas fa-user"></i>
-                        </div>
-                        <div class="posted-by-info">
-                            <div class="posted-by-label">Posted by</div>
-                            <div class="posted-by-name">FurEver Home</div>
-                        </div>
-                    }
-                </div>
             </div>
 
             <div class="pet-info-section">
@@ -634,13 +612,10 @@
                     </div>
                 </div>
 
-                @if (Model.DaysInCenter > 0)
-                {
-                    <div class="days-badge">
-                        <div class="label">Days in Center</div>
-                        <div class="value">@Model.DaysInCenter</div>
-                    </div>
-                }
+                <div class="days-badge">
+                    <div class="label">Days in Center</div>
+                    <div class="value">@Model.DaysInCenter</div>
+                </div>
 
                 @if (!string.IsNullOrEmpty(Model.Vaccines))
                 {

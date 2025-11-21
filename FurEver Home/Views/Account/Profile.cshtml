@@ -138,6 +138,89 @@
                     box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
                 }
 
+        .image-upload-container {
+            position: relative;
+        }
+
+        .image-thumbnail-wrapper {
+            position: relative;
+            width: 200px;
+            height: 200px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border-radius: 15px;
+            overflow: hidden;
+            border: 3px solid #3FA9F5;
+        }
+
+        .id-thumbnail-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 280px;
+            margin-bottom: 20px;
+            cursor: pointer;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #e2e8f0;
+        }
+
+        .current-image-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .current-id-preview {
+            width: 100%;
+            height: auto;
+            max-height: 280px;
+            object-fit: contain;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .image-hover-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.6) 70%, transparent 100%);
+            color: white;
+            padding: 15px;
+            transform: translateY(100%);
+            transition: transform 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .image-thumbnail-wrapper:hover .image-hover-overlay,
+        .id-thumbnail-wrapper:hover .image-hover-overlay {
+            transform: translateY(0);
+        }
+
+        .image-thumbnail-wrapper:hover .current-image-preview,
+        .id-thumbnail-wrapper:hover .current-id-preview {
+            transform: scale(1.05);
+        }
+
+        .pdf-thumbnail {
+            width: 100%;
+            padding: 40px;
+            background: #f8fafc;
+            text-align: center;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 200px;
+        }
+
         .file-upload-box {
             border: 2px dashed #cbd5e1;
             border-radius: 12px;
@@ -178,11 +261,6 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
-            text-decoration: none;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
         }
 
         .btn-save {
@@ -198,6 +276,10 @@
         .btn-back {
             background: #e2e8f0;
             color: #334155;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
 
         .alert {
@@ -213,6 +295,14 @@
             background: #d1fae5;
             color: #065f46;
             border: 1px solid #a7f3d0;
+        }
+
+        .image-label {
+            display: block;
+            color: #64748b;
+            font-size: 0.9em;
+            font-weight: 600;
+            margin-bottom: 10px;
         }
     </style>
 </head>
@@ -294,23 +384,78 @@
                     </div>
 
                     <div class="form-grid">
+                        <!-- ✅ FIXED: Profile Picture Section -->
                         <div class="form-group">
                             <label>Profile Picture</label>
-                            <div class="file-upload-box" onclick="document.getElementById('profilePic').click()">
-                                <div class="upload-icon"><i class="fas fa-camera"></i></div>
-                                <div>Upload Profile Picture</div>
-                                <small style="color: #64748b;">JPG, PNG (Max 5MB)</small>
-                                <input type="file" id="profilePic" name="ProfilePicture" accept="image/*">
+                            <div class="image-upload-container">
+                                @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+                                {
+                                    <span class="image-label">Current Profile Picture:</span>
+                                    <div class="image-thumbnail-wrapper" onclick="document.getElementById('profilePic').click()">
+                                        <img src="@Model.ProfilePictureUrl" alt="Profile" class="current-image-preview" />
+                                        <div class="image-hover-overlay">
+                                            <i class="fas fa-camera"></i>
+                                            <span>Edit Profile Photo</span>
+                                        </div>
+                                    </div>
+                                }
+                                else
+                                {
+                                    <div class="file-upload-box" onclick="document.getElementById('profilePic').click()">
+                                        <div class="upload-icon"><i class="fas fa-camera"></i></div>
+                                        <div>Upload Profile Picture</div>
+                                        <small style="color: #64748b;">JPG, PNG (Max 5MB)</small>
+                                    </div>
+                                }
+
+                                <input type="file" id="profilePic" name="ProfilePicture" accept="image/*" style="display: none;">
+                                <div id="profileFileName" style="margin-top: 12px; color: #3FA9F5; font-weight: 600;"></div>
                             </div>
                         </div>
 
+                        <!-- ✅ FIXED: Valid ID Section -->
                         <div class="form-group">
-                            <label>Valid ID @(Model.IDStatus == "Verified" ? "(Verified)" : "")</label>
-                            <div class="file-upload-box" onclick="document.getElementById('idPic').click()">
-                                <div class="upload-icon"><i class="fas fa-id-card"></i></div>
-                                <div>Upload Valid ID</div>
-                                <small style="color: #64748b;">JPG, PNG, PDF (Max 5MB)</small>
-                                <input type="file" id="idPic" name="IDImage" accept="image/*,.pdf">
+                            <label>Valid ID @(Model.IDStatus == "Verified" ? "(Verified ✓)" : "")</label>
+                            <div class="image-upload-container">
+                                @if (!string.IsNullOrEmpty(Model.IDImageUrl))
+                                {
+                                    <span class="image-label">Current ID Document:</span>
+                                    if (Model.IDImageUrl.EndsWith(".pdf"))
+                                    {
+                                        <div class="id-thumbnail-wrapper" onclick="document.getElementById('idPic').click()">
+                                            <div class="pdf-thumbnail">
+                                                <i class="fas fa-file-pdf" style="font-size: 4em; color: #ef4444; margin-bottom: 15px;"></i>
+                                                <div style="color: #64748b; font-weight: 600; margin-bottom: 8px;">PDF Document</div>
+                                                <a href="@Model.IDImageUrl" target="_blank" style="color: #3FA9F5; font-size: 0.9em;" onclick="event.stopPropagation();">View PDF</a>
+                                            </div>
+                                            <div class="image-hover-overlay">
+                                                <i class="fas fa-id-card"></i>
+                                                <span>Change Valid ID</span>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="id-thumbnail-wrapper" onclick="document.getElementById('idPic').click()">
+                                            <img src="@Model.IDImageUrl" alt="ID Document" class="current-id-preview" />
+                                            <div class="image-hover-overlay">
+                                                <i class="fas fa-id-card"></i>
+                                                <span>Change Valid ID</span>
+                                            </div>
+                                        </div>
+                                    }
+                                }
+                                else
+                                {
+                                    <div class="file-upload-box" onclick="document.getElementById('idPic').click()">
+                                        <div class="upload-icon"><i class="fas fa-id-card"></i></div>
+                                        <div>Upload Valid ID</div>
+                                        <small style="color: #64748b;">JPG, PNG, PDF (Max 5MB)</small>
+                                    </div>
+                                }
+
+                                <input type="file" id="idPic" name="IDImage" accept="image/*,.pdf" style="display: none;">
+                                <div id="idFileName" style="margin-top: 12px; color: #3FA9F5; font-weight: 600;"></div>
                             </div>
                         </div>
                     </div>
@@ -327,5 +472,23 @@
             </div>
         </div>
     </div>
+
+    <script>
+        // Profile picture file name display
+        document.getElementById('profilePic').addEventListener('change', function (e) {
+            var fileName = e.target.files[0]?.name;
+            if (fileName) {
+                document.getElementById('profileFileName').textContent = '✓ Selected: ' + fileName;
+            }
+        });
+
+        // ID document file name display
+        document.getElementById('idPic').addEventListener('change', function (e) {
+            var fileName = e.target.files[0]?.name;
+            if (fileName) {
+                document.getElementById('idFileName').textContent = '✓ Selected: ' + fileName;
+            }
+        });
+    </script>
 </body>
 </html>

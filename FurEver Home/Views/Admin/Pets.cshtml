@@ -154,6 +154,103 @@
             box-shadow: 0 5px 15px rgba(255, 217, 61, 0.3);
         }
 
+        /* Filter Section */
+        .filter-section {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .filter-controls {
+            display: flex;
+            gap: 15px;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 0.95em;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #2E8BC0;
+            box-shadow: 0 0 0 3px rgba(46, 139, 192, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+        }
+
+        .filter-btn {
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            color: #64748b;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .filter-btn:hover {
+            border-color: #2E8BC0;
+            color: #2E8BC0;
+        }
+
+        .filter-btn.active {
+            background: #2E8BC0;
+            color: white;
+            border-color: #2E8BC0;
+        }
+
+        .sort-select {
+            padding: 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            background: white;
+            transition: all 0.3s;
+        }
+
+        .sort-select:focus {
+            outline: none;
+            border-color: #2E8BC0;
+        }
+
+        .results-count {
+            color: #64748b;
+            font-size: 0.95em;
+            margin-left: auto;
+        }
+
         .pets-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
@@ -173,15 +270,14 @@
             box-shadow: 0 10px 30px rgba(63, 169, 245, 0.2);
         }
 
-            /* ADOPTED PET STYLING */
-            .pet-card.adopted {
-                opacity: 0.7;
-            }
+        .pet-card.adopted {
+            opacity: 0.7;
+        }
 
-                .pet-card.adopted .pet-image {
-                    filter: grayscale(80%);
-                    opacity: 0.6;
-                }
+        .pet-card.adopted .pet-image {
+            filter: grayscale(80%);
+            opacity: 0.6;
+        }
 
         .adopted-overlay {
             position: absolute;
@@ -301,6 +397,16 @@
             .main-content {
                 margin-left: 0;
             }
+            .filter-controls {
+                flex-direction: column;
+                align-items: stretch;
+            }
+            .search-box {
+                width: 100%;
+            }
+            .results-count {
+                margin-left: 0;
+            }
         }
     </style>
 </head>
@@ -346,7 +452,7 @@
 
     <div class="main-content">
         <div class="top-bar">
-            <div class="page-title">Manage Pets (Available) </div>
+            <div class="page-title">Manage Pets (Available)</div>
             <a href="@Url.Action("AddPet", "Admin")" class="btn-add">
                 <i class="fas fa-plus-circle"></i> Add New Pet
             </a>
@@ -360,10 +466,48 @@
             </div>
         }
 
-        <div class="pets-grid">
+        <!-- Filter Section -->
+        <div class="filter-section">
+            <div class="filter-controls">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search by pet name...">
+                    <i class="fas fa-search"></i>
+                </div>
+
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">
+                        <i class="fas fa-th"></i> All
+                    </button>
+                    <button class="filter-btn" data-filter="Dog">
+                        <i class="fas fa-dog"></i> Dogs
+                    </button>
+                    <button class="filter-btn" data-filter="Cat">
+                        <i class="fas fa-cat"></i> Cats
+                    </button>
+                </div>
+
+                <select class="sort-select" id="sortSelect">
+                    <option value="newest">Newest First</option>
+                    <option value="oldest">Oldest First</option>
+                    <option value="name-asc">Name A-Z</option>
+                    <option value="name-desc">Name Z-A</option>
+                </select>
+
+                <div class="results-count">
+                    <span id="resultCount">0</span> pets found
+                </div>
+            </div>
+        </div>
+
+        <div class="pets-grid" id="petsGrid">
             @foreach (var pet in Model.Where(p => !p.IsAdopted))
             {
-                <div class="pet-card">
+                // Calculate days in center dynamically or use stored value
+                int daysInCenter = pet.DaysInCenter > 0
+                    ? pet.DaysInCenter
+                    : (int)(DateTime.Now - pet.DateAdded).TotalDays;
+
+                <div class="pet-card" data-pet-name="@pet.Name.ToLower()" data-pet-type="@pet.Type" data-days="@daysInCenter">
                     <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/320x220?text=" + pet.Name : pet.ImageUrl)" alt="@pet.Name" class="pet-image">
                     <div class="pet-content">
                         <div class="pet-header">
@@ -376,7 +520,7 @@
                             <i class="fas fa-paw"></i> @pet.Breed • @pet.AgeDisplay • @pet.Gender
                         </div>
                         <div class="pet-details">
-                            <i class="fas fa-calendar"></i> Added @pet.DaysInCenter days ago
+                            <i class="fas fa-calendar"></i> Added @daysInCenter days ago
                         </div>
                         <div class="pet-actions">
                             <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="btn-sm btn-view">
@@ -398,6 +542,7 @@
                 </div>
             }
         </div>
+
         @if (!Model.Any(p => !p.IsAdopted))
         {
             <div style="background: white; border-radius: 15px; padding: 80px 40px; text-align: center; box-shadow: 0 2px 15px rgba(0,0,0,0.08);">
@@ -408,5 +553,91 @@
         }
 
     </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const searchInput = document.getElementById('searchInput');
+            const filterBtns = document.querySelectorAll('.filter-btn');
+            const sortSelect = document.getElementById('sortSelect');
+            const petsGrid = document.getElementById('petsGrid');
+            const petCards = Array.from(document.querySelectorAll('.pet-card'));
+            const resultCount = document.getElementById('resultCount');
+
+            let currentFilter = 'all';
+            let currentSearch = '';
+            let currentSort = 'newest';
+
+            // Filter by type
+            filterBtns.forEach(btn => {
+                btn.addEventListener('click', function () {
+                    filterBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    currentFilter = this.dataset.filter;
+                    applyFilters();
+                });
+            });
+
+            // Search functionality
+            searchInput.addEventListener('input', function () {
+                currentSearch = this.value.toLowerCase();
+                applyFilters();
+            });
+
+            // Sort functionality
+            sortSelect.addEventListener('change', function () {
+                currentSort = this.value;
+                applyFilters();
+            });
+
+            function applyFilters() {
+                // Filter and search
+                let visibleCards = petCards.filter(card => {
+                    const petName = card.dataset.petName;
+                    const petType = card.dataset.petType;
+
+                    const matchesSearch = petName.includes(currentSearch);
+                    const matchesFilter = currentFilter === 'all' || petType === currentFilter;
+
+                    return matchesSearch && matchesFilter;
+                });
+
+                // Sort
+                visibleCards.sort((a, b) => {
+                    const daysA = parseInt(a.dataset.days);
+                    const daysB = parseInt(b.dataset.days);
+                    const nameA = a.dataset.petName;
+                    const nameB = b.dataset.petName;
+
+                    switch (currentSort) {
+                        case 'newest':
+                            return daysA - daysB;
+                        case 'oldest':
+                            return daysB - daysA;
+                        case 'name-asc':
+                            return nameA.localeCompare(nameB);
+                        case 'name-desc':
+                            return nameB.localeCompare(nameA);
+                        default:
+                            return 0;
+                    }
+                });
+
+                // Hide all cards first
+                petCards.forEach(card => card.style.display = 'none');
+
+                // Show and reorder visible cards
+                visibleCards.forEach(card => {
+                    card.style.display = 'block';
+                    petsGrid.appendChild(card);
+                });
+
+                // Update count
+                resultCount.textContent = visibleCards.length;
+            }
+
+            // Initial count
+            applyFilters();
+        });
+    </script>
 </body>
 </html>

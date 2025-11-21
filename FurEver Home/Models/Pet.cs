@@ -69,6 +69,7 @@ namespace FurEver_Home.Models
         [Column("is_adopted")]
         public bool IsAdopted { get; set; } = false;
 
+
         [Column("image_url")]
         [StringLength(500)]
         public string ImageUrl { get; set; }

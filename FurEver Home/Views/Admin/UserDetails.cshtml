@@ -222,12 +222,7 @@
                 <a href="@Url.Action("Users", "Admin")" class="btn btn-back">
                     <i class="fas fa-arrow-left"></i> Back to Users
                 </a>
-                @if (Model.IDStatus == "Pending")
-                {
-                    <a href="@Url.Action("VerifyIDDetails", "Admin", new { id = Model.UserId })" class="btn btn-primary">
-                        <i class="fas fa-check"></i> Verify ID
-                    </a>
-                }
+                
             </div>
         </div>
     </div>
