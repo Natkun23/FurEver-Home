@@ -28,7 +28,7 @@
         .navbar {
             background: white;
             box-shadow: 0 2px 10px rgba(0,0,0,0.1);
-            padding: 15px 0;
+            padding: 5px 0;
             position: sticky;
             top: 0;
             z-index: 1000;
@@ -56,16 +56,16 @@
             align-items: center;
         }
 
-        .nav-links a {
-            color: #333;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
+            .nav-links a {
+                color: #333;
+                text-decoration: none;
+                font-weight: 600;
+                transition: color 0.3s;
+            }
 
-        .nav-links a:hover {
-            color: #3FA9F5;
-        }
+                .nav-links a:hover {
+                    color: #3FA9F5;
+                }
 
         .btn-home {
             background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
@@ -77,10 +77,10 @@
             transition: transform 0.3s;
         }
 
-        .btn-home:hover {
-            transform: translateY(-2px);
-            color: white;
-        }
+            .btn-home:hover {
+                transform: translateY(-2px);
+                color: white;
+            }
 
         /* User Menu */
         .user-menu {
@@ -138,10 +138,10 @@
             transition: 0.2s;
         }
 
-        .dropdown-menu a:hover {
-            background: #f1f5f9;
-            color: #3FA9F5;
-        }
+            .dropdown-menu a:hover {
+                background: #f1f5f9;
+                color: #3FA9F5;
+            }
 
         /* Hero Section */
         .hero {
@@ -151,16 +151,18 @@
             text-align: center;
         }
 
-        .hero h1 {
-            font-size: 3em;
-            margin-bottom: 15px;
-            font-weight: 900;
-        }
+            .hero h1 {
+                font-size: 5.4em;
+                margin-bottom: 15px;
+                font-weight: 900;
+                text-shadow: 3px 3px 10px rgba(0,0,0,0.45);
+            }
 
-        .hero p {
-            font-size: 1.2em;
-            margin-bottom: 30px;
-        }
+            .hero p {
+                font-size: 1.5em;
+                margin-bottom: 30px;
+                text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
+            }
 
         .hero-stats {
             display: flex;
@@ -173,10 +175,12 @@
             display: flex;
             align-items: center;
             gap: 10px;
+            text-shadow: 4px 4px 10px rgba(0,0,0,0.4); /* added */
         }
 
         .stat-icon {
             font-size: 2em;
+            text-shadow: 5px 5px 12px rgba(0,0,0,0.45); /* added */
         }
 
         .stat-text {
@@ -185,12 +189,14 @@
 
         .stat-number {
             font-size: 1.8em;
-            font-weight: 700;
+            font-weight: 800;
+            text-shadow: 5px 5px 12px rgba(0,0,0,0.45); /* added */
         }
 
         .stat-label {
             opacity: 0.9;
-            font-size: 0.9em;
+            font-size: 1.2em;
+            text-shadow: 3px 3px 8px rgba(0,0,0,0.35); /* added */
         }
 
         .btn-secondary {
@@ -207,12 +213,17 @@
             align-items: center;
             gap: 10px;
             transition: all 0.3s;
+            
         }
 
-        .btn-secondary:hover {
-            background: white;
-            color: #3FA9F5;
-        }
+            .btn-secondary:hover {
+                background: transparent;
+                color: white;
+                text-shadow: 0 0 8px rgba(255,255,255,1), /* inner glow */
+                0 0 15px rgba(255,255,255,0.9), /* mid glow */
+                0 0 25px rgba(255,255,255,0.9), /* outer glow */
+                0 0 40px rgba(255,255,255,0.8); /* big halo glow */
+            }
 
         /* Filter Section - IMPROVED WITH COLLAPSIBLE */
         .filter-section {
@@ -237,9 +248,9 @@
             user-select: none;
         }
 
-        .filter-toggle:hover {
-            background: linear-gradient(135deg, #2E8BC0 0%, #1a6b94 100%);
-        }
+            .filter-toggle:hover {
+                background: linear-gradient(135deg, #2E8BC0 0%, #1a6b94 100%);
+            }
 
         .filter-toggle-text {
             display: flex;
@@ -254,9 +265,9 @@
             transition: transform 0.3s;
         }
 
-        .filter-toggle-icon.active {
-            transform: rotate(180deg);
-        }
+            .filter-toggle-icon.active {
+                transform: rotate(180deg);
+            }
 
         .filter-content {
             max-height: 0;
@@ -264,10 +275,10 @@
             transition: max-height 0.4s ease-out, padding 0.4s ease-out;
         }
 
-        .filter-content.show {
-            max-height: 500px;
-            padding: 25px 20px;
-        }
+            .filter-content.show {
+                max-height: 500px;
+                padding: 25px 20px;
+            }
 
         .filter-container {
             max-width: 1400px;
@@ -282,43 +293,43 @@
             position: relative;
         }
 
-        .filter-group label {
-            display: block;
-            color: #64748b;
-            font-weight: 600;
-            margin-bottom: 8px;
-            font-size: 0.85em;
-            text-transform: uppercase;
-            letter-spacing: 0.5px;
-        }
+            .filter-group label {
+                display: block;
+                color: #64748b;
+                font-weight: 600;
+                margin-bottom: 8px;
+                font-size: 0.85em;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
 
-        .filter-group label i {
-            color: #3FA9F5;
-            margin-right: 5px;
-        }
+                .filter-group label i {
+                    color: #3FA9F5;
+                    margin-right: 5px;
+                }
 
-        .filter-group input,
-        .filter-group select {
-            width: 100%;
-            padding: 12px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 15px;
-            transition: all 0.3s;
-            outline: none;
-            background: white;
-            cursor: pointer;
-        }
+            .filter-group input,
+            .filter-group select {
+                width: 100%;
+                padding: 12px 16px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                font-size: 15px;
+                transition: all 0.3s;
+                outline: none;
+                background: white;
+                cursor: pointer;
+            }
 
-        .filter-group input:focus,
-        .filter-group select:focus {
-            border-color: #3FA9F5;
-            box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.1);
-        }
+                .filter-group input:focus,
+                .filter-group select:focus {
+                    border-color: #3FA9F5;
+                    box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.1);
+                }
 
-        .filter-group input::placeholder {
-            color: #cbd5e1;
-        }
+                .filter-group input::placeholder {
+                    color: #cbd5e1;
+                }
 
         .btn-reset {
             padding: 12px 25px;
@@ -335,11 +346,11 @@
             white-space: nowrap;
         }
 
-        .btn-reset:hover {
-            background: #fee2e2;
-            color: #dc2626;
-            border-color: #fecaca;
-        }
+            .btn-reset:hover {
+                background: #fee2e2;
+                color: #dc2626;
+                border-color: #fecaca;
+            }
 
         .active-filters {
             max-width: 1400px;
@@ -363,20 +374,21 @@
             animation: slideIn 0.3s;
         }
 
-        .filter-tag i {
-            cursor: pointer;
-            transition: color 0.2s;
-        }
+            .filter-tag i {
+                cursor: pointer;
+                transition: color 0.2s;
+            }
 
-        .filter-tag i:hover {
-            color: #dc2626;
-        }
+                .filter-tag i:hover {
+                    color: #dc2626;
+                }
 
-       @@keyframes slideIn {
+        @@keyframes slideIn {
             from {
                 opacity: 0;
                 transform: translateY(-10px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -416,20 +428,20 @@
             gap: 10px;
         }
 
-        .sort-group label {
-            color: #64748b;
-            font-weight: 600;
-        }
+            .sort-group label {
+                color: #64748b;
+                font-weight: 600;
+            }
 
-        .sort-group select {
-            padding: 10px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            font-size: 14px;
-            outline: none;
-            cursor: pointer;
-            background: white;
-        }
+            .sort-group select {
+                padding: 10px 16px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                font-size: 14px;
+                outline: none;
+                cursor: pointer;
+                background: white;
+            }
 
         /* Pet Grid */
         .pets-grid {
@@ -449,10 +461,10 @@
             position: relative;
         }
 
-        .pet-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 40px rgba(63, 169, 245, 0.25);
-        }
+            .pet-card:hover {
+                transform: translateY(-10px);
+                box-shadow: 0 15px 40px rgba(63, 169, 245, 0.25);
+            }
 
         .pet-image {
             width: 100%;
@@ -487,10 +499,10 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        .pet-days-badge i {
-            color: #3FA9F5;
-            margin-right: 4px;
-        }
+            .pet-days-badge i {
+                color: #3FA9F5;
+                margin-right: 4px;
+            }
 
         .posted-by-card-badge {
             position: absolute;
@@ -509,9 +521,9 @@
             box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
-        .posted-by-card-badge i {
-            font-size: 1.1em;
-        }
+            .posted-by-card-badge i {
+                font-size: 1.1em;
+            }
 
         .pet-info {
             padding: 25px;
@@ -646,11 +658,11 @@
             text-align: center;
         }
 
-        .btn-view:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(63, 169, 245, 0.4);
-            color: white;
-        }
+            .btn-view:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(63, 169, 245, 0.4);
+                color: white;
+            }
 
         .btn-adopt {
             flex: 1;
@@ -666,11 +678,11 @@
             text-align: center;
         }
 
-        .btn-adopt:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 217, 61, 0.4);
-            color: #2E8BC0;
-        }
+            .btn-adopt:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(255, 217, 61, 0.4);
+                color: #2E8BC0;
+            }
 
         /* Empty State */
         .empty-state {
@@ -725,23 +737,23 @@
             list-style: none;
         }
 
-        .why-list li {
-            color: #333;
-            margin-bottom: 20px;
-            padding-left: 35px;
-            position: relative;
-            font-size: 1.05em;
-            line-height: 1.6;
-        }
+            .why-list li {
+                color: #333;
+                margin-bottom: 20px;
+                padding-left: 35px;
+                position: relative;
+                font-size: 1.05em;
+                line-height: 1.6;
+            }
 
-        .why-list li:before {
-            content: "✓";
-            position: absolute;
-            left: 0;
-            color: #3FA9F5;
-            font-weight: bold;
-            font-size: 1.3em;
-        }
+                .why-list li:before {
+                    content: "✓";
+                    position: absolute;
+                    left: 0;
+                    color: #3FA9F5;
+                    font-weight: bold;
+                    font-size: 1.3em;
+                }
 
         .why-image {
             width: 100%;
@@ -785,9 +797,9 @@
             line-height: 1.8;
         }
 
-        .footer-section a:hover {
-            color: #3FA9F5;
-        }
+            .footer-section a:hover {
+                color: #3FA9F5;
+            }
 
         .footer-bottom {
             text-align: center;
@@ -807,7 +819,7 @@
             }
         }
 
-       @@media (max-width: 768px) {
+        @@media (max-width: 768px) {
             .hero h1 {
                 font-size: 2em;
             }
@@ -836,6 +848,149 @@
     </style>
 </head>
 <body>
+
+    @if (ViewBag.HasUnreadNotifications == true && ViewBag.UnreadNotifications != null)
+    {
+        <div id="autoNotificationPopup" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.7); z-index: 9999; display: flex; align-items: center; justify-content: center; animation: fadeIn 0.3s;">
+            <div style="background: white; border-radius: 25px; max-width: 500px; width: 90%; box-shadow: 0 20px 60px rgba(0,0,0,0.3); overflow: hidden; animation: slideUp 0.4s;">
+                @foreach (var notif in ViewBag.UnreadNotifications)
+                {
+                    if (notif.NotificationType == "Application_Approved")
+                    {
+                        <div style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); padding: 30px; text-align: center; color: white;">
+                            <div style="font-size: 4em; margin-bottom: 15px;">🎉</div>
+                            <h2 style="margin: 0; font-size: 1.8em; font-weight: 700;">Application Approved!</h2>
+                        </div>
+                    }
+                    else if (notif.NotificationType == "Application_Rejected")
+                    {
+                        <div style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); padding: 30px; text-align: center; color: white;">
+                            <div style="font-size: 4em; margin-bottom: 15px;">😔</div>
+                            <h2 style="margin: 0; font-size: 1.8em; font-weight: 700;">Application Update</h2>
+                        </div>
+                    }
+                    else if (notif.NotificationType == "ID_Verified")
+                    {
+                        <div style="background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%); padding: 30px; text-align: center; color: white;">
+                            <div style="font-size: 4em; margin-bottom: 15px;">✅</div>
+                            <h2 style="margin: 0; font-size: 1.8em; font-weight: 700;">ID Verified!</h2>
+                        </div>
+                    }
+                    else if (notif.NotificationType == "Pickup_Ready")
+                    {
+                        <div style="background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%); padding: 30px; text-align: center; color: #2E8BC0;">
+                            <div style="font-size: 4em; margin-bottom: 15px;">🐾</div>
+                            <h2 style="margin: 0; font-size: 1.8em; font-weight: 700;">Pet Ready for Pickup!</h2>
+                        </div>
+                    }
+                    else
+                    {
+                        <div style="background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%); padding: 30px; text-align: center; color: white;">
+                            <div style="font-size: 4em; margin-bottom: 15px;">🔔</div>
+                            <h2 style="margin: 0; font-size: 1.8em; font-weight: 700;">New Notification</h2>
+                        </div>
+                    }
+
+                    <!-- Message Content -->
+                    <div style="padding: 30px;">
+                        <div style="font-size: 1.2em; color: #334155; line-height: 1.6; margin-bottom: 20px; text-align: center;">
+                            @notif.Message
+                        </div>
+
+                        <div style="text-align: center; color: #94a3b8; font-size: 0.9em; margin-bottom: 25px;">
+                            <i class="fas fa-clock"></i> @notif.CreatedAt.ToString("MMMM dd, yyyy h:mm tt")
+                        </div>
+
+                        <!-- Action Buttons -->
+                        <div style="display: flex; gap: 12px;">
+                            <button onclick="closeAutoPopup()" style="flex: 1; padding: 14px; background: #e2e8f0; color: #334155; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 1em; transition: all 0.3s;">
+                                Close
+                            </button>
+                            <button onclick="markAsReadAndClose(@notif.NotificationId)" style="flex: 1; padding: 14px; background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%); color: white; border: none; border-radius: 12px; font-weight: 600; cursor: pointer; font-size: 1em; transition: all 0.3s;">
+                                Mark as Read
+                            </button>
+                        </div>
+
+                        @if (ViewBag.UnreadNotifications.Count > 1)
+                        {
+                            <div style="text-align: center; margin-top: 15px; color: #64748b; font-size: 0.9em;">
+                                + @(ViewBag.UnreadNotifications.Count - 1) more notification@(ViewBag.UnreadNotifications.Count > 2 ? "s" : "")
+                            </div>
+                        }
+                    </div>
+                }
+            </div>
+        </div>
+
+        <style>
+            @@keyframes fadeIn {
+                from {
+                    opacity: 0;
+                }
+
+                to {
+                    opacity: 1;
+                }
+            }
+
+            @@keyframes slideUp {
+                from {
+                    opacity: 0;
+                    transform: translateY(50px);
+                }
+
+                to {
+                    opacity: 1;
+                    transform: translateY(0);
+                }
+            }
+
+            @@keyframes fadeOut {
+                from {
+                    opacity: 1;
+                }
+
+                to {
+                    opacity: 0;
+                }
+            }
+        </style>
+
+        <script>
+        function closeAutoPopup() {
+            document.getElementById('autoNotificationPopup').style.display = 'none';
+        }
+
+        function markAsReadAndClose(notificationId) {
+            fetch('@Url.Action("MarkNotificationAsRead", "Home")', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ id: notificationId })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        closeAutoPopup();
+                        location.reload();
+                    }
+                });
+        }
+
+        // Auto-close after 10 seconds
+        setTimeout(function () {
+            const popup = document.getElementById('autoNotificationPopup');
+            if (popup && popup.style.display !== 'none') {
+                popup.style.animation = 'fadeOut 0.3s';
+                setTimeout(function () {
+                    popup.style.display = 'none';
+                }, 300);
+            }
+        }, 10000);
+        </script>
+    }
+
     <nav class="navbar">
         <div class="nav-container">
             <a href="@Url.Action("Index", "Pets")" class="logo">
@@ -844,9 +999,92 @@
             <div class="nav-links">
                 @if (Session["UserId"] != null)
                 {
+                    <!-- ⭐ NOTIFICATION BELL -->
+                    <div class="notification-bell" style="position: relative; margin-right: -25px; cursor: pointer;" onclick="toggleNotifications()">
+                        <i class="fas fa-bell" style="font-size: 1.7em; color: #3FA9F5;"></i>
+                        @if (ViewBag.HasUnreadNotifications == true)
+                        {
+                            <span class="notification-badge" style="position: absolute; top: -5px; right: -8px; background: #ef4444; color: white; border-radius: 50%; width: 20px; height: 20px; display: flex; align-items: center; justify-content: center; font-size: 0.7em; font-weight: 700;">
+                                @ViewBag.UnreadNotifications.Count
+                            </span>
+                        }
+
+                        <!-- Notification Dropdown -->
+                        <div id="notificationDropdown" class="notification-dropdown" style="display: none; position: absolute; top: 45px; right: 0; background: white; width: 350px; max-height: 400px; overflow-y: auto; border-radius: 15px; box-shadow: 0 10px 40px rgba(0,0,0,0.2); z-index: 2000;">
+                            <div style="padding: 15px; border-bottom: 2px solid #e2e8f0; background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%); color: white; border-radius: 15px 15px 0 0;">
+                                <h4 style="margin: 0; font-size: 1.1em;">
+                                    <i class="fas fa-bell"></i> Notifications
+                                </h4>
+                            </div>
+
+                            @if (ViewBag.UnreadNotifications != null && ViewBag.UnreadNotifications.Count > 0)
+                            {
+                                foreach (var notif in ViewBag.UnreadNotifications)
+                                {
+                                    <div class="notification-item" style="padding: 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;"
+                                         onmouseover="this.style.background='#f8fafc'"
+                                         onmouseout="this.style.background='white'"
+                                         onclick="markAsRead(@notif.NotificationId)">
+
+                                        <div style="display: flex; gap: 12px;">
+                                            <div style="flex-shrink: 0;">
+                                                @if (notif.NotificationType == "Application_Approved")
+                                                {
+                                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2em;"></i>
+                                                    </div>
+                                                }
+                                                else if (notif.NotificationType == "Application_Rejected")
+                                                {
+                                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-times-circle" style="color: #ef4444; font-size: 1.2em;"></i>
+                                                    </div>
+                                                }
+                                                else if (notif.NotificationType == "ID_Verified")
+                                                {
+                                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #dbeafe; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-id-card" style="color: #3b82f6; font-size: 1.2em;"></i>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #E8F4FC; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-bell" style="color: #3FA9F5; font-size: 1.2em;"></i>
+                                                    </div>
+                                                }
+                                            </div>
+
+                                            <div style="flex: 1;">
+                                                <div style="font-weight: 700; color: #2E8BC0; margin-bottom: 5px; font-size: 0.95em;">
+                                                    @notif.Title
+                                                </div>
+                                                <div style="color: #64748b; font-size: 0.85em; line-height: 1.4;">
+                                                    @notif.Message
+                                                </div>
+                                                <div style="color: #94a3b8; font-size: 0.75em; margin-top: 5px;">
+                                                    <i class="fas fa-clock"></i> @notif.CreatedAt.ToString("MMM dd, yyyy h:mm tt")
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            }
+                            else
+                            {
+                                <div style="padding: 40px; text-align: center; color: #94a3b8;">
+                                    <i class="fas fa-bell-slash" style="font-size: 3em; margin-bottom: 15px; opacity: 0.3;"></i>
+                                    <div style="font-weight: 600;">No new notifications</div>
+                                    <div style="font-size: 0.9em; margin-top: 5px;">You're all caught up!</div>
+                                </div>
+                            }
+                        </div>
+                    </div>
+
                     <div class="user-menu">
                         @if (!string.IsNullOrEmpty(Session["UserProfilePicture"] as string))
                         {
+
+
                             <img src="@Session["UserProfilePicture"]" alt="Profile" class="user-avatar-small">
                         }
                         else
@@ -908,7 +1146,7 @@
                 </div>
             </div>
             <div class="stat-item">
-                <div class="stat-icon">❤️</div>
+                <div class="stat-icon">❤</div>
                 <div class="stat-text">
                     <div class="stat-number">10,000+</div>
                     <div class="stat-label">Happy Adoptions</div>
@@ -1195,8 +1433,46 @@
         </div>
     </footer>
 
+
+
+
+
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
+
+        // Toggle notification dropdown
+    function toggleNotifications() {
+        const dropdown = document.getElementById('notificationDropdown');
+        dropdown.style.display = dropdown.style.display === 'none' ? 'block' : 'none';
+    }
+
+    // Mark notification as read
+    function markAsRead(notificationId) {
+        fetch('@Url.Action("MarkNotificationAsRead", "Home")', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ id: notificationId })
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.success) {
+                // Reload to update badge count
+                location.reload();
+            }
+        });
+    }
+
+    // Close dropdown when clicking outside
+    document.addEventListener('click', function(event) {
+        const bell = event.target.closest('.notification-bell');
+        const dropdown = document.getElementById('notificationDropdown');
+
+        if (!bell && dropdown) {
+            dropdown.style.display = 'none';
+        }
+    });
         // Toggle filters visibility
         function toggleFilters() {
             const content = document.getElementById('filterContent');

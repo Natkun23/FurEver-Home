@@ -383,23 +383,32 @@ namespace FurEver_Home.Controllers
             return RedirectToAction("Applications");
         }
 
-        // POST: Admin/RejectApplication/5 ⭐ UPDATED - Archives to history
+        // POST: Admin/RejectApplication/5
         [HttpPost]
+        [ValidateAntiForgeryToken]
         public ActionResult RejectApplication(int id, string rejectionReason)
         {
-            var application = db.AdoptionApplications
-                .Include(a => a.Pet)
-                .Include(a => a.Pet.PetType)
-                .FirstOrDefault(a => a.ApplicationId == id);
-
-            if (application != null)
+            try
             {
+                var application = db.AdoptionApplications
+                    .Include(a => a.Pet)
+                    .Include(a => a.Pet.PetType)
+                    .Include(a => a.User)
+                    .FirstOrDefault(a => a.ApplicationId == id);
+
+                if (application == null)
+                {
+                    TempData["Error"] = "Application not found.";
+                    return RedirectToAction("Applications");
+                }
+
                 application.Status = "Rejected";
                 application.RejectionReason = rejectionReason;
                 application.ReviewedDate = DateTime.Now;
                 application.ReviewedBy = (int)Session["UserId"];
+                application.UpdatedAt = DateTime.Now;
 
-                // CREATE NOTIFICATION FOR USER
+                // CREATE NOTIFICATION
                 var notification = new UserNotification
                 {
                     UserId = application.UserId,
@@ -411,15 +420,29 @@ namespace FurEver_Home.Controllers
                 };
                 db.UserNotifications.Add(notification);
 
-                // ⭐ Archive to history
-                ArchiveApplicationToHistory(application, "Rejected");
-
+                // SAVE FIRST
                 db.SaveChanges();
-                TempData["Success"] = "Application has been rejected with reason provided.";
-            }
-            return RedirectToAction("Applications");
-        }
 
+                // THEN ARCHIVE
+                try
+                {
+                    ArchiveApplicationToHistory(application, "Rejected");
+                    db.SaveChanges();
+                }
+                catch (Exception archiveEx)
+                {
+                    System.Diagnostics.Debug.WriteLine($"Archive error: {archiveEx.Message}");
+                }
+
+                TempData["Success"] = "Application has been rejected and user has been notified.";
+                return RedirectToAction("Applications");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = $"Error: {ex.Message}";
+                return RedirectToAction("Applications");
+            }
+        }
         // GET: Admin/SetPickupDetails/5
         public ActionResult SetPickupDetails(int id)
         {

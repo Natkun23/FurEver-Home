@@ -144,19 +144,21 @@
 
         .image-thumbnail-wrapper {
             position: relative;
-            width: 200px;
-            height: 200px;
+            width: 100%;
+            max-width: 360px;
+            height: 235px;
             margin-bottom: 20px;
             cursor: pointer;
-            border-radius: 15px;
+            border-radius: 12px;
             overflow: hidden;
-            border: 3px solid #3FA9F5;
+            border: 2px solid #e2e8f0;
         }
 
         .id-thumbnail-wrapper {
             position: relative;
             width: 100%;
-            max-width: 280px;
+            max-width: 360px;
+            height: 235px;
             margin-bottom: 20px;
             cursor: pointer;
             border-radius: 10px;
@@ -199,14 +201,24 @@
             font-size: 14px;
         }
 
-        .image-thumbnail-wrapper:hover .image-hover-overlay,
-        .id-thumbnail-wrapper:hover .image-hover-overlay {
-            transform: translateY(0);
-        }
-
+        /* ✅ UPDATED: Hover effects */
         .image-thumbnail-wrapper:hover .current-image-preview,
         .id-thumbnail-wrapper:hover .current-id-preview {
-            transform: scale(1.05);
+            transform: scale(1.08);
+            opacity: 0.85; /* Slightly less faded on hover */
+            filter: brightness(1);
+        }
+
+        .image-thumbnail-wrapper:hover .image-hover-overlay,
+        .id-thumbnail-wrapper:hover .image-hover-overlay {
+            background: linear-gradient(to top, rgba(63, 169, 245, 0.95) 0%, rgba(46, 139, 192, 0.85) 80%, rgba(46, 139, 192, 0.5) 100%);
+            padding: 25px 15px;
+        }
+
+        .image-thumbnail-wrapper:hover,
+        .id-thumbnail-wrapper:hover {
+            border-color: #3FA9F5;
+            box-shadow: 0 8px 20px rgba(63, 169, 245, 0.3);
         }
 
         .pdf-thumbnail {

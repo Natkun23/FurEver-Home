@@ -16,6 +16,24 @@ namespace FurEver_Home.Controllers
         // GET: Pets (Browse all pets)
         public ActionResult Index()
         {
+            // ⭐ LOAD NOTIFICATIONS FOR LOGGED IN USERS
+            if (Session["UserId"] != null)
+            {
+                int userId = (int)Session["UserId"];
+                var user = db.Users.Find(userId);
+
+                if (user != null)
+                {
+                    var unreadNotifications = db.UserNotifications
+                        .Where(n => n.UserId == userId && !n.IsRead)
+                        .OrderByDescending(n => n.CreatedAt)
+                        .ToList();
+
+                    ViewBag.UnreadNotifications = unreadNotifications;
+                    ViewBag.HasUnreadNotifications = unreadNotifications.Any();
+                }
+            }
+
             var pets = db.Pets.Include(p => p.PetType)
                               .Include(p => p.Creator)
                               .Where(p => !p.IsAdopted)
@@ -26,9 +44,28 @@ namespace FurEver_Home.Controllers
             return View(pets);
         }
 
+
         // GET: Pets/Dogs
         public ActionResult Dogs()
         {
+            // ⭐ LOAD NOTIFICATIONS FOR LOGGED IN USERS
+            if (Session["UserId"] != null)
+            {
+                int userId = (int)Session["UserId"];
+                var user = db.Users.Find(userId);
+
+                if (user != null)
+                {
+                    var unreadNotifications = db.UserNotifications
+                        .Where(n => n.UserId == userId && !n.IsRead)
+                        .OrderByDescending(n => n.CreatedAt)
+                        .ToList();
+
+                    ViewBag.UnreadNotifications = unreadNotifications;
+                    ViewBag.HasUnreadNotifications = unreadNotifications.Any();
+                }
+            }
+
             var dogs = db.Pets.Include(p => p.PetType)
                               .Include(p => p.Creator)
                               .Where(p => p.PetTypeId == 1 && !p.IsAdopted)
@@ -42,6 +79,24 @@ namespace FurEver_Home.Controllers
         // GET: Pets/Cats
         public ActionResult Cats()
         {
+            // ⭐ LOAD NOTIFICATIONS FOR LOGGED IN USERS
+            if (Session["UserId"] != null)
+            {
+                int userId = (int)Session["UserId"];
+                var user = db.Users.Find(userId);
+
+                if (user != null)
+                {
+                    var unreadNotifications = db.UserNotifications
+                        .Where(n => n.UserId == userId && !n.IsRead)
+                        .OrderByDescending(n => n.CreatedAt)
+                        .ToList();
+
+                    ViewBag.UnreadNotifications = unreadNotifications;
+                    ViewBag.HasUnreadNotifications = unreadNotifications.Any();
+                }
+            }
+
             var cats = db.Pets.Include(p => p.PetType)
                               .Include(p => p.Creator)
                               .Where(p => p.PetTypeId == 2 && !p.IsAdopted)
@@ -51,7 +106,6 @@ namespace FurEver_Home.Controllers
             ViewBag.PetType = "Cats";
             return View("Index", cats);
         }
-
         // GET: Pets/Details/5
         public ActionResult Details(int? id)
         {
@@ -95,6 +149,16 @@ namespace FurEver_Home.Controllers
                 return RedirectToAction("Index");
             }
 
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+
+            // ⭐ NEW: CHECK IF USER'S ID IS VERIFIED
+            if (user.IDStatus != "Verified")
+            {
+                TempData["Error"] = "Your ID must be verified before you can apply for adoption. Please upload your valid ID in your profile and wait for admin verification.";
+                return RedirectToAction("Profile", "Account");
+            }
+
             var pet = db.Pets.Include(p => p.PetType).FirstOrDefault(p => p.PetId == id);
             if (pet == null)
             {
@@ -104,6 +168,16 @@ namespace FurEver_Home.Controllers
             if (pet.IsAdopted)
             {
                 TempData["Error"] = "This pet has already been adopted.";
+                return RedirectToAction("Details", new { id = id });
+            }
+
+            // Check if user already has a pending application for this pet
+            var existingApplication = db.AdoptionApplications
+                .FirstOrDefault(a => a.UserId == userId && a.PetId == id && a.Status == "Pending");
+
+            if (existingApplication != null)
+            {
+                TempData["Error"] = "You have already applied to adopt this pet. Please wait for admin review.";
                 return RedirectToAction("Details", new { id = id });
             }
 
@@ -126,10 +200,18 @@ namespace FurEver_Home.Controllers
                 return RedirectToAction("Login", "Account");
             }
 
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+
+            // ⭐ DOUBLE-CHECK ID VERIFICATION ON SUBMIT
+            if (user.IDStatus != "Verified")
+            {
+                TempData["Error"] = "Your ID must be verified before you can apply for adoption.";
+                return RedirectToAction("Profile", "Account");
+            }
+
             if (ModelState.IsValid)
             {
-                int userId = (int)Session["UserId"];
-
                 var existingApplication = db.AdoptionApplications
                     .FirstOrDefault(a => a.UserId == userId && a.PetId == model.PetId && a.Status == "Pending");
 
@@ -137,6 +219,42 @@ namespace FurEver_Home.Controllers
                 {
                     TempData["Error"] = "You have already applied to adopt this pet. Please wait for admin review.";
                     return RedirectToAction("Details", new { id = model.PetId });
+                }
+
+                // ⭐ VALIDATE SCREENING QUESTIONS
+                if (string.IsNullOrWhiteSpace(model.ScreeningQ1Experience))
+                {
+                    ModelState.AddModelError("ScreeningQ1Experience", "Please describe your pet care experience.");
+                }
+                if (string.IsNullOrWhiteSpace(model.ScreeningQ2Financial))
+                {
+                    ModelState.AddModelError("ScreeningQ2Financial", "Please answer the financial commitment question.");
+                }
+                if (string.IsNullOrWhiteSpace(model.ScreeningQ2Explanation))
+                {
+                    ModelState.AddModelError("ScreeningQ2Explanation", "Please explain your financial readiness.");
+                }
+                if (string.IsNullOrWhiteSpace(model.ScreeningQ3HouseholdAgreement))
+                {
+                    ModelState.AddModelError("ScreeningQ3HouseholdAgreement", "Please answer about household agreement.");
+                }
+                if (string.IsNullOrWhiteSpace(model.ScreeningQ3Explanation))
+                {
+                    ModelState.AddModelError("ScreeningQ3Explanation", "Please explain household support.");
+                }
+                if (string.IsNullOrWhiteSpace(model.ScreeningQ4RelocationPlan))
+                {
+                    ModelState.AddModelError("ScreeningQ4RelocationPlan", "Please describe your contingency plan.");
+                }
+                if (string.IsNullOrWhiteSpace(model.ScreeningQ5HoursAlone))
+                {
+                    ModelState.AddModelError("ScreeningQ5HoursAlone", "Please select how many hours the pet will be alone.");
+                }
+
+                if (!ModelState.IsValid)
+                {
+                    model.Pet = db.Pets.Find(model.PetId);
+                    return View(model);
                 }
 
                 model.UserId = userId;
@@ -150,7 +268,7 @@ namespace FurEver_Home.Controllers
 
                 var pet = db.Pets.Find(model.PetId);
 
-                TempData["Success"] = $"Your adoption application for {model.Pet.Name} has been submitted successfully! We'll review it and contact you within 24-48 hours.";
+                TempData["Success"] = $"Your adoption application for {pet.Name} has been submitted successfully! We'll review your answers and contact you within 24-48 hours.";
                 return RedirectToAction("MyApplications");
             }
 
@@ -345,7 +463,7 @@ namespace FurEver_Home.Controllers
             return RedirectToAction("MyApplications");
         }
 
-        // POST: Pets/RequestCancellation - ✅ UPDATED WITH VALIDATION
+        // POST: Pets/RequestCancellation - ✅ BLOCK CANCELLATION IF APPROVED
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult RequestCancellation(int id, string cancellationReason)
@@ -360,45 +478,44 @@ namespace FurEver_Home.Controllers
                 .Include(a => a.Pet)
                 .FirstOrDefault(a => a.ApplicationId == id);
 
-            // ✅ VALIDATION: Can only cancel if Status = "Approved" AND pet not claimed yet
+            // ✅ VALIDATION: Application must exist and belong to user
             if (application == null || application.UserId != userId)
             {
                 TempData["Error"] = "Application not found.";
                 return RedirectToAction("MyApplications");
             }
 
-            if (application.Status != "Approved")
+            // ✅ CRITICAL: NO CANCELLATIONS ALLOWED FOR APPROVED APPLICATIONS
+            if (application.Status == "Approved")
             {
-                TempData["Error"] = "Cannot cancel application. It must be approved first.";
+                TempData["Error"] = "❌ Cancellation Not Allowed: Your application has already been approved by our admin team. Once approved, the adoption is confirmed and cannot be cancelled. This policy ensures commitment to our pets. If you have serious concerns, please contact our support team directly.";
                 return RedirectToAction("MyApplications");
             }
 
-            if (application.ClaimedDate != null)
+            // ✅ Can only withdraw if Status = "Pending"
+            if (application.Status != "Pending")
             {
-                TempData["Error"] = "Cannot cancel adoption. The pet has already been claimed. Adoption is now permanent.";
-                return RedirectToAction("MyApplications");
-            }
-
-            if (application.CancellationRequested)
-            {
-                TempData["Error"] = "You have already requested cancellation. Please wait for admin review.";
+                TempData["Error"] = "Cannot withdraw application. It has already been reviewed by admin.";
                 return RedirectToAction("MyApplications");
             }
 
             if (string.IsNullOrWhiteSpace(cancellationReason))
             {
-                TempData["Error"] = "Please provide a reason for cancellation.";
+                TempData["Error"] = "Please provide a reason for withdrawal.";
                 return RedirectToAction("MyApplications");
             }
 
-            application.CancellationRequested = true;
-            application.CancellationReason = cancellationReason;
-            application.CancellationRequestedDate = DateTime.Now;
+            // ✅ Only "Withdrawn" for pending applications
+            application.Status = "Withdrawn";
+            application.WithdrawalReason = cancellationReason;
+            application.WithdrawalDate = DateTime.Now;
             application.UpdatedAt = DateTime.Now;
+
+            ArchiveApplicationToHistory(application, "Withdrawn");
 
             db.SaveChanges();
 
-            TempData["Success"] = "Your cancellation request has been submitted. An admin will review it shortly.";
+            TempData["Success"] = "Your application has been withdrawn successfully.";
             return RedirectToAction("MyApplications");
         }
 

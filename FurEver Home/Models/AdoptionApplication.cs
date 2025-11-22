@@ -41,6 +41,31 @@ namespace FurEver_Home.Models
         [Column("message")]
         public string Message { get; set; }
 
+        // ⭐ NEW: SCREENING QUESTIONS
+        [Column("screening_q1_experience")]
+        public string ScreeningQ1Experience { get; set; }
+
+        [Column("screening_q2_financial")]
+        [StringLength(10)]
+        public string ScreeningQ2Financial { get; set; }
+
+        [Column("screening_q2_explanation")]
+        public string ScreeningQ2Explanation { get; set; }
+
+        [Column("screening_q3_household_agreement")]
+        [StringLength(10)]
+        public string ScreeningQ3HouseholdAgreement { get; set; }
+
+        [Column("screening_q3_explanation")]
+        public string ScreeningQ3Explanation { get; set; }
+
+        [Column("screening_q4_relocation_plan")]
+        public string ScreeningQ4RelocationPlan { get; set; }
+
+        [Column("screening_q5_hours_alone")]
+        [StringLength(50)]
+        public string ScreeningQ5HoursAlone { get; set; }
+
         [Column("status")]
         [StringLength(50)]
         public string Status { get; set; } = "Pending";
@@ -73,7 +98,6 @@ namespace FurEver_Home.Models
         [ForeignKey("ReviewedBy")]
         public virtual User Reviewer { get; set; }
 
-
         [Column("rejection_reason")]
         public string RejectionReason { get; set; }
 
@@ -92,8 +116,6 @@ namespace FurEver_Home.Models
 
         [Column("claimed_date")]
         public DateTime? ClaimedDate { get; set; }
-
-        // ADD THESE PROPERTIES TO YOUR EXISTING AdoptionApplication.cs
 
         [Column("cancellation_requested")]
         public bool CancellationRequested { get; set; } = false;
@@ -120,7 +142,6 @@ namespace FurEver_Home.Models
         [Column("withdrawal_date")]
         public DateTime? WithdrawalDate { get; set; }
 
-        // Navigation for cancellation reviewer
         [ForeignKey("CancellationReviewedBy")]
         public virtual User CancellationReviewer { get; set; }
     }

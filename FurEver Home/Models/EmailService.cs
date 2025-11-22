@@ -95,7 +95,7 @@ namespace FurEver_Home.Services
 <body>
     <div class='container'>
         <div class='header'>
-            <h1>🐾 FurEver Home</h1>
+            <h1>FurEver Home</h1>
             <p>Secure Login Verification</p>
         </div>
         <div class='content'>
@@ -105,13 +105,13 @@ namespace FurEver_Home.Services
             </p>
             
             <div class='otp-box'>
-                <p style='color: #64748b; margin: 0; font-size: 14px;'>Your One-Time Password</p>
+                <p style='color: #64748b; margin: 0; font-size: 12px;'>Your One-Time Password</p>
                 <div class='otp-code'>{otpCode}</div>
-                <p style='color: #64748b; margin: 0; font-size: 13px;'>Valid for 5 minutes</p>
+                <p style='color: #64748b; margin: 0; font-size: 11px;'>Valid for 5 minutes</p>
             </div>
 
             <div class='warning'>
-                <strong>⚠️ Security Notice:</strong><br>
+                <strong>Security Notice:</strong><br>
                 Never share this code with anyone. Our team will never ask for your OTP code.
             </div>
 

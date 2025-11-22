@@ -205,11 +205,6 @@
             color: #92400e;
         }
 
-        .btn-cancel-request {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
         .btn-action:hover {
             transform: translateY(-2px);
         }
@@ -255,9 +250,7 @@
             color: #721c24;
         }
 
-        .rejection-reason,
-        .cancellation-pending,
-        .permanent-notice {
+        .rejection-reason {
             background: #fee2e2;
             padding: 15px;
             border-radius: 10px;
@@ -266,17 +259,32 @@
             border-left: 4px solid #ef4444;
         }
 
-        .cancellation-pending {
-            background: #fef3c7;
-            color: #92400e;
-            border-left-color: #f59e0b;
+        /* ✅ NEW: No Cancellation Notice */
+        .no-cancellation-notice {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-top: 15px;
+            color: #1e40af;
+            border-left: 4px solid #3b82f6;
+            display: flex;
+            align-items: start;
+            gap: 12px;
         }
 
-        .permanent-notice {
-            background: #dbeafe;
-            color: #1e40af;
-            border-left-color: #3b82f6;
-            font-weight: 600;
+            .no-cancellation-notice i {
+                font-size: 1.5em;
+                margin-top: 2px;
+            }
+
+        .no-cancellation-content {
+            flex: 1;
+        }
+
+        .no-cancellation-notice strong {
+            display: block;
+            font-size: 1.05em;
+            margin-bottom: 5px;
         }
 
         /* Modal Styles */
@@ -439,7 +447,7 @@
                                 <i class="fas fa-calendar"></i> Applied on @app.ApplicationDate.ToString("MMM dd, yyyy")
                             </div>
 
-                            @* STATUS: PENDING - Can Withdraw *@
+                            @* ✅ STATUS: PENDING - Can Withdraw *@
                             @if (app.Status == "Pending")
                             {
                                 <div class="app-details" style="color: #92400e; font-weight: 600; margin-top: 10px;">
@@ -450,29 +458,24 @@
                                 </button>
                             }
 
-                            @* STATUS: APPROVED - Waiting for Pickup Details *@
-                            @if (app.Status == "Approved" && !app.IsReadyForPickup && !app.CancellationRequested)
+                            @* ✅ STATUS: APPROVED - NO CANCELLATION ALLOWED *@
+                            @if (app.Status == "Approved" && !app.IsReadyForPickup)
                             {
                                 <div class="app-details" style="color: #10b981; font-weight: 600; margin-top: 10px;">
                                     <i class="fas fa-check-circle"></i> Approved! Waiting for pickup details from admin...
                                 </div>
-                                <button class="btn-action btn-cancel-request" onclick="showCancelModal(@app.ApplicationId, '@app.Pet.Name')">
-                                    <i class="fas fa-ban"></i> Request Cancellation
-                                </button>
-                            }
 
-                            @* STATUS: APPROVED - Cancellation Pending *@
-                            @if (app.Status == "Approved" && app.CancellationRequested && !app.CancellationApproved)
-                            {
-                                <div class="cancellation-pending">
-                                    <strong><i class="fas fa-hourglass-half"></i> Cancellation Pending</strong><br>
-                                    Your cancellation request is being reviewed by admin.<br>
-                                    <strong>Reason:</strong> @app.CancellationReason
+                                <div class="no-cancellation-notice">
+                                    <i class="fas fa-lock"></i>
+                                    <div class="no-cancellation-content">
+                                        <strong>🔒 Adoption Confirmed - No Cancellations</strong>
+                                        Your application has been approved by our admin team. This adoption is now confirmed and cannot be cancelled. Please wait for pickup instructions. If you have urgent concerns, contact our support team directly.
+                                    </div>
                                 </div>
                             }
 
-                            @* STATUS: APPROVED - Ready for Pickup *@
-                            @if (app.Status == "Approved" && app.IsReadyForPickup && app.ClaimedDate == null && !app.CancellationRequested)
+                            @* ✅ STATUS: APPROVED - Ready for Pickup (Still No Cancellation) *@
+                            @if (app.Status == "Approved" && app.IsReadyForPickup && app.ClaimedDate == null)
                             {
                                 <div class="pickup-box">
                                     <h4><i class="fas fa-map-marker-alt"></i> Your Pet is Ready for Pickup!</h4>
@@ -488,7 +491,7 @@
                                 </div>
                                 <div class="alert-warning" style="margin-top: 10px; font-size: 0.9em;">
                                     <i class="fas fa-exclamation-triangle"></i>
-                                    <strong>Important:</strong> Once you claim this pet, the adoption becomes permanent and cannot be cancelled.
+                                    <strong>Important:</strong> Once you claim this pet, the adoption becomes permanent. Cancellations are not allowed after admin approval.
                                 </div>
                             }
 
@@ -555,13 +558,6 @@
                             </div>
                         }
 
-                        @if (history.FinalStatus == "Cancelled" && !string.IsNullOrEmpty(history.CancellationReason))
-                        {
-                            <div class="history-details">
-                                <i class="fas fa-comment"></i> Reason: @history.CancellationReason
-                            </div>
-                        }
-
                         @if (history.FinalStatus == "Rejected" && !string.IsNullOrEmpty(history.RejectionReason))
                         {
                             <div class="history-details">
@@ -574,12 +570,14 @@
         }
     </div>
 
-    <!-- Withdrawal Modal -->
+    <!-- ✅ Withdrawal Modal (Only for Pending) -->
     <div id="withdrawModal" class="modal">
         <div class="modal-content">
             <h3><i class="fas fa-times-circle"></i> Withdraw Application</h3>
             <p style="color: #64748b; margin-bottom: 20px;">
                 Are you sure you want to withdraw your application to adopt <strong id="withdrawPetName"></strong>?
+                <br><br>
+                <strong style="color: #dc2626;">⚠️ Note:</strong> You can only withdraw applications that are still pending. Once approved by admin, withdrawals are not allowed.
             </p>
 
             @using (Html.BeginForm("WithdrawApplication", "Pets", FormMethod.Post, new { id = "withdrawForm" }))
@@ -596,29 +594,6 @@
         </div>
     </div>
 
-    <!-- Cancellation Modal -->
-    <div id="cancelModal" class="modal">
-        <div class="modal-content">
-            <h3><i class="fas fa-ban"></i> Request Cancellation</h3>
-            <p style="color: #64748b; margin-bottom: 20px;">
-                Request to cancel your approved adoption of <strong id="cancelPetName"></strong>.
-                Admin will review your request.
-            </p>
-
-            @using (Html.BeginForm("RequestCancellation", "Pets", FormMethod.Post, new { id = "cancelForm" }))
-            {
-                @Html.AntiForgeryToken()
-                <input type="hidden" id="cancelAppId" name="id" />
-                <textarea name="cancellationReason" placeholder="Please explain why you need to cancel..." required></textarea>
-
-                <div class="modal-buttons">
-                    <button type="button" class="btn-modal btn-modal-cancel" onclick="closeModal('cancelModal')">Cancel</button>
-                    <button type="submit" class="btn-modal btn-modal-submit">Submit Request</button>
-                </div>
-            }
-        </div>
-    </div>
-
     <script>
         function showWithdrawModal(appId, petName) {
             document.getElementById('withdrawAppId').value = appId;
@@ -626,18 +601,12 @@
             document.getElementById('withdrawModal').style.display = 'flex';
         }
 
-        function showCancelModal(appId, petName) {
-            document.getElementById('cancelAppId').value = appId;
-            document.getElementById('cancelPetName').textContent = petName;
-            document.getElementById('cancelModal').style.display = 'flex';
-        }
-
         function closeModal(modalId) {
             document.getElementById(modalId).style.display = 'none';
         }
 
         // Close modal on outside click
-        window.onclick = function(event) {
+        window.onclick = function (event) {
             if (event.target.classList.contains('modal')) {
                 event.target.style.display = 'none';
             }

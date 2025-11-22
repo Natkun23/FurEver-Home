@@ -26,7 +26,7 @@
         }
 
         .container {
-            max-width: 1000px;
+            max-width: 1100px;
             margin: 0 auto;
         }
 
@@ -122,6 +122,9 @@
             color: #2E8BC0;
             margin: 30px 0 15px;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 10px;
         }
 
         .message-box {
@@ -129,7 +132,97 @@
             padding: 20px;
             border-radius: 10px;
             border-left: 4px solid #3FA9F5;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
+            line-height: 1.6;
+        }
+
+        .screening-section {
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFF4D4 100%);
+            padding: 30px;
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid #FFD93D;
+        }
+
+        .screening-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #FFD93D;
+        }
+
+            .screening-header i {
+                font-size: 2em;
+                color: #F6C90E;
+            }
+
+            .screening-header h3 {
+                color: #92400e;
+                font-size: 1.4em;
+            }
+
+        .screening-question {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3FA9F5;
+        }
+
+            .screening-question:last-child {
+                margin-bottom: 0;
+            }
+
+        .question-label {
+            font-weight: 700;
+            color: #2E8BC0;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1.05em;
+        }
+
+        .question-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 28px;
+            height: 28px;
+            background: #3FA9F5;
+            color: white;
+            border-radius: 50%;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .answer-text {
+            color: #334155;
+            line-height: 1.7;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 8px;
+            border: 1px solid #e2e8f0;
+        }
+
+        .answer-badge {
+            display: inline-block;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+        }
+
+        .answer-yes {
+            background: #d1fae5;
+            color: #065f46;
+        }
+
+        .answer-no {
+            background: #fee2e2;
+            color: #991b1b;
         }
 
         .action-buttons {
@@ -259,9 +352,23 @@
             gap: 15px;
             margin-top: 20px;
         }
+
+        .id-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 8px 16px;
+            background: #d1fae5;
+            color: #065f46;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.9em;
+        }
     </style>
 </head>
 <body>
+
+
     <div class="container">
         <div class="details-card">
             <div class="header">
@@ -270,6 +377,11 @@
                 <div class="header-text">
                     <h1>@Model.User.FullName wants to adopt @Model.Pet.Name</h1>
                     <p><i class="fas fa-calendar"></i> Applied on @Model.ApplicationDate.ToString("MMMM dd, yyyy")</p>
+                    <p style="margin-top: 8px;">
+                        <span class="id-badge">
+                            <i class="fas fa-check-circle"></i> ID Verified
+                        </span>
+                    </p>
                 </div>
             </div>
 
@@ -315,6 +427,77 @@
 
                 <div class="section-title">Why They Want to Adopt</div>
                 <div class="message-box">@Model.Message</div>
+
+                @* ⭐ SCREENING ANSWERS SECTION *@
+                @if (!string.IsNullOrEmpty(Model.ScreeningQ1Experience))
+                {
+                    <div class="screening-section">
+                        <div class="screening-header">
+                            <i class="fas fa-clipboard-check"></i>
+                            <h3>Adoption Capability Screening Answers</h3>
+                        </div>
+
+                        <div class="screening-question">
+                            <div class="question-label">
+                                <span class="question-number">1</span>
+                                Prior Pet Care Experience
+                            </div>
+                            <div class="answer-text">
+                                @Model.ScreeningQ1Experience
+                            </div>
+                        </div>
+
+                        <div class="screening-question">
+                            <div class="question-label">
+                                <span class="question-number">2</span>
+                                Financial Commitment to Pet Expenses
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span class="answer-badge @(Model.ScreeningQ2Financial == "Yes" ? "answer-yes" : "answer-no")">
+                                    @(string.IsNullOrWhiteSpace(Model.ScreeningQ2Financial) ? "Not Answered" : Model.ScreeningQ2Financial)
+                                </span>
+                            </div>
+                            <div class="answer-text">
+                                @(string.IsNullOrWhiteSpace(Model.ScreeningQ2Explanation) ? "No explanation provided" : Model.ScreeningQ2Explanation)
+                            </div>
+                        </div>
+
+                        <div class="screening-question">
+                            <div class="question-label">
+                                <span class="question-number">3</span>
+                                Household Agreement
+                            </div>
+                            <div style="margin-bottom: 10px;">
+                                <span class="answer-badge @(Model.ScreeningQ3HouseholdAgreement == "Yes" ? "answer-yes" : "answer-no")">
+                                    @(string.IsNullOrWhiteSpace(Model.ScreeningQ3HouseholdAgreement) ? "Not Answered" : Model.ScreeningQ3HouseholdAgreement)
+                                </span>
+                            </div>
+                            <div class="answer-text">
+                                @(string.IsNullOrWhiteSpace(Model.ScreeningQ3Explanation) ? "No explanation provided" : Model.ScreeningQ3Explanation)
+                            </div>
+                        </div>
+
+                        <div class="screening-question">
+                            <div class="question-label">
+                                <span class="question-number">4</span>
+                                Relocation/Travel Contingency Plan
+                            </div>
+                            <div class="answer-text">
+                                @(string.IsNullOrWhiteSpace(Model.ScreeningQ4RelocationPlan) ? "No answer provided" : Model.ScreeningQ4RelocationPlan)
+                            </div>
+                        </div>
+
+                        <div class="screening-question">
+                            <div class="question-label">
+                                <span class="question-number">5</span>
+                                Hours Pet Will Be Alone Daily
+                            </div>
+                            <div class="answer-text">
+                                <strong>@(string.IsNullOrWhiteSpace(Model.ScreeningQ5HoursAlone) ? "Not specified" : Model.ScreeningQ5HoursAlone)</strong>
+                            </div>
+                        </div>
+                    </div>
+                }
 
                 @if (!string.IsNullOrEmpty(Model.RejectionReason))
                 {
@@ -398,17 +581,12 @@
                             <i class="fas fa-arrow-left"></i> Back
                         </a>
 
-                        @using (Html.BeginForm("ApproveApplication", "Admin", FormMethod.Post, new { style = "flex: 1;" }))
-                        {
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@Model.ApplicationId" />
-                            <button type="submit" class="btn btn-approve" onclick="return confirm('Approve this application?')">
-                                <i class="fas fa-check"></i> Approve Application
-                            </button>
-                        }
-
                         <button type="button" class="btn btn-reject" onclick="showRejectModal()">
                             <i class="fas fa-times"></i> Reject Application
+                        </button>
+
+                        <button type="button" class="btn btn-approve" onclick="showApprovalModal()">
+                            <i class="fas fa-check"></i> Approve Application
                         </button>
                     </div>
                 }
@@ -428,7 +606,7 @@
     <div id="rejectModal" class="rejection-modal">
         <div class="modal-content">
             <h3><i class="fas fa-exclamation-circle"></i> Reject Application</h3>
-            <p style="color: #64748b; margin-bottom: 20px;">Please provide a reason for rejection:</p>
+            <p style="color: #64748b; margin-bottom: 20px;">Please provide a reason for rejection (consider screening answers):</p>
 
             @using (Html.BeginForm("RejectApplication", "Admin", FormMethod.Post, new { id = "rejectForm" }))
             {
@@ -444,6 +622,63 @@
         </div>
     </div>
 
+    <!-- ⭐ NEW: Approval Confirmation Modal -->
+    <div id="approvalModal" class="rejection-modal">
+        <div class="modal-content" style="max-width: 600px;">
+            <div style="text-align: center; margin-bottom: 20px;">
+                <div style="width: 80px; height: 80px; border-radius: 50%; background: linear-gradient(135deg, #d1fae5 0%, #10b981 30%); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center;">
+                    <i class="fas fa-check-circle" style="font-size: 3em; color: #10b981;"></i>
+                </div>
+                <h3 style="color: #10b981; font-size: 1.8em; margin-bottom: 10px;">
+                    Approve This Application?
+                </h3>
+            </div>
+
+            <div style="background: #f8fafc; padding: 20px; border-radius: 12px; margin-bottom: 20px;">
+                <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 15px;">
+                    <img src="@(string.IsNullOrEmpty(Model.Pet.ImageUrl) ? "https://via.placeholder.com/60" : Model.Pet.ImageUrl)"
+                         style="width: 60px; height: 60px; border-radius: 12px; object-fit: cover;">
+                    <div>
+                        <div style="font-weight: 700; color: #2E8BC0; font-size: 1.2em;">@Model.Pet.Name</div>
+                        <div style="color: #64748b; font-size: 0.9em;">@Model.Pet.Breed</div>
+                    </div>
+                </div>
+                <div style="border-top: 2px solid #e2e8f0; padding-top: 15px;">
+                    <div style="color: #334155; font-weight: 600; margin-bottom: 5px;">
+                        <i class="fas fa-user"></i> Adopter: @Model.User.FullName
+                    </div>
+                    <div style="color: #64748b; font-size: 0.9em;">
+                        <i class="fas fa-envelope"></i> @Model.User.Email
+                    </div>
+                </div>
+            </div>
+
+            <div style="background: #FFF9E6; padding: 15px; border-radius: 10px; border-left: 4px solid #FFD93D; margin-bottom: 20px;">
+                <div style="color: #92400e; font-size: 0.9em; line-height: 1.6;">
+                    <strong><i class="fas fa-info-circle"></i> By approving:</strong><br>
+                    • The pet will be marked as adopted<br>
+                    • User will receive approval notification<br>
+                    • You can then set pickup details
+                </div>
+            </div>
+
+            @using (Html.BeginForm("ApproveApplication", "Admin", FormMethod.Post, new { id = "approvalForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.ApplicationId" />
+
+                <div class="modal-buttons">
+                    <button type="button" class="btn btn-back" onclick="hideApprovalModal()" style="flex: 1;">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-approve" style="flex: 2;">
+                        <i class="fas fa-check-circle"></i> Yes, Approve Application
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
     <script>
         function showRejectModal() {
             document.getElementById('rejectModal').style.display = 'flex';
@@ -451,6 +686,25 @@
         function hideRejectModal() {
             document.getElementById('rejectModal').style.display = 'none';
         }
+
+        function showApprovalModal() {
+            document.getElementById('approvalModal').style.display = 'flex';
+        }
+        function hideApprovalModal() {
+            document.getElementById('approvalModal').style.display = 'none';
+        }
+
+        // Auto-append "-FurEverHome Team" signature
+        document.addEventListener('DOMContentLoaded', function () {
+            document.getElementById('rejectForm').addEventListener('submit', function (e) {
+                var textarea = this.querySelector('textarea[name="rejectionReason"]');
+                var reason = textarea.value.trim();
+
+                if (!reason.includes('-FurEverHome Team')) {
+                    textarea.value = reason + ' -FurEverHome Team';
+                }
+            });
+        });
     </script>
 </body>
 </html>
