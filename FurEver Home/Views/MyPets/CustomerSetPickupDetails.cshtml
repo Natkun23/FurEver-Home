@@ -1,0 +1,732 @@
+﻿@model FurEver_Home.Models.AdoptionApplication
+@{
+    ViewBag.Title = "Set Pickup Details - FurEver Home";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+        }
+
+        .container {
+            max-width: 800px;
+            margin: 0 auto;
+        }
+
+        .pickup-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .header {
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            padding: 40px;
+            color: #2E8BC0;
+            text-align: center;
+        }
+
+        .header i {
+            font-size: 4em;
+            margin-bottom: 20px;
+            display: block;
+        }
+
+        .header h1 {
+            font-size: 2.2em;
+            margin-bottom: 10px;
+            font-weight: 900;
+        }
+
+        .header p {
+            font-size: 1.1em;
+            opacity: 0.9;
+        }
+
+        .content {
+            padding: 40px;
+        }
+
+        .adopter-info {
+            background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 30px;
+            border-left: 4px solid #3FA9F5;
+        }
+
+        .adopter-info h3 {
+            color: #1e40af;
+            margin-bottom: 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .adopter-info p {
+            color: #334155;
+            margin-bottom: 8px;
+            font-size: 1.05em;
+        }
+
+        .adopter-info strong {
+            color: #2E8BC0;
+        }
+
+        .pet-summary {
+            display: flex;
+            gap: 20px;
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            align-items: center;
+        }
+
+        .pet-thumb {
+            width: 100px;
+            height: 100px;
+            border-radius: 15px;
+            object-fit: cover;
+        }
+
+        .pet-details h4 {
+            color: #2E8BC0;
+            font-size: 1.4em;
+            margin-bottom: 5px;
+        }
+
+        .pet-details p {
+            color: #64748b;
+            font-size: 0.95em;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+        }
+
+        .section-title {
+            font-size: 1.3em;
+            color: #2E8BC0;
+            font-weight: 700;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            color: #334155;
+            margin-bottom: 10px;
+            font-weight: 600;
+            font-size: 15px;
+        }
+
+        .required {
+            color: #ef4444;
+            margin-left: 3px;
+        }
+
+        .form-group input,
+        .form-group textarea {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+            background: #f8fafc;
+            font-family: inherit;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus {
+            border-color: #3FA9F5;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .help-text {
+            color: #64748b;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .info-banner {
+            background: linear-gradient(135deg, #FFF9E6 0%, #fff4d4 100%);
+            border-left: 4px solid #FFD93D;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            color: #92400e;
+        }
+
+        .info-banner h4 {
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .info-banner ul {
+            margin-left: 20px;
+            line-height: 1.8;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-submit {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-submit:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-back:hover {
+            background: #cbd5e1;
+        }
+
+        /* Pickup Confirmation Modal Styles */
+        .pickup-modal {
+            display: none;
+            position: fixed;
+            z-index: 4000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s;
+        }
+
+        .pickup-modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .pickup-modal-content {
+            background: white;
+            border-radius: 25px;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .pickup-modal-header {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            padding: 40px 30px;
+            color: white;
+            text-align: center;
+        }
+
+        .pickup-modal-header h2 {
+            font-size: 2em;
+            margin: 0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 15px;
+        }
+
+        .pickup-modal-header i {
+            font-size: 2.5em;
+        }
+
+        .pickup-modal-body {
+            padding: 40px 30px;
+        }
+
+        .modal-pet-summary {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border: 2px solid #E8F4FC;
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .modal-pet-thumb {
+            width: 80px;
+            height: 80px;
+            border-radius: 12px;
+            object-fit: cover;
+        }
+
+        .modal-pet-info h3 {
+            color: #2E8BC0;
+            font-size: 1.3em;
+            margin: 0 0 5px 0;
+        }
+
+        .modal-pet-info p {
+            color: #64748b;
+            font-size: 0.9em;
+            margin: 0;
+        }
+
+        .modal-adopter-info {
+            background: #E8F4FC;
+            padding: 15px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .modal-adopter-info p {
+            color: #334155;
+            font-size: 0.95em;
+            margin: 5px 0;
+        }
+
+        .modal-adopter-info strong {
+            color: #2E8BC0;
+        }
+
+        .pickup-details-preview {
+            background: #FFF9E6;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            border-left: 4px solid #FFD93D;
+        }
+
+        .pickup-details-preview h4 {
+            color: #2E8BC0;
+            margin: 0 0 15px 0;
+            font-size: 1.1em;
+        }
+
+        .detail-item {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 12px;
+            color: #334155;
+            font-size: 0.95em;
+        }
+
+        .detail-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .detail-item i {
+            color: #F6C90E;
+            width: 20px;
+            margin-top: 2px;
+        }
+
+        .detail-item strong {
+            color: #2E8BC0;
+            min-width: 80px;
+        }
+
+        .pickup-modal-footer {
+            padding: 30px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 15px;
+        }
+
+        .pickup-modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .pickup-modal-btn-cancel {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .pickup-modal-btn-cancel:hover {
+            background: #cbd5e1;
+            transform: translateY(-2px);
+        }
+
+        .pickup-modal-btn-confirm {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .pickup-modal-btn-confirm:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .pet-summary {
+                flex-direction: column;
+                text-align: center;
+            }
+
+            .pickup-modal-content {
+                width: 95%;
+                margin: 20px;
+            }
+
+            .pickup-modal-header h2 {
+                font-size: 1.5em;
+            }
+
+            .pickup-modal-footer {
+                flex-direction: column;
+            }
+
+            .modal-pet-summary {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="pickup-card">
+            <div class="header">
+                <i class="fas fa-map-marker-alt"></i>
+                <h1>Set Pickup Details</h1>
+                <p>Arrange the pickup for @Model.Pet.Name</p>
+            </div>
+
+            <div class="content">
+                <!-- Adopter Information -->
+                <div class="adopter-info">
+                    <h3><i class="fas fa-user-check"></i> Approved Adopter</h3>
+                    <p><strong>Name:</strong> @Model.User.FullName</p>
+                    <p><strong>Email:</strong> @Model.User.Email</p>
+                    <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+                    <p style="margin-top: 10px; font-size: 0.9em; color: #64748b;">
+                        <i class="fas fa-info-circle"></i> The adopter will receive your contact information along with the pickup details.
+                    </p>
+                </div>
+
+                <!-- Pet Summary -->
+                <div class="pet-summary">
+                    <img src="@(string.IsNullOrEmpty(Model.Pet.ImageUrl) ? "https://via.placeholder.com/100" : Model.Pet.ImageUrl)"
+                         alt="@Model.Pet.Name" class="pet-thumb">
+                    <div class="pet-details">
+                        <h4>@Model.Pet.Name</h4>
+                        <p>@Model.Pet.Breed • @Model.Pet.AgeDisplay • @Model.Pet.Gender</p>
+                    </div>
+                </div>
+
+                <!-- Important Notice -->
+                <div class="info-banner">
+                    <h4><i class="fas fa-exclamation-triangle"></i> Important</h4>
+                    <ul>
+                        <li>Provide a specific pickup location (your address or a meeting point)</li>
+                        <li>Choose a convenient date and time for both parties</li>
+                        <li>The adopter will receive your contact information to coordinate</li>
+                        <li>Make sure @Model.Pet.Name is ready with all necessary items (vaccines, records, etc.)</li>
+                    </ul>
+                </div>
+
+                <!-- Pickup Details Form -->
+                @using (Html.BeginForm("CustomerSetPickupDetails", "MyPets", FormMethod.Post, new { id = "pickupForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.ApplicationId" />
+
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class="fas fa-map-pin"></i>
+                            Pickup Information
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pickup Location <span class="required">*</span></label>
+                            <input type="text"
+                                   id="pickupLocation"
+                                   name="pickupLocation"
+                                   placeholder="Enter full address or meeting point"
+                                   required
+                                   maxlength="500" />
+                            <div class="help-text">
+                                Example: "123 Main St, Quezon City" or "SM North EDSA Main Entrance"
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Pickup Date & Time <span class="required">*</span></label>
+                            <input type="datetime-local"
+                                   id="pickupDate"
+                                   name="pickupDate"
+                                   required
+                                   min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")" />
+                            <div class="help-text">
+                                Choose a date and time that works for both you and the adopter
+                            </div>
+                        </div>
+
+                        <div class="form-group">
+                            <label>Additional Notes (Optional)</label>
+                            <textarea id="pickupNotes"
+                                      name="pickupNotes"
+                                      placeholder="Any special instructions, items to bring, parking information, etc."
+                                      maxlength="1000"></textarea>
+                            <div class="help-text">
+                                Example: "Please bring a pet carrier. Parking available at the front."
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="action-buttons">
+                        <a href="@Url.Action("CustomerDashboard", "MyPets")" class="btn btn-back">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </a>
+                        <button type="button" class="btn btn-submit" id="submitPickupBtn">
+                            <i class="fas fa-paper-plane"></i> Send Pickup Details
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Pickup Confirmation Modal -->
+    <div id="pickupModal" class="pickup-modal">
+        <div class="pickup-modal-content">
+            <div class="pickup-modal-header">
+                <h2>
+                    <i class="fas fa-check-circle"></i>
+                    Confirm Pickup Details
+                </h2>
+            </div>
+
+            <div class="pickup-modal-body">
+                <div class="modal-pet-summary">
+                    <img src="@(string.IsNullOrEmpty(Model.Pet.ImageUrl) ? "https://via.placeholder.com/80" : Model.Pet.ImageUrl)"
+                         alt="@Model.Pet.Name" class="modal-pet-thumb">
+                    <div class="modal-pet-info">
+                        <h3>@Model.Pet.Name</h3>
+                        <p>@Model.Pet.Breed • @Model.Pet.AgeDisplay</p>
+                    </div>
+                </div>
+
+                <div class="modal-adopter-info">
+                    <p><strong>Adopter:</strong> @Model.User.FullName</p>
+                    <p><strong>Email:</strong> @Model.User.Email</p>
+                    <p><strong>Phone:</strong> @Model.PhoneNumber</p>
+                </div>
+
+                <div class="pickup-details-preview">
+                    <h4><i class="fas fa-info-circle"></i> Pickup Details</h4>
+                    <div class="detail-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <div>
+                            <strong>Location:</strong>
+                            <span id="modalLocation"></span>
+                        </div>
+                    </div>
+                    <div class="detail-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <div>
+                            <strong>Date & Time:</strong>
+                            <span id="modalDateTime"></span>
+                        </div>
+                    </div>
+                    <div class="detail-item" id="modalNotesContainer" style="display: none;">
+                        <i class="fas fa-sticky-note"></i>
+                        <div>
+                            <strong>Notes:</strong>
+                            <span id="modalNotes"></span>
+                        </div>
+                    </div>
+                </div>
+
+                <p style="color: #64748b; font-size: 0.9em; text-align: center;">
+                    <i class="fas fa-info-circle"></i> The adopter will be notified via email with these details and your contact information.
+                </p>
+            </div>
+
+            <div class="pickup-modal-footer">
+                <button class="pickup-modal-btn pickup-modal-btn-cancel" onclick="closePickupModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button class="pickup-modal-btn pickup-modal-btn-confirm" id="confirmPickupBtn">
+                    <i class="fas fa-paper-plane"></i> Send Details
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Set minimum datetime to now
+        document.addEventListener('DOMContentLoaded', function () {
+            const dateInput = document.querySelector('input[type="datetime-local"]');
+            if (dateInput) {
+                const now = new Date();
+                now.setMinutes(now.getMinutes() - now.getTimezoneOffset());
+                dateInput.min = now.toISOString().slice(0, 16);
+            }
+
+            // Submit button handler - show modal instead of direct submit
+            document.getElementById('submitPickupBtn').addEventListener('click', function (e) {
+                e.preventDefault();
+
+                const location = document.getElementById('pickupLocation').value.trim();
+                const date = document.getElementById('pickupDate').value;
+                const notes = document.getElementById('pickupNotes').value.trim();
+
+                // Validation
+                if (!location || !date) {
+                    alert('Please fill in all required fields.');
+                    return;
+                }
+
+                const selectedDate = new Date(date);
+                const now = new Date();
+
+                if (selectedDate < now) {
+                    alert('Please select a future date and time.');
+                    return;
+                }
+
+                // Show confirmation modal with details
+                showPickupModal(location, date, notes);
+            });
+
+            // Confirm button in modal - actually submit the form
+            document.getElementById('confirmPickupBtn').addEventListener('click', function () {
+                document.getElementById('pickupForm').submit();
+            });
+        });
+
+        function showPickupModal(location, dateTime, notes) {
+            const modal = document.getElementById('pickupModal');
+
+            // Format date for display
+            const date = new Date(dateTime);
+            const formattedDate = date.toLocaleDateString('en-US', {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            });
+
+            // Populate modal
+            document.getElementById('modalLocation').textContent = location;
+            document.getElementById('modalDateTime').textContent = formattedDate;
+
+            // Show/hide notes section
+            const notesContainer = document.getElementById('modalNotesContainer');
+            if (notes) {
+                document.getElementById('modalNotes').textContent = notes;
+                notesContainer.style.display = 'flex';
+            } else {
+                notesContainer.style.display = 'none';
+            }
+
+            modal.classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePickupModal() {
+            const modal = document.getElementById('pickupModal');
+            modal.classList.remove('show');
+            document.body.style.overflow = '';
+        }
+
+        // Close modal when clicking outside
+        document.getElementById('pickupModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                closePickupModal();
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                closePickupModal();
+            }
+        });
+    </script>
+</body>
+</html>

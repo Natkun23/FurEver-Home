@@ -130,7 +130,64 @@
             font-size: 2em;
             color: #2E8BC0;
             font-weight: 700;
-            margin: 0;
+            margin: 0 0 20px 0;
+        }
+
+        /* Search and Filter Bar */
+        .filter-bar {
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 25px;
+            display: grid;
+            grid-template-columns: 1fr auto auto;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .search-box {
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 45px 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1em;
+            transition: all 0.3s;
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: #3FA9F5;
+        }
+
+        .search-box i {
+            position: absolute;
+            right: 18px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            font-size: 1.1em;
+        }
+
+        .filter-select {
+            padding: 12px 20px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1em;
+            font-weight: 600;
+            color: #475569;
+            cursor: pointer;
+            background: white;
+        }
+
+        .results-count {
+            color: #64748b;
+            font-size: 0.95em;
+            font-weight: 600;
         }
 
         .applications-grid {
@@ -179,26 +236,36 @@
         }
 
         .status-badge {
-            padding: 8px 16px;
+            padding: 10px 20px;
             border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
+            font-size: 1.05em;
+            font-weight: 700;
             text-align: center;
+            min-width: 120px;
         }
 
         .status-pending {
-            background: #fef3c7;
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
             color: #92400e;
+            border: 2px solid #fbbf24;
         }
 
         .status-approved {
-            background: #d1fae5;
-            color: #065f46;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            border: 2px solid #3b82f6;
         }
 
         .status-rejected {
-            background: #fee2e2;
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
             color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        .status-completed {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            border: 2px solid #10b981;
         }
 
         .app-actions {
@@ -224,14 +291,51 @@
             color: white;
         }
 
-        .btn-approve {
-            background: #10b981;
-            color: white;
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 10px;
+            margin-top: 30px;
+            background: white;
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
         }
 
-        .btn-reject {
-            background: #ef4444;
+        .page-btn {
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #475569;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .page-btn:hover {
+            background: #3FA9F5;
             color: white;
+            border-color: #3FA9F5;
+        }
+
+        .page-btn.active {
+            background: #2E8BC0;
+            color: white;
+            border-color: #2E8BC0;
+        }
+
+        .page-btn:disabled {
+            opacity: 0.4;
+            cursor: not-allowed;
+        }
+
+        .page-info {
+            color: #64748b;
+            font-weight: 600;
+            margin: 0 15px;
         }
 
         .empty-state {
@@ -260,14 +364,311 @@
             gap: 15px;
         }
 
+        .no-results {
+            background: white;
+            border-radius: 15px;
+            padding: 60px 40px;
+            text-align: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        .no-results i {
+            font-size: 4em;
+            color: #cbd5e1;
+            margin-bottom: 15px;
+        }
+
+        /* Status Legend - MODERN CARDS */
+        .status-legend {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .legend-card {
+            background: white;
+            padding: 15px 20px;
+            border-radius: 12px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s;
+            border-left: 4px solid;
+        }
+
+        .legend-card:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(0,0,0,0.12);
+        }
+
+        .legend-card.pending {
+            border-left-color: #fbbf24;
+        }
+
+        .legend-card.approved {
+            border-left-color: #3b82f6;
+        }
+
+        .legend-card.completed {
+            border-left-color: #10b981;
+        }
+
+        .legend-card.rejected {
+            border-left-color: #ef4444;
+        }
+
+        .legend-icon {
+            width: 45px;
+            height: 45px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3em;
+        }
+
+        .legend-card.pending .legend-icon {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #f59e0b;
+        }
+
+        .legend-card.approved .legend-icon {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #3b82f6;
+        }
+
+        .legend-card.completed .legend-icon {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #10b981;
+        }
+
+        .legend-card.rejected .legend-icon {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #ef4444;
+        }
+
+        .legend-info {
+            flex: 1;
+        }
+
+        .legend-status {
+            font-size: 1em;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 2px;
+        }
+
+        .legend-desc {
+            font-size: 0.8em;
+            color: #94a3b8;
+        }
+
+        /* SUCCESS MODAL - FIXED CENTERING */
+        .success-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 99999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s;
+        }
+
+        .success-modal-content {
+            background: white;
+            border-radius: 20px;
+            padding: 45px 40px;
+            max-width: 480px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.25);
+            animation: slideUp 0.4s ease-out;
+            position: relative;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @@keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        /* Animated Checkmark */
+        .success-checkmark-wrapper {
+            margin-bottom: 25px;
+        }
+
+        .success-checkmark {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto;
+        }
+
+        .check-icon {
+            width: 80px;
+            height: 80px;
+            position: relative;
+            border-radius: 50%;
+            box-sizing: content-box;
+            border: 4px solid #10b981;
+            background-color: #d1fae5;
+        }
+
+        .icon-line {
+            height: 5px;
+            background-color: #10b981;
+            display: block;
+            border-radius: 2px;
+            position: absolute;
+            z-index: 10;
+        }
+
+        .icon-line.line-tip {
+            top: 43px;
+            left: 14px;
+            width: 25px;
+            transform: rotate(45deg);
+            animation: icon-line-tip 0.75s;
+        }
+
+        .icon-line.line-long {
+            top: 38px;
+            right: 8px;
+            width: 47px;
+            transform: rotate(-45deg);
+            animation: icon-line-long 0.75s;
+        }
+
+        .icon-circle {
+            top: -4px;
+            left: -4px;
+            z-index: 10;
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            position: absolute;
+            box-sizing: content-box;
+            border: 4px solid rgba(16, 185, 129, 0.3);
+        }
+
+        .icon-fix {
+            top: 8px;
+            width: 5px;
+            left: 26px;
+            z-index: 1;
+            height: 85px;
+            position: absolute;
+            transform: rotate(-45deg);
+            background-color: white;
+        }
+
+        @@keyframes icon-line-tip {
+            0% { width: 0; left: 1px; top: 19px; }
+            54% { width: 0; left: 1px; top: 19px; }
+            70% { width: 50px; left: -8px; top: 37px; }
+            84% { width: 17px; left: 21px; top: 48px; }
+            100% { width: 25px; left: 14px; top: 43px; }
+        }
+
+        @@keyframes icon-line-long {
+            0% { width: 0; right: 46px; top: 54px; }
+            65% { width: 0; right: 46px; top: 54px; }
+            84% { width: 55px; right: 0; top: 35px; }
+            100% { width: 47px; right: 8px; top: 38px; }
+        }
+
+        /* Modal Text */
+        .success-modal-title {
+            font-size: 1.8em;
+            color: #10b981;
+            font-weight: 800;
+            margin-bottom: 12px;
+        }
+
+        .success-modal-subtitle {
+            font-size: 1.2em;
+            color: #1e293b;
+            margin-bottom: 12px;
+        }
+
+        .success-modal-subtitle strong {
+            color: #2E8BC0;
+            font-weight: 700;
+        }
+
+        .success-modal-message {
+            font-size: 0.95em;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 30px;
+        }
+
+        /* Close Button */
+        .btn-modal-close {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 14px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.05em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-modal-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(16, 185, 129, 0.4);
+        }
+
         /* Responsive */
        @@media (max-width: 1024px) {
             .sidebar {
                 width: 0;
                 transform: translateX(-100%);
             }
+
             .main-content {
                 margin-left: 0;
+            }
+
+            .filter-bar {
+                grid-template-columns: 1fr;
+            }
+
+            .status-legend {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .status-legend {
+                grid-template-columns: 1fr;
+            }
+
+            .application-card {
+                grid-template-columns: 1fr;
+                text-align: center;
+            }
+
+            .app-icon {
+                margin: 0 auto;
             }
         }
     </style>
@@ -286,7 +687,6 @@
             <a href="@Url.Action("Users", "Admin")" class="menu-item">
                 <i class="fas fa-users menu-icon"></i>
                 <span class="menu-text">Users</span>
-
             </a>
             <a href="@Url.Action("VerifyIDs", "Admin")" class="menu-item">
                 <i class="fas fa-id-card menu-icon"></i>
@@ -295,6 +695,14 @@
             <a href="@Url.Action("Pets", "Admin")" class="menu-item">
                 <i class="fas fa-paw menu-icon"></i>
                 <span class="menu-text">Manage Pets</span>
+            </a>
+            <a href="@Url.Action("ApprovePets", "Admin")" class="menu-item">
+                <i class="fas fa-check-circle menu-icon"></i>
+                <span class="menu-text">Approve Posts</span>
+                @if (ViewBag.PendingCount > 0)
+                {
+                    <span class="badge">@ViewBag.PendingCount</span>
+                }
             </a>
             <a href="@Url.Action("Applications", "Admin")" class="menu-item active">
                 <i class="fas fa-file-alt menu-icon"></i>
@@ -316,6 +724,67 @@
     <div class="main-content">
         <div class="top-bar">
             <h1 class="page-title">Adoption Applications</h1>
+
+            <!-- Search and Filter Bar -->
+            <div class="filter-bar">
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="Search by client name or pet name..." onkeyup="filterApplications()">
+                    <i class="fas fa-search"></i>
+                </div>
+                <select class="filter-select" id="statusFilter" onchange="filterApplications()">
+                    <option value="all">All Status</option>
+                    <option value="pending">Pending</option>
+                    <option value="approved">Approved</option>
+                    <option value="rejected">Rejected</option>
+                    <option value="completed">Completed</option>
+                </select>
+                <div class="results-count" id="resultsCount">
+                    Showing <span id="currentCount">0</span> of <span id="totalCount">0</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Status Legend - MODERN CARDS -->
+        <div class="status-legend">
+            <div class="legend-card pending">
+                <div class="legend-icon">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <div class="legend-info">
+                    <div class="legend-status">Pending</div>
+                    <div class="legend-desc">Under review</div>
+                </div>
+            </div>
+
+            <div class="legend-card approved">
+                <div class="legend-icon">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="legend-info">
+                    <div class="legend-status">Approved</div>
+                    <div class="legend-desc">Ready for pickup</div>
+                </div>
+            </div>
+
+            <div class="legend-card completed">
+                <div class="legend-icon">
+                    <i class="fas fa-heart"></i>
+                </div>
+                <div class="legend-info">
+                    <div class="legend-status">Completed</div>
+                    <div class="legend-desc">Successfully adopted</div>
+                </div>
+            </div>
+
+            <div class="legend-card rejected">
+                <div class="legend-icon">
+                    <i class="fas fa-times-circle"></i>
+                </div>
+                <div class="legend-info">
+                    <div class="legend-status">Rejected</div>
+                    <div class="legend-desc">Application declined</div>
+                </div>
+            </div>
         </div>
 
         @if (TempData["Success"] != null)
@@ -336,10 +805,13 @@
         }
         else
         {
-            <div class="applications-grid">
+            <div class="applications-grid" id="applicationsContainer">
                 @foreach (var app in Model)
                 {
-                    <div class="application-card">
+                    <div class="application-card"
+                         data-client="@app.User.FullName.ToLower()"
+                         data-pet="@app.Pet.Name.ToLower()"
+                         data-status="@app.Status.ToLower()">
                         <div class="app-icon">
                             <i class="fas fa-file-alt"></i>
                         </div>
@@ -362,12 +834,173 @@
                             <a href="@Url.Action("ApplicationDetails", "Admin", new { id = app.ApplicationId })" class="btn-sm btn-view">
                                 <i class="fas fa-eye"></i> View Details
                             </a>
-                                
                         </div>
                     </div>
                 }
             </div>
+
+            <!-- No Results Message -->
+            <div class="no-results" id="noResults" style="display: none;">
+                <i class="fas fa-search"></i>
+                <h3 style="color: #64748b; margin-bottom: 10px;">No Results Found</h3>
+                <p style="color: #94a3b8;">Try adjusting your search or filter criteria</p>
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination" id="pagination">
+                <button class="page-btn" id="prevBtn" onclick="changePage(-1)">
+                    <i class="fas fa-chevron-left"></i> Previous
+                </button>
+                <span class="page-info">
+                    Page <span id="currentPage">1</span> of <span id="totalPages">1</span>
+                </span>
+                <button class="page-btn" id="nextBtn" onclick="changePage(1)">
+                    Next <i class="fas fa-chevron-right"></i>
+                </button>
+            </div>
         }
     </div>
+
+    <!-- 🎉 FIXED CENTERED PICKUP SUCCESS MODAL -->
+    <div id="pickupSuccessModal" class="success-modal">
+        <div class="success-modal-content">
+            <div class="success-checkmark-wrapper">
+                <div class="success-checkmark">
+                    <div class="check-icon">
+                        <span class="icon-line line-tip"></span>
+                        <span class="icon-line line-long"></span>
+                        <div class="icon-circle"></div>
+                        <div class="icon-fix"></div>
+                    </div>
+                </div>
+            </div>
+
+            <h2 class="success-modal-title">Pickup Details Set!</h2>
+            <p class="success-modal-subtitle">
+                <strong id="adopterName"></strong> has been notified via email
+            </p>
+            <p class="success-modal-message">
+                The adopter will receive all pickup details and instructions to claim their new pet.
+            </p>
+
+            <button class="btn-modal-close" onclick="closeSuccessModal()">
+                <i class="fas fa-check-circle"></i> Got it!
+            </button>
+        </div>
+    </div>
+
+
+    <script>
+    let currentPage = 1;
+    const itemsPerPage = 5;
+    let filteredCards = [];
+
+    function filterApplications() {
+        const searchTerm = document.getElementById('searchInput').value.toLowerCase();
+        const statusFilter = document.getElementById('statusFilter').value;
+        const cards = document.querySelectorAll('.application-card');
+
+        filteredCards = [];
+
+        cards.forEach(card => {
+            const clientName = card.getAttribute('data-client');
+            const petName = card.getAttribute('data-pet');
+            const status = card.getAttribute('data-status');
+
+            const matchesSearch = clientName.includes(searchTerm) || petName.includes(searchTerm);
+            const matchesStatus = statusFilter === 'all' || status === statusFilter;
+
+            if (matchesSearch && matchesStatus) {
+                filteredCards.push(card);
+            }
+        });
+
+        currentPage = 1;
+        updateDisplay();
+    }
+
+    function updateDisplay() {
+        const cards = document.querySelectorAll('.application-card');
+        const totalCount = document.getElementById('totalCount');
+        const currentCount = document.getElementById('currentCount');
+        const noResults = document.getElementById('noResults');
+
+        // Hide all cards first
+        cards.forEach(card => card.style.display = 'none');
+
+        if (filteredCards.length === 0) {
+            noResults.style.display = 'block';
+            document.getElementById('pagination').style.display = 'none';
+            totalCount.textContent = '0';
+            currentCount.textContent = '0';
+            return;
+        }
+
+        noResults.style.display = 'none';
+        document.getElementById('pagination').style.display = 'flex';
+
+        // Calculate pagination
+        const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
+        const start = (currentPage - 1) * itemsPerPage;
+        const end = start + itemsPerPage;
+
+        // Show current page items
+        for (let i = start; i < end && i < filteredCards.length; i++) {
+            filteredCards[i].style.display = 'grid';
+        }
+
+        // Update counters
+        totalCount.textContent = filteredCards.length;
+        currentCount.textContent = Math.min(end, filteredCards.length);
+        document.getElementById('currentPage').textContent = currentPage;
+        document.getElementById('totalPages').textContent = totalPages;
+
+        // Update pagination buttons
+        document.getElementById('prevBtn').disabled = currentPage === 1;
+        document.getElementById('nextBtn').disabled = currentPage === totalPages;
+    }
+
+    function changePage(direction) {
+        const totalPages = Math.ceil(filteredCards.length / itemsPerPage);
+        currentPage += direction;
+
+        if (currentPage < 1) currentPage = 1;
+        if (currentPage > totalPages) currentPage = totalPages;
+
+        updateDisplay();
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+
+    function closeSuccessModal() {
+        document.getElementById('pickupSuccessModal').style.display = 'none';
+    }
+
+    // Initialize everything on page load - SINGLE EVENT LISTENER
+    window.addEventListener('DOMContentLoaded', function() {
+        // Initialize pagination
+        const allCards = document.querySelectorAll('.application-card');
+        filteredCards = Array.from(allCards);
+        updateDisplay();
+
+        // Check for success message and show modal
+        const successMsg = '@TempData["Success"]';
+        if (successMsg && successMsg.includes('has been notified')) {
+            const nameMatch = successMsg.match(/Pickup details set! (.*?) has been notified/);
+            if (nameMatch && nameMatch[1]) {
+                document.getElementById('adopterName').textContent = nameMatch[1];
+            }
+            // Use 'flex' to center the modal
+            document.getElementById('pickupSuccessModal').style.display = 'flex';
+        }
+    });
+
+    // Close modal when clicking outside
+    window.addEventListener('click', function(event) {
+        const modal = document.getElementById('pickupSuccessModal');
+        if (event.target === modal) {
+            closeSuccessModal();
+        }
+    });
+    </script>
 </body>
 </html>

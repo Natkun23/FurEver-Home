@@ -2,6 +2,8 @@
 @{
     ViewBag.Title = "Apply for Adoption - FurEver Home";
     Layout = null;
+    var customQuestions = ViewBag.CustomQuestions as List<FurEver_Home.Models.PetScreeningQuestion>;
+    var hasCustomQuestions = customQuestions != null && customQuestions.Any();
 }
 
 <!DOCTYPE html>
@@ -90,6 +92,27 @@
             margin-bottom: 25px;
             color: #92400e;
             font-size: 0.95em;
+        }
+
+        .owner-info-banner {
+            background: linear-gradient(135deg, #E8F4FC 0%, #dbeafe 100%);
+            border-left: 4px solid #3FA9F5;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .owner-info-banner i {
+            font-size: 2em;
+            color: #3FA9F5;
+        }
+
+        .owner-info-banner strong {
+            color: #2E8BC0;
+            font-size: 1.1em;
         }
 
         .form-grid {
@@ -268,7 +291,6 @@
             font-size: 1.2em;
         }
 
-        /* Warning Banner */
         .warning-banner {
             background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
             padding: 18px 20px;
@@ -286,7 +308,7 @@
             color: #d97706;
         }
 
-        /* Agreement Modal Styles */
+        /* Agreement Modal - keeping existing styles */
         .agreement-modal {
             display: none;
             position: fixed;
@@ -591,6 +613,19 @@
             </div>
 
             <div class="app-body">
+                @if (Model.Pet.PostedByType == "Customer" && Model.Pet.Owner != null)
+                {
+                    <div class="owner-info-banner">
+                        <i class="fas fa-user-circle"></i>
+                        <div>
+                            <strong>Posted by: @Model.Pet.Owner.FullName</strong>
+                            <div style="color: #64748b; font-size: 0.9em; margin-top: 4px;">
+                                This pet is posted by a community member. Your application will be reviewed by them directly.
+                            </div>
+                        </div>
+                    </div>
+                }
+
                 <div class="step-indicator">
                     <div class="step active">
                         <i class="fas fa-user"></i>
@@ -663,119 +698,192 @@
                     <!-- SECTION 2: SCREENING QUESTIONS -->
                     <div class="section-title" style="margin-top: 40px;">
                         <i class="fas fa-clipboard-check"></i>
-                        Adoption Capability Screening
+                        @if (hasCustomQuestions)
+                        {
+                            <span>Owner's Screening Questions</span>
+                        }
+                        else
+                        {
+                            <span>Adoption Capability Screening</span>
+                        }
                     </div>
 
                     <div class="section-description">
-                        <strong><i class="fas fa-info-circle"></i> Important:</strong> Please answer these questions honestly. They help us ensure the best match between you and @Model.Pet.Name.
+                        <strong><i class="fas fa-info-circle"></i> Important:</strong>
+                        @if (hasCustomQuestions)
+                        {
+                            <span>The pet owner has set custom questions. Please answer honestly to help them find the best match for @Model.Pet.Name.</span>
+                        }
+                        else
+                        {
+                            <span>Please answer these questions honestly. They help us ensure the best match between you and @Model.Pet.Name.</span>
+                        }
                     </div>
 
                     <div class="screening-section">
-                        <div class="form-group full-width">
-                            <label>
-                                <span class="question-number">1</span>
-                                Do you have prior experience caring for pets? Please describe your experience. <span class="required">*</span>
-                            </label>
-                            @Html.TextAreaFor(m => m.ScreeningQ1Experience, new
+                        @if (hasCustomQuestions)
+                        {
+                            <!-- CUSTOMER'S CUSTOM QUESTIONS -->
+                            foreach (var question in customQuestions)
                             {
-                                placeholder = "Describe your experience with pets (e.g., owned dogs/cats before, volunteered at shelters, etc.)",
-                                rows = "4",
-                                required = "required"
-                            })
-                            @Html.ValidationMessageFor(m => m.ScreeningQ1Experience, "", new { @class = "field-validation-error" })
-                        </div>
+                                <div class="form-group full-width">
+                                    <label>
+                                        <span class="question-number">@question.OrderNumber</span>
+                                        @question.QuestionText
+                                        @if (question.IsRequired)
+                                        {
+                                            <span class="required">*</span>
+                                        }
+                                    </label>
 
-                        <div class="form-group full-width">
-                            <label>
-                                <span class="question-number">2</span>
-                                Can you financially commit to pet expenses including food, veterinary care, and emergencies? <span class="required">*</span>
-                            </label>
-                            <div class="radio-group">
-                                <div class="radio-option">
-                                    @Html.RadioButtonFor(m => m.ScreeningQ2Financial, "Yes", new { id = "financialYes", required = "required" })
-                                    <label for="financialYes">Yes</label>
+                                    @if (question.QuestionType == "YesNo")
+                                    {
+                                        <div class="radio-group">
+                                            <div class="radio-option">
+                                                <input type="radio"
+                                                       name="CustomAnswer_@question.QuestionId"
+                                                       id="customYes_@question.QuestionId"
+                                                       value="Yes"
+                                                       required="@question.IsRequired" />
+                                                <label for="customYes_@question.QuestionId">Yes</label>
+                                            </div>
+                                            <div class="radio-option">
+                                                <input type="radio"
+                                                       name="CustomAnswer_@question.QuestionId"
+                                                       id="customNo_@question.QuestionId"
+                                                       value="No" />
+                                                <label for="customNo_@question.QuestionId">No</label>
+                                            </div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <textarea name="CustomAnswer_@question.QuestionId"
+                                                  placeholder="Your answer..."
+                                                  rows="4"
+                                                  required="@question.IsRequired"></textarea>
+                                    }
                                 </div>
-                                <div class="radio-option">
-                                    @Html.RadioButtonFor(m => m.ScreeningQ2Financial, "No", new { id = "financialNo" })
-                                    <label for="financialNo">No</label>
-                                </div>
-                            </div>
-                            <div style="margin-top: 15px;">
-                                @Html.TextAreaFor(m => m.ScreeningQ2Explanation, new
+                            }
+                        }
+                        else
+                        {
+                            <!-- DEFAULT ADMIN QUESTIONS -->
+                            <div class="form-group full-width">
+                                <label>
+                                    <span class="question-number">1</span>
+                                    Do you have prior experience caring for pets? Please describe your experience. <span class="required">*</span>
+                                </label>
+                                @Html.TextAreaFor(m => m.ScreeningQ1Experience, new
                                 {
-                                    placeholder = "Please explain your financial readiness (e.g., stable income, pet insurance, emergency savings)",
-                                    rows = "3",
+                                    placeholder = "Describe your experience with pets (e.g., owned dogs/cats before, volunteered at shelters, etc.)",
+                                    rows = "4",
                                     required = "required"
                                 })
+                                @Html.ValidationMessageFor(m => m.ScreeningQ1Experience, "", new { @class = "field-validation-error" })
                             </div>
-                            @Html.ValidationMessageFor(m => m.ScreeningQ2Financial, "", new { @class = "field-validation-error" })
-                        </div>
 
-                        <div class="form-group full-width">
-                            <label>
-                                <span class="question-number">3</span>
-                                Do all household members agree to this adoption? <span class="required">*</span>
-                            </label>
-                            <div class="radio-group">
-                                <div class="radio-option">
-                                    @Html.RadioButtonFor(m => m.ScreeningQ3HouseholdAgreement, "Yes", new { id = "householdYes", required = "required" })
-                                    <label for="householdYes">Yes</label>
+                            <div class="form-group full-width">
+                                <label>
+                                    <span class="question-number">2</span>
+                                    Can you financially commit to pet expenses including food, veterinary care, and emergencies? <span class="required">*</span>
+                                </label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        @Html.RadioButtonFor(m => m.ScreeningQ2Financial, "Yes", new { id = "financialYes", required = "required" })
+                                        <label for="financialYes">Yes</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        @Html.RadioButtonFor(m => m.ScreeningQ2Financial, "No", new { id = "financialNo" })
+                                        <label for="financialNo">No</label>
+                                    </div>
                                 </div>
-                                <div class="radio-option">
-                                    @Html.RadioButtonFor(m => m.ScreeningQ3HouseholdAgreement, "No", new { id = "householdNo" })
-                                    <label for="householdNo">No</label>
+                                <div style="margin-top: 15px;">
+                                    @Html.TextAreaFor(m => m.ScreeningQ2Explanation, new
+                                    {
+                                        placeholder = "Please explain your financial readiness (e.g., stable income, pet insurance, emergency savings)",
+                                        rows = "3",
+                                        required = "required"
+                                    })
                                 </div>
+                                @Html.ValidationMessageFor(m => m.ScreeningQ2Financial, "", new { @class = "field-validation-error" })
                             </div>
-                            <div style="margin-top: 15px;">
-                                @Html.TextAreaFor(m => m.ScreeningQ3Explanation, new
+
+                            <div class="form-group full-width">
+                                <label>
+                                    <span class="question-number">3</span>
+                                    Do all household members agree to this adoption? <span class="required">*</span>
+                                </label>
+                                <div class="radio-group">
+                                    <div class="radio-option">
+                                        @Html.RadioButtonFor(m => m.ScreeningQ3HouseholdAgreement, "Yes", new { id = "householdYes", required = "required" })
+                                        <label for="householdYes">Yes</label>
+                                    </div>
+                                    <div class="radio-option">
+                                        @Html.RadioButtonFor(m => m.ScreeningQ3HouseholdAgreement, "No", new { id = "householdNo" })
+                                        <label for="householdNo">No</label>
+                                    </div>
+                                </div>
+                                <div style="margin-top: 15px;">
+                                    @Html.TextAreaFor(m => m.ScreeningQ3Explanation, new
+                                    {
+                                        placeholder = "Explain household support (e.g., all family members are excited, no allergies, everyone committed to care)",
+                                        rows = "3",
+                                        required = "required"
+                                    })
+                                </div>
+                                @Html.ValidationMessageFor(m => m.ScreeningQ3HouseholdAgreement, "", new { @class = "field-validation-error" })
+                            </div>
+
+                            <div class="form-group full-width">
+                                <label>
+                                    <span class="question-number">4</span>
+                                    What is your plan for the pet if you need to move or travel? <span class="required">*</span>
+                                </label>
+                                @Html.TextAreaFor(m => m.ScreeningQ4RelocationPlan, new
                                 {
-                                    placeholder = "Explain household support (e.g., all family members are excited, no allergies, everyone committed to care)",
-                                    rows = "3",
+                                    placeholder = "Describe your contingency plans (e.g., pet-friendly housing, trusted pet sitters, no plans to relocate soon)",
+                                    rows = "4",
                                     required = "required"
                                 })
+                                @Html.ValidationMessageFor(m => m.ScreeningQ4RelocationPlan, "", new { @class = "field-validation-error" })
                             </div>
-                            @Html.ValidationMessageFor(m => m.ScreeningQ3HouseholdAgreement, "", new { @class = "field-validation-error" })
-                        </div>
 
-                        <div class="form-group full-width">
-                            <label>
-                                <span class="question-number">4</span>
-                                What is your plan for the pet if you need to move or travel? <span class="required">*</span>
-                            </label>
-                            @Html.TextAreaFor(m => m.ScreeningQ4RelocationPlan, new
-                            {
-                                placeholder = "Describe your contingency plans (e.g., pet-friendly housing, trusted pet sitters, no plans to relocate soon)",
-                                rows = "4",
-                                required = "required"
-                            })
-                            @Html.ValidationMessageFor(m => m.ScreeningQ4RelocationPlan, "", new { @class = "field-validation-error" })
-                        </div>
-
-                        <div class="form-group full-width">
-                            <label>
-                                <span class="question-number">5</span>
-                                How many hours per day will the pet be left alone? <span class="required">*</span>
-                            </label>
-                            @Html.DropDownListFor(m => m.ScreeningQ5HoursAlone,
-                                new SelectList(new[] {
-                                    "Less than 4 hours",
-                                    "4-6 hours",
-                                    "6-8 hours",
-                                    "More than 8 hours"
-                                }),
-                                "-- Select Average Hours --",
-                                new { required = "required" })
-                            @Html.ValidationMessageFor(m => m.ScreeningQ5HoursAlone, "", new { @class = "field-validation-error" })
-                        </div>
+                            <div class="form-group full-width">
+                                <label>
+                                    <span class="question-number">5</span>
+                                    How many hours per day will the pet be left alone? <span class="required">*</span>
+                                </label>
+                                @Html.DropDownListFor(m => m.ScreeningQ5HoursAlone,
+                                    new SelectList(new[] {
+                                        "Less than 4 hours",
+                                        "4-6 hours",
+                                        "6-8 hours",
+                                        "More than 8 hours"
+                                    }),
+                                    "-- Select Average Hours --",
+                                    new { required = "required" })
+                                @Html.ValidationMessageFor(m => m.ScreeningQ5HoursAlone, "", new { @class = "field-validation-error" })
+                            </div>
+                        }
                     </div>
 
                     <div class="info-box">
                         <h4><i class="fas fa-info-circle"></i> What happens next?</h4>
                         <ul>
-                            <li>Our admin team will review your application and screening answers within 24-48 hours</li>
-                            <li>We'll evaluate your capability to provide a loving and stable home for @Model.Pet.Name</li>
-                            <li>If approved, we'll contact you to schedule a meet-and-greet</li>
-                            <li>You'll receive post-adoption support and guidance</li>
+                            @if (hasCustomQuestions)
+                            {
+                                <li>The pet owner will review your application and answers within 24-48 hours</li>
+                                <li>They'll evaluate your capability to provide a loving and stable home for @Model.Pet.Name</li>
+                                <li>If approved, they'll contact you directly to arrange the adoption</li>
+                            }
+                            else
+                            {
+                                <li>Our admin team will review your application and screening answers within 24-48 hours</li>
+                                <li>We'll evaluate your capability to provide a loving and stable home for @Model.Pet.Name</li>
+                                <li>If approved, we'll contact you to schedule a meet-and-greet</li>
+                                <li>You'll receive post-adoption support and guidance</li>
+                            }
                         </ul>
                     </div>
 
@@ -783,15 +891,15 @@
                     <div class="warning-banner">
                         <i class="fas fa-info-circle"></i>
                         <div>
-                            <strong>Please Note:</strong> Once approved by admin, adoptions cannot be cancelled.
+                            <strong>Please Note:</strong> Once approved by @(hasCustomQuestions ? "the pet owner" : "admin"), adoptions cannot be cancelled.
                             Click Submit to review the full policy.
                         </div>
                     </div>
 
                     <!-- Submit Button -->
                     <div class="action-buttons">
-                        <a href="@Url.Action("Index", "Pets")" class="btn-back">
-                            <i class="fas fa-arrow-left"></i> Back to Pets
+                        <a href="@Url.Action("Details", "Pets", new { id = Model.PetId })" class="btn-back">
+                            <i class="fas fa-arrow-left"></i> Back to Pet Details
                         </a>
                         <button type="button" class="btn-submit" onclick="showAgreementModal()">
                             <i class="fas fa-paper-plane"></i> Submit Application
@@ -811,14 +919,14 @@
                             <div class="policy-notice">
                                 <h4>⚠️ Please Read Carefully Before Proceeding</h4>
                                 <p style="color: #7f1d1d; margin-bottom: 15px;">
-                                    By submitting this application, you are making a commitment to adopt this pet if approved by our team.
+                                    By submitting this application, you are making a commitment to adopt this pet if approved.
                                 </p>
                                 <ul class="policy-list">
                                     <li>
-                                        <strong>Once approved by admin, adoptions CANNOT be cancelled.</strong>
+                                        <strong>Once approved, adoptions CANNOT be cancelled.</strong>
                                     </li>
                                     <li>
-                                        You can only withdraw your application <u>before</u> admin approval.
+                                        You can only withdraw your application <u>before</u> approval.
                                     </li>
                                     <li>
                                         After approval, pickup details will be set and you <strong>must proceed</strong> with the adoption.
@@ -840,7 +948,7 @@
                                     <label class="checkbox-label">
                                         <strong>I understand and agree to the FurEver Home adoption policy.</strong>
                                         <br>
-                                        I acknowledge that once my application is approved by admin, I cannot cancel or withdraw from this adoption. I am fully committed to providing a loving home for this pet.
+                                        I acknowledge that once my application is approved, I cannot cancel or withdraw from this adoption. I am fully committed to providing a loving home for this pet.
                                     </label>
                                 </div>
                             </div>

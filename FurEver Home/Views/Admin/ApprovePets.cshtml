@@ -1,0 +1,703 @@
+﻿@model List<FurEver_Home.Models.Pet>
+@{
+    ViewBag.Title = "Approve Customer Pet Posts - FurEver Home Admin";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 280px;
+            background: linear-gradient(180deg, #2E8BC0 0%, #1a5a7d 100%);
+            color: white;
+            position: fixed;
+            height: 100vh;
+            overflow-y: auto;
+            box-shadow: 2px 0 10px rgba(0,0,0,0.1);
+        }
+
+        .sidebar-header {
+            padding: 30px 20px;
+            background: rgba(0,0,0,0.2);
+            text-align: center;
+        }
+
+        .sidebar-header img {
+            max-width: 200px;
+            margin: 0 auto 15px;
+            display: block;
+        }
+
+        .sidebar-subtitle {
+            font-size: 0.9em;
+            opacity: 0.9;
+            text-align: center;
+            color: white;
+            font-weight: 500;
+        }
+
+        .sidebar-menu {
+            padding: 10px 0;
+        }
+
+        .menu-item {
+            padding: 16px 25px;
+            color: white;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+            border-left: 4px solid transparent;
+        }
+
+        .menu-item:hover {
+            background: rgba(255,255,255,0.08);
+            padding-left: 28px;
+        }
+
+        .menu-item.active {
+            background: rgba(255,255,255,0.12);
+            border-left-color: #FFD93D;
+        }
+
+        .menu-icon {
+            font-size: 1.2em;
+            width: 20px;
+            color: white;
+            text-align: center;
+        }
+
+        .menu-text {
+            font-weight: 600;
+            color: white;
+            font-size: 0.95em;
+        }
+
+        .badge {
+            margin-left: auto;
+            background: #FFD93D;
+            color: #2E8BC0;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.8em;
+            font-weight: 700;
+        }
+
+        /* Main Content */
+        .main-content {
+            margin-left: 280px;
+            flex: 1;
+            padding: 30px;
+            min-height: 100vh;
+            background: #f0f2f5;
+        }
+
+        .top-bar {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .page-title {
+            font-size: 2em;
+            color: #2E8BC0;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .alert {
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .alert-success {
+            background: #d4edda;
+            border: 1px solid #c3e6cb;
+            color: #155724;
+        }
+
+        .pets-grid {
+            display: grid;
+            gap: 20px;
+        }
+
+        .pet-card {
+            background: white;
+            border-radius: 15px;
+            padding: 25px;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+            display: grid;
+            grid-template-columns: 120px 1fr auto;
+            gap: 25px;
+            align-items: start;
+        }
+
+        .pet-image {
+            width: 120px;
+            height: 120px;
+            border-radius: 15px;
+            object-fit: cover;
+        }
+
+        .pet-info h3 {
+            color: #2E8BC0;
+            font-size: 1.4em;
+            margin-bottom: 8px;
+        }
+
+        .pet-details {
+            color: #64748b;
+            font-size: 0.95em;
+            margin-bottom: 5px;
+        }
+
+        .owner-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            background: #E8F4FC;
+            color: #2E8BC0;
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+
+        .pet-description {
+            color: #334155;
+            line-height: 1.6;
+            margin-top: 10px;
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+        }
+
+        .pet-actions {
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        .btn {
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.9em;
+            text-align: center;
+            white-space: nowrap;
+        }
+
+        .btn-approve {
+            background: #10b981;
+            color: white;
+        }
+
+        .btn-approve:hover {
+            background: #059669;
+            transform: translateY(-2px);
+        }
+
+        .btn-reject {
+            background: #ef4444;
+            color: white;
+        }
+
+        .btn-reject:hover {
+            background: #dc2626;
+        }
+
+        .btn-view {
+            background: #3FA9F5;
+            color: white;
+            text-decoration: none;
+        }
+
+        .btn-view:hover {
+            background: #2E8BC0;
+            color: white;
+        }
+
+        .empty-state {
+            background: white;
+            border-radius: 15px;
+            padding: 80px 40px;
+            text-align: center;
+            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+        }
+
+        .empty-state i {
+            font-size: 5em;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.6);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s;
+        }
+
+        @@keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+        }
+
+        .modal-icon-approve {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #10b981;
+        }
+
+        .modal-icon-reject {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #ef4444;
+        }
+
+        .modal-title {
+            flex: 1;
+        }
+
+        .modal-title h3 {
+            font-size: 1.8em;
+            color: #2E8BC0;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .modal-title p {
+            color: #64748b;
+            font-size: 0.95em;
+        }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+        .modal-info {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3FA9F5;
+            line-height: 1.6;
+        }
+
+        .modal-info strong {
+            color: #2E8BC0;
+        }
+
+        .modal-body textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            font-family: inherit;
+            min-height: 120px;
+            resize: vertical;
+            transition: all 0.3s;
+        }
+
+        .modal-body textarea:focus {
+            outline: none;
+            border-color: #3FA9F5;
+            box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .btn-modal-cancel {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+        .btn-modal-cancel:hover {
+            background: #cbd5e1;
+        }
+
+        .btn-modal-submit-approve {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+        .btn-modal-submit-approve:hover {
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            transform: translateY(-2px);
+        }
+
+        .btn-modal-submit-reject {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+        .btn-modal-submit-reject:hover {
+            box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+            transform: translateY(-2px);
+        }
+    </style>
+</head>
+<body>
+    <div class="sidebar">
+        <div class="sidebar-header">
+            <img src="~/Content/Images/fur_everhome.png" alt="FurEver Home">
+            <div class="sidebar-subtitle">Admin Panel</div>
+        </div>
+        <nav class="sidebar-menu">
+            <a href="@Url.Action("Dashboard", "Admin")" class="menu-item">
+                <i class="fas fa-chart-line menu-icon"></i>
+                <span class="menu-text">Dashboard</span>
+            </a>
+            <a href="@Url.Action("Users", "Admin")" class="menu-item">
+                <i class="fas fa-users menu-icon"></i>
+                <span class="menu-text">Users</span>
+            </a>
+            <a href="@Url.Action("VerifyIDs", "Admin")" class="menu-item">
+                <i class="fas fa-id-card menu-icon"></i>
+                <span class="menu-text">Verify IDs</span>
+            </a>
+            <a href="@Url.Action("Pets", "Admin")" class="menu-item">
+                <i class="fas fa-paw menu-icon"></i>
+                <span class="menu-text">Manage Pets</span>
+            </a>
+            <a href="@Url.Action("ApprovePets", "Admin")" class="menu-item active">
+                <i class="fas fa-check-circle menu-icon"></i>
+                <span class="menu-text">Approve Posts</span>
+                @if (ViewBag.PendingCount > 0)
+                {
+                    <span class="badge">@ViewBag.PendingCount</span>
+                }
+            </a>
+            <a href="@Url.Action("Applications", "Admin")" class="menu-item">
+                <i class="fas fa-file-alt menu-icon"></i>
+                <span class="menu-text">Applications</span>
+            </a>
+            <a href="@Url.Action("AdoptedPets", "Admin")" class="menu-item">
+                <i class="fas fa-heart menu-icon"></i>
+                <span class="menu-text">Adopted Pets</span>
+            </a>
+            <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
+            <a href="@Url.Action("Logout", "Account")" class="menu-item">
+                <i class="fas fa-sign-out-alt menu-icon"></i>
+                <span class="menu-text">Logout</span>
+            </a>
+        </nav>
+    </div>
+
+    <div class="main-content">
+        <div class="top-bar">
+            <h1 class="page-title">Approve Customer Pet Posts</h1>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <span>@TempData["Success"]</span>
+            </div>
+        }
+
+        @if (Model.Count == 0)
+        {
+            <div class="empty-state">
+                <i class="fas fa-check-double"></i>
+                <h3 style="color: #64748b; margin-bottom: 10px;">All Caught Up!</h3>
+                <p style="color: #94a3b8;">No pending pet posts to review</p>
+            </div>
+        }
+        else
+        {
+            <div class="pets-grid">
+                @foreach (var pet in Model)
+                {
+                    <div class="pet-card">
+                        <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/120?text=Pet" : pet.ImageUrl)"
+                             alt="@pet.Name" class="pet-image">
+
+                        <div class="pet-info">
+                            <h3>@pet.Name</h3>
+                            <div class="pet-details">
+                                <i class="fas fa-paw"></i> @pet.Breed • @pet.AgeDisplay • @pet.Gender
+                            </div>
+                            <div class="pet-details">
+                                <i class="fas fa-ruler"></i> @pet.Size
+                            </div>
+                            <div class="pet-details">
+                                <i class="fas fa-calendar"></i> Posted @pet.DateAdded.ToString("MMM dd, yyyy")
+                            </div>
+
+                            @if (pet.Owner != null)
+                            {
+                                <div class="owner-badge">
+                                    <i class="fas fa-user"></i>
+                                    Posted by: @pet.Owner.FullName
+                                </div>
+                            }
+
+                            <p class="pet-description">@pet.Description</p>
+
+                            @{
+                                var customQuestions = ViewBag.CustomQuestions as System.Collections.Generic.Dictionary<int, int>;
+                                var questionCount = customQuestions != null && customQuestions.ContainsKey(pet.PetId) ? customQuestions[pet.PetId] : 0;
+                            }
+
+                            @if (questionCount > 0)
+                            {
+                                <div style="margin-top: 10px; color: #3FA9F5; font-size: 0.9em; font-weight: 600;">
+                                    <i class="fas fa-question-circle"></i> Has @questionCount custom screening question(s)
+                                </div>
+                            }
+                        </div>
+
+                        <div class="pet-actions">
+                            <a href="@Url.Action("ReviewPetPost", "Admin", new { id = pet.PetId })" class="btn btn-view">
+                                <i class="fas fa-eye"></i> View Full Details
+                            </a>
+
+                            <button type="button" class="btn btn-approve" onclick="showApproveModal(@pet.PetId, '@pet.Name')">
+                                <i class="fas fa-check"></i> Approve
+                            </button>
+
+                            <button type="button" class="btn btn-reject" onclick="showRejectModal(@pet.PetId, '@pet.Name')">
+                                <i class="fas fa-times"></i> Reject
+                            </button>
+                        </div>
+                    </div>
+                }
+            </div>
+        }
+    </div>
+
+    <!-- Approve Modal -->
+    <div id="approveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon modal-icon-approve">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="modal-title">
+                    <h3>Approve Pet Post</h3>
+                    <p>Confirm approval for this listing</p>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-info">
+                    Are you sure you want to approve <strong id="approvePetName"></strong>'s post?
+                    This will make the pet visible to all potential adopters.
+                </div>
+
+                @using (Html.BeginForm("ApprovePetPost", "Admin", FormMethod.Post, new { id = "approveForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="approvePetId" name="id" />
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-modal btn-modal-cancel" onclick="closeApproveModal()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-modal btn-modal-submit-approve">
+                            <i class="fas fa-check"></i> Approve Post
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div id="rejectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon modal-icon-reject">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="modal-title">
+                    <h3>Reject Pet Post</h3>
+                    <p>Provide a reason for rejection</p>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-info">
+                    You are about to reject <strong id="rejectPetName"></strong>'s post.
+                    Please provide a clear reason that will be sent to the owner.
+                </div>
+
+                @using (Html.BeginForm("RejectPetPost", "Admin", FormMethod.Post, new { id = "rejectForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="rejectPetId" name="id" />
+                    <textarea name="rejectionReason"
+                              placeholder="Enter detailed reason for rejection (e.g., incomplete information, inappropriate content, policy violation)..."
+                              required
+                              minlength="10"></textarea>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-modal btn-modal-cancel" onclick="closeRejectModal()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-modal btn-modal-submit-reject">
+                            <i class="fas fa-times"></i> Reject Post
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Approve Modal Functions
+        function showApproveModal(petId, petName) {
+            document.getElementById('approvePetId').value = petId;
+            document.getElementById('approvePetName').textContent = petName;
+            document.getElementById('approveModal').style.display = 'flex';
+        }
+
+        function closeApproveModal() {
+            document.getElementById('approveModal').style.display = 'none';
+        }
+
+        // Reject Modal Functions
+        function showRejectModal(petId, petName) {
+            document.getElementById('rejectPetId').value = petId;
+            document.getElementById('rejectPetName').textContent = petName;
+            document.getElementById('rejectModal').style.display = 'flex';
+        }
+
+        function closeRejectModal() {
+            document.getElementById('rejectModal').style.display = 'none';
+            // Clear textarea when closing
+            document.querySelector('#rejectForm textarea[name="rejectionReason"]').value = '';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function (event) {
+            const approveModal = document.getElementById('approveModal');
+            const rejectModal = document.getElementById('rejectModal');
+
+            if (event.target === approveModal) {
+                closeApproveModal();
+            }
+            if (event.target === rejectModal) {
+                closeRejectModal();
+            }
+        }
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function (event) {
+            if (event.key === 'Escape') {
+                closeApproveModal();
+                closeRejectModal();
+            }
+        });
+
+        // Form validation for reject
+        document.getElementById('rejectForm').addEventListener('submit', function (e) {
+            const reason = this.querySelector('textarea[name="rejectionReason"]').value.trim();
+            if (reason.length < 10) {
+                e.preventDefault();
+                alert('Please provide a detailed reason for rejection (at least 10 characters).');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

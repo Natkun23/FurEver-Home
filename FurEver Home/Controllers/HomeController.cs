@@ -73,6 +73,29 @@ namespace FurEver_Home.Controllers
             }
             base.Dispose(disposing);
         }
-    }
-}
 
+    // GET: Home/NotificationHistory
+public ActionResult NotificationHistory()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            int userId = (int)Session["UserId"];
+
+            // Get ALL notifications (both read and unread), ordered by most recent
+            var allNotifications = db.UserNotifications
+                .Where(n => n.UserId == userId)
+                .OrderByDescending(n => n.CreatedAt)
+                .ToList();
+
+            // Separate unread and read for display
+            ViewBag.UnreadNotifications = allNotifications.Where(n => !n.IsRead).ToList();
+            ViewBag.ReadNotifications = allNotifications.Where(n => n.IsRead).ToList();
+
+            return View(allNotifications);
+        }
+    }
+
+}

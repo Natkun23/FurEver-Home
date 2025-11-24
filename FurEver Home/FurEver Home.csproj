@@ -131,6 +131,7 @@
     <Compile Include="Controllers\AdminController.cs" />
     <Compile Include="Controllers\BaseController.cs" />
     <Compile Include="Controllers\HomeController.cs" />
+    <Compile Include="Controllers\MyPetsController.cs" />
     <Compile Include="Controllers\PetsController.cs" />
     <Compile Include="Filters\AuthorizeAndNoCacheAttribute.cs" />
     <Compile Include="Global.asax.cs">
@@ -144,6 +145,8 @@
     <Compile Include="Models\FurEverHomeContext.cs" />
     <Compile Include="Models\LoginViewModel.cs" />
     <Compile Include="Models\Pet.cs" />
+    <Compile Include="Models\PetScreeningAnswers.cs" />
+    <Compile Include="Models\PetScreeningQuestions.cs" />
     <Compile Include="Models\PetType.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
@@ -200,6 +203,12 @@
     <Content Include="Views\Pets\ClaimPet.cshtml" />
     <Content Include="Views\Admin\AdoptedPets.cshtml" />
     <Content Include="Views\Account\VerifyOtp.cshtml" />
+    <Content Include="Views\MyPets\CustomerDashboard.cshtml" />
+    <Content Include="Views\MyPets\CustomerApplicationDetails.cshtml" />
+    <Content Include="Views\MyPets\CustomerSetPickupDetails.cshtml" />
+    <Content Include="Views\Admin\ApprovePets.cshtml" />
+    <Content Include="Views\Admin\ReviewPetPost.cshtml" />
+    <Content Include="Views\Home\NotificationHistory.cshtml" />
     <None Include="Views\Pets\PostForAdoption.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
@@ -212,9 +221,6 @@
     <Content Include="Views\_ViewStart.cshtml" />
     <Content Include="Views\Shared\Error.cshtml" />
     <Content Include="Views\Shared\_Layout.cshtml" />
-    <Content Include="Views\Home\About.cshtml" />
-    <Content Include="Views\Home\Contact.cshtml" />
-    <Content Include="Views\Home\xxIndex.cshtml" />
     <Content Include="Views\Account\Login.cshtml" />
     <Content Include="Views\Account\Register.cshtml" />
     <Content Include="Views\Pets\Details.cshtml" />

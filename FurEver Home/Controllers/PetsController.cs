@@ -34,9 +34,13 @@ namespace FurEver_Home.Controllers
                 }
             }
 
+            // ⭐ UPDATED: Only show approved posts OR admin posts
             var pets = db.Pets.Include(p => p.PetType)
                               .Include(p => p.Creator)
-                              .Where(p => !p.IsAdopted)
+                              .Where(p => !p.IsAdopted &&
+                                     (p.PostedByType == "Admin" ||
+                                      p.PostedByType == "Organization" ||
+                                      (p.PostedByType == "Customer" && p.PostStatus == "Approved")))
                               .OrderByDescending(p => p.DateAdded)
                               .ToList();
 
@@ -66,15 +70,21 @@ namespace FurEver_Home.Controllers
                 }
             }
 
+            // ⭐ UPDATED: Only show approved posts OR admin posts
             var dogs = db.Pets.Include(p => p.PetType)
                               .Include(p => p.Creator)
-                              .Where(p => p.PetTypeId == 1 && !p.IsAdopted)
+                              .Where(p => p.PetTypeId == 1 &&
+                                     !p.IsAdopted &&
+                                     (p.PostedByType == "Admin" ||
+                                      p.PostedByType == "Organization" ||
+                                      (p.PostedByType == "Customer" && p.PostStatus == "Approved")))
                               .OrderByDescending(p => p.DateAdded)
                               .ToList();
 
             ViewBag.PetType = "Dogs";
             return View("Index", dogs);
         }
+
 
         // GET: Pets/Cats
         public ActionResult Cats()
@@ -97,9 +107,14 @@ namespace FurEver_Home.Controllers
                 }
             }
 
+            // ⭐ UPDATED: Only show approved posts OR admin posts
             var cats = db.Pets.Include(p => p.PetType)
                               .Include(p => p.Creator)
-                              .Where(p => p.PetTypeId == 2 && !p.IsAdopted)
+                              .Where(p => p.PetTypeId == 2 &&
+                                     !p.IsAdopted &&
+                                     (p.PostedByType == "Admin" ||
+                                      p.PostedByType == "Organization" ||
+                                      (p.PostedByType == "Customer" && p.PostStatus == "Approved")))
                               .OrderByDescending(p => p.DateAdded)
                               .ToList();
 
@@ -135,7 +150,7 @@ namespace FurEver_Home.Controllers
             return View(pet);
         }
 
-        // GET: Pets/Apply/5
+        // ⭐ UPDATED: GET: Pets/Apply/5
         public ActionResult Apply(int? id)
         {
             if (Session["UserId"] == null)
@@ -152,14 +167,18 @@ namespace FurEver_Home.Controllers
             int userId = (int)Session["UserId"];
             var user = db.Users.Find(userId);
 
-            // ⭐ NEW: CHECK IF USER'S ID IS VERIFIED
+            // Check if user's ID is verified
             if (user.IDStatus != "Verified")
             {
                 TempData["Error"] = "Your ID must be verified before you can apply for adoption. Please upload your valid ID in your profile and wait for admin verification.";
                 return RedirectToAction("Profile", "Account");
             }
 
-            var pet = db.Pets.Include(p => p.PetType).FirstOrDefault(p => p.PetId == id);
+            var pet = db.Pets
+                .Include(p => p.PetType)
+                .Include(p => p.Owner)  // ⭐ Include pet owner
+                .FirstOrDefault(p => p.PetId == id);
+
             if (pet == null)
             {
                 return HttpNotFound();
@@ -171,13 +190,20 @@ namespace FurEver_Home.Controllers
                 return RedirectToAction("Details", new { id = id });
             }
 
+            // ⭐ NEW: Check if pet post is approved (for customer posts)
+            if (pet.PostedByType == "Customer" && pet.PostStatus != "Approved")
+            {
+                TempData["Error"] = "This pet post is not yet approved for adoption applications.";
+                return RedirectToAction("Details", new { id = id });
+            }
+
             // Check if user already has a pending application for this pet
             var existingApplication = db.AdoptionApplications
                 .FirstOrDefault(a => a.UserId == userId && a.PetId == id && a.Status == "Pending");
 
             if (existingApplication != null)
             {
-                TempData["Error"] = "You have already applied to adopt this pet. Please wait for admin review.";
+                TempData["Error"] = "You have already applied to adopt this pet. Please wait for review.";
                 return RedirectToAction("Details", new { id = id });
             }
 
@@ -187,13 +213,29 @@ namespace FurEver_Home.Controllers
                 Pet = pet
             };
 
+            // ⭐ NEW: Load custom screening questions if this is a customer post
+            if (pet.PostedByType == "Customer")
+            {
+                var customQuestions = db.PetScreeningQuestions
+                    .Where(q => q.PetId == id)
+                    .OrderBy(q => q.OrderNumber)
+                    .ToList();
+
+                ViewBag.CustomQuestions = customQuestions;
+            }
+            else
+            {
+                ViewBag.CustomQuestions = null; // Admin post - use default questions
+            }
+
             return View(model);
         }
 
-        // POST: Pets/Apply
+
+        // ⭐ UPDATED: POST: Pets/Apply
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult Apply(AdoptionApplication model)
+        public ActionResult Apply(AdoptionApplication model, FormCollection form)
         {
             if (Session["UserId"] == null)
             {
@@ -203,11 +245,23 @@ namespace FurEver_Home.Controllers
             int userId = (int)Session["UserId"];
             var user = db.Users.Find(userId);
 
-            // ⭐ DOUBLE-CHECK ID VERIFICATION ON SUBMIT
+            // Double-check ID verification
             if (user.IDStatus != "Verified")
             {
                 TempData["Error"] = "Your ID must be verified before you can apply for adoption.";
                 return RedirectToAction("Profile", "Account");
+            }
+
+            // Load pet with owner info
+            var pet = db.Pets
+                .Include(p => p.PetType)
+                .Include(p => p.Owner)
+                .FirstOrDefault(p => p.PetId == model.PetId);
+
+            if (pet == null)
+            {
+                TempData["Error"] = "Pet not found.";
+                return RedirectToAction("Index");
             }
 
             if (ModelState.IsValid)
@@ -217,46 +271,89 @@ namespace FurEver_Home.Controllers
 
                 if (existingApplication != null)
                 {
-                    TempData["Error"] = "You have already applied to adopt this pet. Please wait for admin review.";
+                    TempData["Error"] = "You have already applied to adopt this pet.";
                     return RedirectToAction("Details", new { id = model.PetId });
                 }
 
-                // ⭐ VALIDATE SCREENING QUESTIONS
-                if (string.IsNullOrWhiteSpace(model.ScreeningQ1Experience))
+                // ⭐ NEW: Check if this is a customer post with custom questions
+                var hasCustomQuestions = pet.PostedByType == "Customer" &&
+                                         db.PetScreeningQuestions.Any(q => q.PetId == model.PetId);
+
+                if (hasCustomQuestions)
                 {
-                    ModelState.AddModelError("ScreeningQ1Experience", "Please describe your pet care experience.");
+                    // ⭐ CUSTOMER POST: Validate custom question answers
+                    var customQuestions = db.PetScreeningQuestions
+                        .Where(q => q.PetId == model.PetId)
+                        .ToList();
+
+                    foreach (var question in customQuestions)
+                    {
+                        var answerKey = $"CustomAnswer_{question.QuestionId}";
+                        var answer = form[answerKey];
+
+                        if (question.IsRequired && string.IsNullOrWhiteSpace(answer))
+                        {
+                            ModelState.AddModelError("", $"Please answer question {question.OrderNumber}: {question.QuestionText}");
+                        }
+                    }
+
+                    if (!ModelState.IsValid)
+                    {
+                        model.Pet = pet;
+                        ViewBag.CustomQuestions = customQuestions;
+                        return View(model);
+                    }
+
+                    // Clear default screening fields for custom questions
+                    model.ScreeningQ1Experience = null;
+                    model.ScreeningQ2Financial = null;
+                    model.ScreeningQ2Explanation = null;
+                    model.ScreeningQ3HouseholdAgreement = null;
+                    model.ScreeningQ3Explanation = null;
+                    model.ScreeningQ4RelocationPlan = null;
+                    model.ScreeningQ5HoursAlone = null;
                 }
-                if (string.IsNullOrWhiteSpace(model.ScreeningQ2Financial))
+                else
                 {
-                    ModelState.AddModelError("ScreeningQ2Financial", "Please answer the financial commitment question.");
-                }
-                if (string.IsNullOrWhiteSpace(model.ScreeningQ2Explanation))
-                {
-                    ModelState.AddModelError("ScreeningQ2Explanation", "Please explain your financial readiness.");
-                }
-                if (string.IsNullOrWhiteSpace(model.ScreeningQ3HouseholdAgreement))
-                {
-                    ModelState.AddModelError("ScreeningQ3HouseholdAgreement", "Please answer about household agreement.");
-                }
-                if (string.IsNullOrWhiteSpace(model.ScreeningQ3Explanation))
-                {
-                    ModelState.AddModelError("ScreeningQ3Explanation", "Please explain household support.");
-                }
-                if (string.IsNullOrWhiteSpace(model.ScreeningQ4RelocationPlan))
-                {
-                    ModelState.AddModelError("ScreeningQ4RelocationPlan", "Please describe your contingency plan.");
-                }
-                if (string.IsNullOrWhiteSpace(model.ScreeningQ5HoursAlone))
-                {
-                    ModelState.AddModelError("ScreeningQ5HoursAlone", "Please select how many hours the pet will be alone.");
+                    // ⭐ ADMIN POST: Validate default screening questions
+                    if (string.IsNullOrWhiteSpace(model.ScreeningQ1Experience))
+                    {
+                        ModelState.AddModelError("ScreeningQ1Experience", "Please describe your pet care experience.");
+                    }
+                    if (string.IsNullOrWhiteSpace(model.ScreeningQ2Financial))
+                    {
+                        ModelState.AddModelError("ScreeningQ2Financial", "Please answer the financial commitment question.");
+                    }
+                    if (string.IsNullOrWhiteSpace(model.ScreeningQ2Explanation))
+                    {
+                        ModelState.AddModelError("ScreeningQ2Explanation", "Please explain your financial readiness.");
+                    }
+                    if (string.IsNullOrWhiteSpace(model.ScreeningQ3HouseholdAgreement))
+                    {
+                        ModelState.AddModelError("ScreeningQ3HouseholdAgreement", "Please answer about household agreement.");
+                    }
+                    if (string.IsNullOrWhiteSpace(model.ScreeningQ3Explanation))
+                    {
+                        ModelState.AddModelError("ScreeningQ3Explanation", "Please explain household support.");
+                    }
+                    if (string.IsNullOrWhiteSpace(model.ScreeningQ4RelocationPlan))
+                    {
+                        ModelState.AddModelError("ScreeningQ4RelocationPlan", "Please describe your contingency plan.");
+                    }
+                    if (string.IsNullOrWhiteSpace(model.ScreeningQ5HoursAlone))
+                    {
+                        ModelState.AddModelError("ScreeningQ5HoursAlone", "Please select how many hours the pet will be alone.");
+                    }
+
+                    if (!ModelState.IsValid)
+                    {
+                        model.Pet = pet;
+                        ViewBag.CustomQuestions = null;
+                        return View(model);
+                    }
                 }
 
-                if (!ModelState.IsValid)
-                {
-                    model.Pet = db.Pets.Find(model.PetId);
-                    return View(model);
-                }
-
+                // Save application
                 model.UserId = userId;
                 model.ApplicationDate = DateTime.Now;
                 model.Status = "Pending";
@@ -266,13 +363,75 @@ namespace FurEver_Home.Controllers
                 db.AdoptionApplications.Add(model);
                 db.SaveChanges();
 
-                var pet = db.Pets.Find(model.PetId);
+                // ⭐ NEW: Save custom question answers if this is a customer post
+                if (hasCustomQuestions)
+                {
+                    var customQuestions = db.PetScreeningQuestions
+                        .Where(q => q.PetId == model.PetId)
+                        .ToList();
 
-                TempData["Success"] = $"Your adoption application for {pet.Name} has been submitted successfully! We'll review your answers and contact you within 24-48 hours.";
+                    foreach (var question in customQuestions)
+                    {
+                        var answerKey = $"CustomAnswer_{question.QuestionId}";
+                        var answer = form[answerKey];
+
+                        if (!string.IsNullOrWhiteSpace(answer))
+                        {
+                            var screeningAnswer = new PetScreeningAnswer
+                            {
+                                ApplicationId = model.ApplicationId,
+                                QuestionId = question.QuestionId,
+                                AnswerText = answer,
+                                CreatedAt = DateTime.Now
+                            };
+                            db.PetScreeningAnswers.Add(screeningAnswer);
+                        }
+                    }
+
+                    db.SaveChanges();
+
+                    // ⭐ Notify pet owner (customer)
+                    if (pet.OwnerUserId.HasValue)
+                    {
+                        var notification = new UserNotification
+                        {
+                            UserId = pet.OwnerUserId.Value,
+                            NotificationType = "Application_Received",
+                            Title = "New Adoption Application! 🎉",
+                            Message = $"{user.FullName} has applied to adopt your pet '{pet.Name}'. Please review their application in your dashboard.",
+                            IsRead = false,
+                            CreatedAt = DateTime.Now
+                        };
+                        db.UserNotifications.Add(notification);
+                        db.SaveChanges();
+                    }
+
+                    TempData["Success"] = $"Your adoption application for {pet.Name} has been submitted successfully! The pet owner will review your answers and contact you within 24-48 hours.";
+                }
+                else
+                {
+                    // Default admin notification (existing code)
+                    TempData["Success"] = $"Your adoption application for {pet.Name} has been submitted successfully! We'll review your answers and contact you within 24-48 hours.";
+                }
+
                 return RedirectToAction("MyApplications");
             }
 
-            model.Pet = db.Pets.Find(model.PetId);
+            model.Pet = pet;
+
+            // Reload custom questions if needed
+            if (pet.PostedByType == "Customer")
+            {
+                ViewBag.CustomQuestions = db.PetScreeningQuestions
+                    .Where(q => q.PetId == model.PetId)
+                    .OrderBy(q => q.OrderNumber)
+                    .ToList();
+            }
+            else
+            {
+                ViewBag.CustomQuestions = null;
+            }
+
             return View(model);
         }
 
@@ -298,10 +457,10 @@ namespace FurEver_Home.Controllers
             return View();
         }
 
-        // POST: Pets/PostForAdoption
+        // POST: Pets/PostForAdoption - UPDATED TO HANDLE CUSTOM QUESTIONS
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PostForAdoption(Pet model, HttpPostedFileBase PetImage)
+        public ActionResult PostForAdoption(Pet model, HttpPostedFileBase PetImage, string[] Questions, string[] QuestionTypes)
         {
             if (Session["UserId"] == null)
             {
@@ -309,9 +468,18 @@ namespace FurEver_Home.Controllers
             }
 
             int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+
+            // Check ID verification
+            if (user.IDStatus != "Verified")
+            {
+                TempData["Error"] = "Your ID must be verified before you can post pets for adoption.";
+                return RedirectToAction("Profile", "Account");
+            }
 
             if (ModelState.IsValid)
             {
+                // Handle pet image upload
                 if (PetImage != null && PetImage.ContentLength > 0)
                 {
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
@@ -332,21 +500,46 @@ namespace FurEver_Home.Controllers
                     }
                 }
 
+                // Set pet properties
                 model.DateAdded = DateTime.Now;
                 model.CreatedAt = DateTime.Now;
                 model.UpdatedAt = DateTime.Now;
                 model.IsAdopted = false;
                 model.CreatedBy = userId;
-
-                // Mark as posted by user
-                model.PostedByType = "User";
+                model.OwnerUserId = userId; // ⭐ NEW: Set owner
+                model.PostedByType = "Customer"; // ⭐ NEW
+                model.PostStatus = "Pending"; // ⭐ NEW: Requires admin approval
+                model.RequiresAdminApproval = true; // ⭐ NEW
+                model.AdminVerified = false; // ⭐ NEW
                 model.OrganizationName = null;
 
                 db.Pets.Add(model);
                 db.SaveChanges();
 
-                TempData["Success"] = $"Pet '{model.Name}' has been posted for adoption successfully!";
-                return RedirectToAction("Index", "Home");
+                // ⭐ NEW: Save custom screening questions
+                if (Questions != null && Questions.Length > 0)
+                {
+                    for (int i = 0; i < Questions.Length; i++)
+                    {
+                        if (!string.IsNullOrWhiteSpace(Questions[i]))
+                        {
+                            var question = new PetScreeningQuestion
+                            {
+                                PetId = model.PetId,
+                                QuestionText = Questions[i],
+                                QuestionType = QuestionTypes != null && i < QuestionTypes.Length ? QuestionTypes[i] : "Text",
+                                IsRequired = true,
+                                OrderNumber = i + 1,
+                                CreatedAt = DateTime.Now
+                            };
+                            db.PetScreeningQuestions.Add(question);
+                        }
+                    }
+                    db.SaveChanges();
+                }
+
+                TempData["Success"] = $"Pet '{model.Name}' has been submitted for admin review! You'll be notified once it's approved.";
+                return RedirectToAction("CustomerDashboard", "MyPets"); // ⭐ CHANGED FROM "Dashboard"
             }
 
             ViewBag.PetTypes = db.PetTypes.ToList();

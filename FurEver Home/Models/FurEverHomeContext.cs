@@ -19,6 +19,11 @@ namespace FurEver_Home.Models
         // ⭐ ADD THIS LINE - NEW DbSet for History
         public DbSet<AdoptionHistory> AdoptionHistories { get; set; }
 
+        // ⭐ ADD THESE TWO NEW LINES
+        public DbSet<PetScreeningQuestion> PetScreeningQuestions { get; set; }
+        public DbSet<PetScreeningAnswer> PetScreeningAnswers { get; set; }
+
+
         protected override void OnModelCreating(DbModelBuilder modelBuilder)
         {
             // Optional: Configure relationships and constraints

@@ -195,15 +195,29 @@
         }
 
         .btn-claim {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-            color: white;
+            background: #e2e8f0;
+            color: #94a3b8;
+            cursor: not-allowed;
+            opacity: 0.6;
+            transition: all 0.3s;
         }
 
-        .btn-claim:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-            color: white;
-        }
+            .btn-claim:disabled:hover {
+                transform: none;
+                box-shadow: none;
+            }
+
+            .btn-claim:not(:disabled) {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                color: white;
+                cursor: pointer;
+                opacity: 1;
+            }
+
+                .btn-claim:not(:disabled):hover {
+                    transform: translateY(-2px);
+                    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+                }
 
         .btn-back {
             background: #e2e8f0;
@@ -232,6 +246,158 @@
             height: 20px;
             cursor: pointer;
         }
+
+        .pickup-details {
+            background: #FFF9E6;
+            padding: 25px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            border-left: 4px solid #FFD93D;
+        }
+
+            .pickup-details h3 {
+                color: #92400e;
+                margin-bottom: 15px;
+            }
+
+            .pickup-details p {
+                color: #334155;
+                margin-bottom: 12px;
+                line-height: 1.8;
+                font-size: 1.15em;
+            }
+
+            .pickup-details strong {
+                color: #1e40af;
+                font-size: 1.3em;
+                font-weight: 700;
+                display: inline-block;
+                margin-right: 8px;
+            }
+
+/* Custom Modal Styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 9999;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    align-items: center;
+    justify-content: center;
+    animation: fadeIn 0.2s;
+}
+
+@@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+.modal-content {
+    background: white;
+    border-radius: 12px;
+    max-width: 480px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: slideIn 0.3s;
+    overflow: hidden;
+}
+
+@@keyframes slideIn {
+    from {
+        transform: translateY(-30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    background: #dc2626;
+    padding: 25px;
+    text-align: center;
+    color: white;
+}
+
+.modal-header i {
+    font-size: 2.5em;
+    margin-bottom: 10px;
+}
+
+.modal-header h2 {
+    font-size: 1.4em;
+    font-weight: 600;
+    margin: 0;
+}
+
+        .modal-body {
+            padding: 30px;
+        }
+
+            .modal-body p {
+                color: #475569;
+                font-size: 1em;
+                line-height: 1.6;
+                margin-bottom: 12px;
+            }
+
+                .modal-body p:first-child strong {
+                    color: #2E8BC0;
+                    font-weight: 700;
+                    font-size: 1.3em;
+                }
+
+                .modal-body p:nth-child(2) strong {
+                    color: #dc2626;
+                    font-weight: 700;
+                    font-size: 1.15em;
+                    text-transform: uppercase;
+                }
+
+            .modal-body strong {
+                color: #1e293b;
+                font-weight: 600;
+            }
+
+.modal-footer {
+    padding: 20px 30px;
+    background: #f8fafc;
+    display: flex;
+    gap: 12px;
+    justify-content: flex-end;
+}
+
+.btn-modal {
+    padding: 12px 32px;
+    border: none;
+    border-radius: 8px;
+    font-size: 1em;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.btn-cancel {
+    background: #e2e8f0;
+    color: #475569;
+}
+
+.btn-cancel:hover {
+    background: #cbd5e1;
+}
+
+.btn-confirm {
+    background: #dc2626;
+    color: white;
+}
+
+.btn-confirm:hover {
+    background: #b91c1c;
+}
     </style>
 </head>
 <body>
@@ -265,7 +431,9 @@
             <div class="pickup-details">
                 <h3><i class="fas fa-map-marker-alt"></i> Pickup Details</h3>
                 <p><strong>Location:</strong> @Model.PickupLocation</p>
-                <p><strong>Date & Time:</strong> @Model.PickupDate?.ToString("MMMM dd, yyyy") at @Model.PickupDate?.ToString("hh:mm tt")</p>
+                <p>
+                    <strong>Date & Time:</strong> @Model.PickupDate
+                </p>
                 @if (!string.IsNullOrEmpty(Model.PickupNotes))
                 {
                     <p><strong>Special Notes:</strong> @Model.PickupNotes</p>
@@ -311,15 +479,52 @@
             </p>
         </div>
     </div>
+    <!-- Custom Confirmation Modal -->
+    <div id="confirmModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-exclamation-circle"></i>
+                <h2>Final Confirmation</h2>
+            </div>
+            <div class="modal-body">
+                <p>Are you absolutely sure you have picked up <strong>@Model.Pet.Name</strong>?</p>
+                <p>This action is <strong>permanent</strong> and <strong>cannot</strong> be undone.</p>
+                <p>Click Confirm only if you are ready to complete this adoption.</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal btn-cancel" onclick="closeModal()">Cancel</button>
+                <button type="button" class="btn-modal btn-confirm" onclick="submitClaim()">Confirm</button>
+            </div>
+        </div>
+    </div>
 
     <script>
-        // Enable button only if checkbox is checked
-        document.getElementById('confirmPermanent').addEventListener('change', function() {
+        // Enable claim button only if checkbox is checked
+        document.getElementById('confirmPermanent').addEventListener('change', function () {
             document.getElementById('claimButton').disabled = !this.checked;
         });
 
+        // Show modal instead of browser confirm
         function confirmClaim() {
-            return confirm('⚠️ FINAL CONFIRMATION ⚠️\n\nAre you absolutely sure you have picked up ' + '@Model.Pet.Name' + '?\n\nThis action is PERMANENT and CANNOT be undone.\n\nClick OK only if you are ready to complete this adoption.');
+            event.preventDefault();
+            document.getElementById('confirmModal').style.display = 'flex';
+            return false;
+        }
+
+        function closeModal() {
+            document.getElementById('confirmModal').style.display = 'none';
+        }
+
+        function submitClaim() {
+            document.querySelector('form').submit();
+        }
+
+        // Close modal if user clicks outside of it
+        window.onclick = function (event) {
+            const modal = document.getElementById('confirmModal');
+            if (event.target == modal) {
+                closeModal();
+            }
         }
     </script>
 </body>

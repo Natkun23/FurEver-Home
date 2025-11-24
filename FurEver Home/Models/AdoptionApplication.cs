@@ -41,7 +41,7 @@ namespace FurEver_Home.Models
         [Column("message")]
         public string Message { get; set; }
 
-        // ⭐ NEW: SCREENING QUESTIONS
+        // ⭐ SCREENING QUESTIONS
         [Column("screening_q1_experience")]
         public string ScreeningQ1Experience { get; set; }
 
@@ -88,16 +88,6 @@ namespace FurEver_Home.Models
         [Column("updated_at")]
         public DateTime UpdatedAt { get; set; } = DateTime.Now;
 
-        // Navigation Properties
-        [ForeignKey("UserId")]
-        public virtual User User { get; set; }
-
-        [ForeignKey("PetId")]
-        public virtual Pet Pet { get; set; }
-
-        [ForeignKey("ReviewedBy")]
-        public virtual User Reviewer { get; set; }
-
         [Column("rejection_reason")]
         public string RejectionReason { get; set; }
 
@@ -142,7 +132,27 @@ namespace FurEver_Home.Models
         [Column("withdrawal_date")]
         public DateTime? WithdrawalDate { get; set; }
 
+        // ⭐ NEW: C2C (Customer-to-Customer) Properties
+        [Column("reviewed_by_customer")]
+        public int? ReviewedByCustomer { get; set; }
+
+        [Column("is_customer_to_customer")]
+        public bool IsCustomerToCustomer { get; set; } = false;
+
+        // ========== NAVIGATION PROPERTIES ==========
+        [ForeignKey("UserId")]
+        public virtual User User { get; set; }
+
+        [ForeignKey("PetId")]
+        public virtual Pet Pet { get; set; }
+
+        [ForeignKey("ReviewedBy")]
+        public virtual User Reviewer { get; set; }
+
         [ForeignKey("CancellationReviewedBy")]
         public virtual User CancellationReviewer { get; set; }
+
+        [ForeignKey("ReviewedByCustomer")]
+        public virtual User CustomerReviewer { get; set; }
     }
 }

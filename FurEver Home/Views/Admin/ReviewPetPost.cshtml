@@ -1,0 +1,1032 @@
+﻿@model FurEver_Home.Models.Pet
+@{
+    ViewBag.Title = "Review Pet Post - " + Model.Name;
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 50%, #fff7ed 100%);
+            min-height: 100vh;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            padding: 20px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo img {
+            height: 55px;
+        }
+
+        .back-link {
+            color: #2E8BC0;
+            text-decoration: none;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #e0f2fe 0%, #dbeafe 100%);
+            border-radius: 12px;
+            transition: all 0.3s;
+        }
+
+            .back-link:hover {
+                background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+                color: white;
+                transform: translateX(-5px);
+            }
+
+        /* Main Container */
+        .review-container {
+            max-width: 1600px;
+            margin: 40px auto;
+            padding: 0 20px;
+        }
+
+        .review-header {
+            background: white;
+            padding: 30px 40px;
+            border-radius: 20px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.08);
+            margin-bottom: 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .review-title {
+            font-size: 2em;
+            color: #2E8BC0;
+            font-weight: 700;
+        }
+
+        .status-badge {
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 700;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .status-pending {
+            background: #fef3c7;
+            color: #92400e;
+            border: 2px solid #fde68a;
+        }
+
+        /* Content Grid */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 1.2fr 1fr;
+            gap: 30px;
+        }
+
+        /* Pet Details Card */
+        .pet-card {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+        .pet-image-container {
+            position: relative;
+            height: 500px;
+            background: linear-gradient(135deg, #E8F4FC 0%, #FFF9E6 100%);
+        }
+
+        .pet-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .pet-type-badge {
+            position: absolute;
+            top: 20px;
+            right: 20px;
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            color: #2E8BC0;
+            padding: 12px 24px;
+            border-radius: 25px;
+            font-weight: 800;
+            font-size: 0.85em;
+            box-shadow: 0 4px 15px rgba(255, 217, 61, 0.4);
+        }
+
+        .pet-details {
+            padding: 40px;
+        }
+
+        .pet-name {
+            font-size: 3em;
+            background: linear-gradient(135deg, #2E8BC0 0%, #3FA9F5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-weight: 900;
+            margin-bottom: 10px;
+        }
+
+        .pet-breed {
+            font-size: 1.3em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 25px;
+        }
+
+        .pet-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .stat-item {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 20px;
+            border-radius: 15px;
+            text-align: center;
+            border: 2px solid transparent;
+            transition: all 0.3s;
+        }
+
+            .stat-item:hover {
+                border-color: #3FA9F5;
+                transform: translateY(-3px);
+                box-shadow: 0 8px 20px rgba(63, 169, 245, 0.2);
+            }
+
+        .stat-icon {
+            font-size: 2em;
+            margin-bottom: 8px;
+        }
+
+        .stat-label {
+            font-size: 0.85em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 5px;
+            text-transform: uppercase;
+        }
+
+        .stat-value {
+            font-size: 1.2em;
+            color: #2E8BC0;
+            font-weight: 800;
+        }
+
+        .section-title {
+            font-size: 1.4em;
+            color: #2E8BC0;
+            font-weight: 800;
+            margin: 25px 0 15px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+            .section-title::before {
+                content: "";
+                width: 4px;
+                height: 25px;
+                background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+                border-radius: 10px;
+            }
+
+        .description-box {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3FA9F5;
+            color: #475569;
+            line-height: 1.8;
+            margin-bottom: 20px;
+        }
+
+        .trait-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-bottom: 20px;
+        }
+
+        .trait {
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            color: #2E8BC0;
+            padding: 10px 20px;
+            border-radius: 20px;
+            font-weight: 700;
+            font-size: 0.9em;
+            box-shadow: 0 4px 12px rgba(255, 217, 61, 0.3);
+        }
+
+        .info-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-left: 4px solid #10b981;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+            .info-box h4 {
+                color: #065f46;
+                margin-bottom: 10px;
+                font-size: 1.1em;
+                font-weight: 800;
+            }
+
+            .info-box p {
+                color: #064e3b;
+                line-height: 1.6;
+            }
+
+        /* Owner Info Card */
+        .owner-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+        .owner-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .owner-avatar {
+            width: 70px;
+            height: 70px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2em;
+            font-weight: 800;
+        }
+
+        .owner-info h3 {
+            color: #2E8BC0;
+            font-size: 1.4em;
+            font-weight: 800;
+            margin-bottom: 5px;
+        }
+
+        .owner-info p {
+            color: #64748b;
+            font-size: 0.95em;
+        }
+
+        .owner-details {
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .detail-row {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px;
+            background: #f8fafc;
+            border-radius: 10px;
+        }
+
+        .detail-icon {
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+        }
+
+        .detail-content {
+            flex: 1;
+        }
+
+        .detail-label {
+            font-size: 0.85em;
+            color: #64748b;
+            font-weight: 600;
+            margin-bottom: 3px;
+        }
+
+        .detail-value {
+            color: #334155;
+            font-weight: 600;
+        }
+
+        /* Screening Questions Card */
+        .questions-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            margin-bottom: 20px;
+        }
+
+            .questions-card h3 {
+                color: #2E8BC0;
+                font-size: 1.5em;
+                font-weight: 800;
+                margin-bottom: 20px;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .question-item {
+            background: #f8fafc;
+            padding: 18px;
+            border-radius: 12px;
+            margin-bottom: 12px;
+            border-left: 4px solid #3FA9F5;
+        }
+
+        .question-number {
+            color: #3FA9F5;
+            font-weight: 800;
+            font-size: 0.9em;
+            margin-bottom: 8px;
+        }
+
+        .question-text {
+            color: #334155;
+            font-weight: 600;
+            line-height: 1.6;
+        }
+
+        .required-badge {
+            display: inline-block;
+            background: #fee2e2;
+            color: #dc2626;
+            padding: 4px 10px;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 700;
+            margin-left: 8px;
+        }
+
+        .no-questions {
+            text-align: center;
+            padding: 40px;
+            color: #94a3b8;
+        }
+
+            .no-questions i {
+                font-size: 3em;
+                margin-bottom: 15px;
+                display: block;
+            }
+
+        /* Action Buttons */
+        .action-card {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+        }
+
+            .action-card h3 {
+                color: #2E8BC0;
+                font-size: 1.5em;
+                font-weight: 800;
+                margin-bottom: 20px;
+            }
+
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn {
+            padding: 18px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-approve {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+            .btn-approve:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4);
+            }
+
+        .btn-reject {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+            .btn-reject:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 10px 25px rgba(239, 68, 68, 0.4);
+            }
+
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 550px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            animation: slideUp 0.3s;
+        }
+
+        @@keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            margin-bottom: 25px;
+        }
+
+        .modal-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8em;
+        }
+
+        .modal-icon-approve {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #10b981;
+        }
+
+        .modal-icon-reject {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #ef4444;
+        }
+
+        .modal-title {
+            flex: 1;
+        }
+
+            .modal-title h3 {
+                font-size: 1.8em;
+                color: #2E8BC0;
+                font-weight: 800;
+                margin-bottom: 5px;
+            }
+
+            .modal-title p {
+                color: #64748b;
+                font-size: 0.95em;
+            }
+
+        .modal-body {
+            margin-bottom: 25px;
+        }
+
+            .modal-body textarea {
+                width: 100%;
+                padding: 15px;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                font-size: 15px;
+                font-family: inherit;
+                min-height: 120px;
+                resize: vertical;
+                transition: all 0.3s;
+            }
+
+                .modal-body textarea:focus {
+                    outline: none;
+                    border-color: #3FA9F5;
+                    box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+                }
+
+        .modal-info {
+            background: #f8fafc;
+            padding: 15px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            border-left: 4px solid #3FA9F5;
+        }
+
+            .modal-info strong {
+                color: #2E8BC0;
+            }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 1em;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .btn-modal-cancel {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+            .btn-modal-cancel:hover {
+                background: #cbd5e1;
+            }
+
+        .btn-modal-submit-approve {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+            .btn-modal-submit-approve:hover {
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            }
+
+        .btn-modal-submit-reject {
+            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            color: white;
+        }
+
+            .btn-modal-submit-reject:hover {
+                box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+            }
+
+        @@media (max-width: 1200px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="@Url.Action("Dashboard", "Admin")" class="logo">
+                <img src="~/Content/Images/full_furever.png" alt="FurEver Home">
+            </a>
+            <a href="@Url.Action("ApprovePets", "Admin")" class="back-link">
+                <i class="fas fa-arrow-left"></i> Back to Pending Posts
+            </a>
+        </div>
+    </nav>
+
+    <!-- Main Content -->
+    <div class="review-container">
+        <!-- Header -->
+        <div class="review-header">
+            <h1 class="review-title">Review Pet Post</h1>
+            <div class="status-badge status-pending">
+                <i class="fas fa-clock"></i>
+                Pending Review
+            </div>
+        </div>
+
+        <!-- Content Grid -->
+        <div class="content-grid">
+            <!-- Left Column: Pet Details -->
+            <div>
+                <div class="pet-card">
+                    <div class="pet-image-container">
+                        <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://via.placeholder.com/600x400?text=Pet+Image" : Model.ImageUrl)"
+                             alt="@Model.Name"
+                             class="pet-image">
+                        <div class="pet-type-badge">@Model.PetType.TypeName</div>
+                    </div>
+
+                    <div class="pet-details">
+                        <h2 class="pet-name">@Model.Name</h2>
+                        <div class="pet-breed">@Model.Breed</div>
+
+                        <div class="pet-stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-icon">🎂</div>
+                                <div class="stat-label">Age</div>
+                                <div class="stat-value">@Model.AgeDisplay</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">@(Model.Gender == "Male" ? "♂️" : "♀️")</div>
+                                <div class="stat-label">Gender</div>
+                                <div class="stat-value">@Model.Gender</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">📏</div>
+                                <div class="stat-label">Size</div>
+                                <div class="stat-value">@Model.Size</div>
+                            </div>
+                        </div>
+
+                        <h3 class="section-title">Description</h3>
+                        <div class="description-box">
+                            @Model.Description
+                        </div>
+
+                        @if (!string.IsNullOrEmpty(Model.Traits))
+                        {
+                            <h3 class="section-title">Personality Traits</h3>
+                            <div class="trait-container">
+                                @foreach (var trait in Model.Traits.Split(','))
+                                {
+                                    <span class="trait">@trait.Trim()</span>
+                                }
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.Vaccines))
+                        {
+                            <div class="info-box">
+                                <h4><i class="fas fa-syringe"></i> Vaccines</h4>
+                                <p>@Model.Vaccines</p>
+                            </div>
+                        }
+
+                        @if (!string.IsNullOrEmpty(Model.WhyAdoptMe))
+                        {
+                            <div class="info-box" style="background: linear-gradient(135deg, #FFF9E6 0%, #FEF3C7 100%); border-left-color: #FFD93D;">
+                                <h4 style="color: #92400e;"><i class="fas fa-heart"></i> Why Adopt Me?</h4>
+                                <p style="color: #78350f;">@Model.WhyAdoptMe</p>
+                            </div>
+                        }
+
+                        <div class="pet-stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-icon">🏥</div>
+                                <div class="stat-label">Health</div>
+                                <div class="stat-value">@(Model.IsHealthy ? "Healthy" : "Care")</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">✂️</div>
+                                <div class="stat-label">@(Model.Gender == "Male" ? "Neutered" : "Spayed")</div>
+                                <div class="stat-value">@(Model.IsNeutered ? "Yes" : "No")</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-icon">📅</div>
+                                <div class="stat-label">Days in Center</div>
+                                <div class="stat-value">@Model.DaysInCenter</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Column: Owner Info & Actions -->
+            <div>
+                <!-- Owner Information -->
+                <div class="owner-card">
+                    <div class="owner-header">
+                        <div class="owner-avatar">
+                            @if (Model.Owner != null)
+                            {
+                                @Model.Owner.FullName.Substring(0, 1).ToUpper()
+                            }
+                        </div>
+                        <div class="owner-info">
+                            <h3>Posted By</h3>
+                            <p>@(Model.Owner != null ? Model.Owner.FullName : "Unknown")</p>
+                        </div>
+                    </div>
+
+                    @if (Model.Owner != null)
+                    {
+                        <div class="owner-details">
+                            <div class="detail-row">
+                                <div class="detail-icon">
+                                    <i class="fas fa-envelope"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Email</div>
+                                    <div class="detail-value">@Model.Owner.Email</div>
+                                </div>
+                            </div>
+
+                            @if (!string.IsNullOrEmpty(Model.Owner.PhoneNumber))
+                            {
+                                <div class="detail-row">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-phone"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <div class="detail-label">Phone</div>
+                                        <div class="detail-value">@Model.Owner.PhoneNumber</div>
+                                    </div>
+                                </div>
+                            }
+
+                            @if (!string.IsNullOrEmpty(Model.Owner.Address))
+                            {
+                                <div class="detail-row">
+                                    <div class="detail-icon">
+                                        <i class="fas fa-map-marker-alt"></i>
+                                    </div>
+                                    <div class="detail-content">
+                                        <div class="detail-label">Address</div>
+                                        <div class="detail-value">@Model.Owner.Address</div>
+                                    </div>
+                                </div>
+                            }
+
+                            <div class="detail-row">
+                                <div class="detail-icon">
+                                    <i class="fas fa-calendar"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">Posted On</div>
+                                    <div class="detail-value">@Model.DateAdded.ToString("MMMM dd, yyyy 'at' hh:mm tt")</div>
+                                </div>
+                            </div>
+
+                            <div class="detail-row">
+                                <div class="detail-icon">
+                                    <i class="fas fa-id-card"></i>
+                                </div>
+                                <div class="detail-content">
+                                    <div class="detail-label">ID Status</div>
+                                    <div class="detail-value">
+                                        @if (Model.Owner.IDStatus == "Verified")
+                                        {
+                                            <span style="color: #10b981; font-weight: 800;">✓ Verified</span>
+                                        }
+                                        else
+                                        {
+                                            <span style="color: #f59e0b; font-weight: 800;">⚠ @Model.Owner.IDStatus</span>
+                                        }
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    }
+                </div>
+
+                <!-- Screening Questions -->
+                <div class="questions-card">
+                    <h3><i class="fas fa-clipboard-question"></i> Custom Screening Questions</h3>
+
+                    @if (ViewBag.CustomQuestions != null && ((List<FurEver_Home.Models.PetScreeningQuestion>)ViewBag.CustomQuestions).Count > 0)
+                    {
+                        var questions = (List<FurEver_Home.Models.PetScreeningQuestion>)ViewBag.CustomQuestions;
+                        foreach (var question in questions)
+                        {
+                            <div class="question-item">
+                                <div class="question-number">
+                                    Question @question.OrderNumber
+                                    @if (question.IsRequired)
+                                    {
+                                        <span class="required-badge">REQUIRED</span>
+                                    }
+                                </div>
+                                <div class="question-text">@question.QuestionText</div>
+                            </div>
+                        }
+                    }
+                    else
+                    {
+                        <div class="no-questions">
+                            <i class="fas fa-info-circle"></i>
+                            <p>No custom screening questions added</p>
+                        </div>
+                    }
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-card">
+                    <h3>Review Actions</h3>
+                    <div class="action-buttons">
+                        <button type="button" class="btn btn-approve" onclick="showApproveModal()">
+                            <i class="fas fa-check-circle"></i> Approve Post
+                        </button>
+                        <button type="button" class="btn btn-reject" onclick="showRejectModal()">
+                            <i class="fas fa-times-circle"></i> Reject Post
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Approve Modal -->
+    <div id="approveModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon modal-icon-approve">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <div class="modal-title">
+                    <h3>Approve Pet Post</h3>
+                    <p>Confirm approval for this pet listing</p>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-info">
+                    Are you sure you want to approve <strong>@Model.Name</strong>'s post?
+                    This will make the pet visible to all potential adopters on the platform.
+                </div>
+
+                @using (Html.BeginForm("ApprovePetPost", "Admin", FormMethod.Post, new { id = "approveForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.PetId" />
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-modal btn-modal-cancel" onclick="closeApproveModal()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-modal btn-modal-submit-approve">
+                            <i class="fas fa-check"></i> Approve Post
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <!-- Reject Modal -->
+    <div id="rejectModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <div class="modal-icon modal-icon-reject">
+                    <i class="fas fa-exclamation-circle"></i>
+                </div>
+                <div class="modal-title">
+                    <h3>Reject Pet Post</h3>
+                    <p>Provide a reason for rejection</p>
+                </div>
+            </div>
+
+            <div class="modal-body">
+                <div class="modal-info">
+                    You are about to reject <strong>@Model.Name</strong>'s post.
+                    Please provide a clear reason that will be sent to <strong>@(Model.Owner != null ? Model.Owner.FullName : "the owner")</strong>.
+                </div>
+
+                @using (Html.BeginForm("RejectPetPost", "Admin", FormMethod.Post, new { id = "rejectForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" value="@Model.PetId" />
+
+                    <textarea name="rejectionReason"
+                              placeholder="Enter detailed reason for rejection (e.g., incomplete information, inappropriate content, policy violation)..."
+                              required
+                              minlength="10"></textarea>
+
+                    <div class="modal-buttons">
+                        <button type="button" class="btn-modal btn-modal-cancel" onclick="closeRejectModal()">
+                            Cancel
+                        </button>
+                        <button type="submit" class="btn-modal btn-modal-submit-reject">
+                            <i class="fas fa-times"></i> Reject Post
+                        </button>
+                    </div>
+                }
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Approve Modal Functions
+        function showApproveModal() {
+            document.getElementById('approveModal').style.display = 'flex';
+        }
+
+        function closeApproveModal() {
+            document.getElementById('approveModal').style.display = 'none';
+        }
+
+        // Reject Modal Functions
+        function showRejectModal() {
+            document.getElementById('rejectModal').style.display = 'flex';
+        }
+
+        function closeRejectModal() {
+            document.getElementById('rejectModal').style.display = 'none';
+        }
+
+        // Close modals when clicking outside
+        window.onclick = function(event) {
+            const approveModal = document.getElementById('approveModal');
+            const rejectModal = document.getElementById('rejectModal');
+
+            if (event.target === approveModal) {
+                closeApproveModal();
+            }
+            if (event.target === rejectModal) {
+                closeRejectModal();
+            }
+        }
+
+        // Close modals with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeApproveModal();
+                closeRejectModal();
+            }
+        });
+
+        // Form validation for reject
+        document.getElementById('rejectForm').addEventListener('submit', function(e) {
+            const reason = this.querySelector('textarea[name="rejectionReason"]').value.trim();
+            if (reason.length < 10) {
+                e.preventDefault();
+                alert('Please provide a detailed reason for rejection (at least 10 characters).');
+                return false;
+            }
+        });
+    </script>
+</body>
+</html>

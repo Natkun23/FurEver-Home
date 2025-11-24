@@ -6,6 +6,7 @@ using System.Linq;
 using System.Web;
 using System.Web.Mvc;
 using FurEver_Home.Filters;
+using System.Collections.Generic;
 
 namespace FurEver_Home.Controllers
 {
@@ -21,7 +22,8 @@ namespace FurEver_Home.Controllers
             ViewBag.TotalCats = db.Pets.Count(p => p.PetTypeId == 2 && !p.IsAdopted);
             ViewBag.PendingVerifications = db.Users.Count(u => u.IDStatus == "Pending");
             ViewBag.PendingApplications = db.AdoptionApplications.Count(a => a.Status == "Pending");
-            ViewBag.PendingCancellations = db.AdoptionApplications.Count(a => a.CancellationRequested && !a.CancellationApproved); // ⭐ NEW
+            ViewBag.PendingCancellations = db.AdoptionApplications.Count(a => a.CancellationRequested && !a.CancellationApproved);
+            ViewBag.PendingPosts = db.Pets.Count(p => p.PostStatus == "Pending" && p.PostedByType == "Customer"); // ⭐ NEW
 
             return View();
         }
@@ -134,14 +136,14 @@ namespace FurEver_Home.Controllers
             return View(pets);
         }
 
-        // GET: Admin/AddPet ⭐ UPDATED
+        // GET: Admin/AddPet
         public ActionResult AddPet()
         {
             ViewBag.PetTypes = db.PetTypes.ToList();
             return View();
         }
 
-        // POST: Admin/AddPet ⭐ UPDATED WITH ORGANIZATION
+        // POST: Admin/AddPet
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult AddPet(Pet model, HttpPostedFileBase PetImage, string OrganizationName)
@@ -175,7 +177,7 @@ namespace FurEver_Home.Controllers
                 model.IsAdopted = false;
                 model.CreatedBy = (int)Session["UserId"];
 
-                // ⭐ NEW: Set as organization post
+                // Set as organization post
                 model.PostedByType = "Organization";
                 model.OrganizationName = string.IsNullOrWhiteSpace(OrganizationName)
                     ? "FurEver Home Admin"
@@ -191,7 +193,7 @@ namespace FurEver_Home.Controllers
             return View(model);
         }
 
-        // GET: Admin/EditPet/5 ⭐ UPDATED
+        // GET: Admin/EditPet/5
         public ActionResult EditPet(int id)
         {
             var pet = db.Pets.Find(id);
@@ -203,7 +205,7 @@ namespace FurEver_Home.Controllers
             return View(pet);
         }
 
-        // POST: Admin/EditPet/5 ⭐ UPDATED WITH ORGANIZATION
+        // POST: Admin/EditPet/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditPet(Pet model, HttpPostedFileBase PetImage, string OrganizationName)
@@ -252,7 +254,7 @@ namespace FurEver_Home.Controllers
                     pet.UpdatedAt = DateTime.Now;
                     pet.UpdatedBy = (int)Session["UserId"];
 
-                    // ⭐ NEW: Update organization name if provided
+                    // Update organization name if provided
                     if (!string.IsNullOrWhiteSpace(OrganizationName))
                     {
                         pet.PostedByType = "Organization";
@@ -290,6 +292,121 @@ namespace FurEver_Home.Controllers
                 TempData["Success"] = $"Pet '{pet.Name}' has been deleted.";
             }
             return RedirectToAction("Pets");
+        }
+
+        // ========== ⭐ NEW: APPROVE CUSTOMER PET POSTS ==========
+
+        // GET: Admin/ApprovePets
+        public ActionResult ApprovePets()
+        {
+            // Get all pending pet posts from customers
+            var pendingPets = db.Pets
+                .Include(p => p.PetType)
+                .Include(p => p.Owner)  // Include the customer who posted
+                .Where(p => p.PostStatus == "Pending" && p.PostedByType == "Customer")
+                .OrderByDescending(p => p.DateAdded)
+                .ToList();
+
+            // Count custom questions for each pet
+            var customQuestions = new Dictionary<int, int>();
+            foreach (var pet in pendingPets)
+            {
+                var questionCount = db.PetScreeningQuestions.Count(q => q.PetId == pet.PetId);
+                customQuestions[pet.PetId] = questionCount;
+            }
+
+            ViewBag.CustomQuestions = customQuestions;
+            ViewBag.PendingCount = pendingPets.Count;
+
+            return View(pendingPets);
+        }
+
+        // GET: Admin/ReviewPetPost/5
+        public ActionResult ReviewPetPost(int id)
+        {
+            var pet = db.Pets
+                .Include(p => p.PetType)
+                .Include(p => p.Owner)
+                .FirstOrDefault(p => p.PetId == id);
+
+            if (pet == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Load custom screening questions
+            ViewBag.CustomQuestions = db.PetScreeningQuestions
+                .Where(q => q.PetId == id)
+                .OrderBy(q => q.OrderNumber)
+                .ToList();
+
+            return View(pet);
+        }
+
+        // POST: Admin/ApprovePetPost/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult ApprovePetPost(int id)
+        {
+            var pet = db.Pets.Include(p => p.Owner).FirstOrDefault(p => p.PetId == id);
+
+            if (pet != null && pet.PostStatus == "Pending")
+            {
+                pet.PostStatus = "Approved";
+                pet.AdminVerified = true;
+                pet.UpdatedAt = DateTime.Now;
+                pet.UpdatedBy = (int)Session["UserId"];
+
+                // Notify the pet owner
+                var notification = new UserNotification
+                {
+                    UserId = pet.OwnerUserId.Value,
+                    NotificationType = "Post_Approved",
+                    Title = "Pet Post Approved! 🎉",
+                    Message = $"Your pet post '{pet.Name}' has been approved and is now visible to potential adopters!",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                db.UserNotifications.Add(notification);
+
+                db.SaveChanges();
+                TempData["Success"] = $"Pet post '{pet.Name}' has been approved!";
+            }
+
+            return RedirectToAction("ApprovePets");
+        }
+
+        // POST: Admin/RejectPetPost/5
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult RejectPetPost(int id, string rejectionReason)
+        {
+            var pet = db.Pets.Include(p => p.Owner).FirstOrDefault(p => p.PetId == id);
+
+            if (pet != null && pet.PostStatus == "Pending")
+            {
+                pet.PostStatus = "Rejected";
+                pet.AdminVerified = false;
+                pet.UpdatedAt = DateTime.Now;
+                pet.UpdatedBy = (int)Session["UserId"];
+
+                // Notify the pet owner
+                var notification = new UserNotification
+                {
+                    UserId = pet.OwnerUserId.Value,
+                    NotificationType = "Post_Rejected",
+                    Title = "Pet Post Rejected",
+                    Message = $"Your pet post '{pet.Name}' was not approved. Reason: {rejectionReason}",
+                    IsRead = false,
+                    CreatedAt = DateTime.Now
+                };
+                db.UserNotifications.Add(notification);
+
+                db.SaveChanges();
+                TempData["Success"] = $"Pet post '{pet.Name}' has been rejected.";
+            }
+
+            return RedirectToAction("ApprovePets");
         }
 
         // ========== ADOPTION APPLICATIONS ==========
@@ -344,7 +461,7 @@ namespace FurEver_Home.Controllers
             return View(adoptedPetsData);
         }
 
-        // POST: Admin/ApproveApplication/5 ⭐ UPDATED - Archives rejected apps
+        // POST: Admin/ApproveApplication/5
         [HttpPost]
         public ActionResult ApproveApplication(int id)
         {
@@ -443,6 +560,7 @@ namespace FurEver_Home.Controllers
                 return RedirectToAction("Applications");
             }
         }
+
         // GET: Admin/SetPickupDetails/5
         public ActionResult SetPickupDetails(int id)
         {
@@ -531,7 +649,7 @@ namespace FurEver_Home.Controllers
             return RedirectToAction("Applications");
         }
 
-        // ==================== ⭐ NEW: CANCELLATION REQUESTS MANAGEMENT ====================
+        // ========== CANCELLATION REQUESTS MANAGEMENT ==========
 
         // GET: Admin/CancellationRequests
         public ActionResult CancellationRequests()
@@ -586,7 +704,7 @@ namespace FurEver_Home.Controllers
                 };
                 db.UserNotifications.Add(notification);
 
-                // ⭐ Archive to history
+                // Archive to history
                 ArchiveApplicationToHistory(application, "Cancelled");
 
                 db.SaveChanges();
@@ -635,7 +753,7 @@ namespace FurEver_Home.Controllers
             return RedirectToAction("CancellationRequests");
         }
 
-        // ==================== ⭐ NEW: ADOPTION HISTORY (ADMIN VIEW - PERMANENT) ====================
+        // ========== ADOPTION HISTORY ==========
 
         // GET: Admin/AdoptionHistory
         public ActionResult AdoptionHistory()
@@ -670,7 +788,7 @@ namespace FurEver_Home.Controllers
             return View(history);
         }
 
-        // ==================== ⭐ HELPER METHOD: Archive to History ====================
+        // ========== HELPER METHOD: Archive to History ==========
 
         private void ArchiveApplicationToHistory(AdoptionApplication application, string finalStatus)
         {

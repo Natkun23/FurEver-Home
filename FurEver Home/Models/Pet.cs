@@ -31,7 +31,7 @@ namespace FurEver_Home.Models
 
         [Column("age_unit")]
         [StringLength(10)]
-        public string AgeUnit { get; set; } = "Years"; // NEW: "Months" or "Years"
+        public string AgeUnit { get; set; } = "Years";
 
         [Required]
         [Column("gender")]
@@ -69,7 +69,6 @@ namespace FurEver_Home.Models
         [Column("is_adopted")]
         public bool IsAdopted { get; set; } = false;
 
-
         [Column("image_url")]
         [StringLength(500)]
         public string ImageUrl { get; set; }
@@ -89,7 +88,35 @@ namespace FurEver_Home.Models
         [Column("updated_by")]
         public int? UpdatedBy { get; set; }
 
-        // Navigation Properties
+        // ⭐ C2C Adoption Properties (MERGED - NO DUPLICATES)
+        [Column("posted_by_type")]
+        [StringLength(50)]
+        public string PostedByType { get; set; } // "Admin", "Customer", "Organization"
+
+        [Column("organization_name")]
+        [StringLength(255)]
+        public string OrganizationName { get; set; }
+
+        [Column("owner_user_id")]
+        public int? OwnerUserId { get; set; }
+
+        [Column("post_status")]
+        [StringLength(50)]
+        public string PostStatus { get; set; } = "Active";
+
+        [Column("requires_admin_approval")]
+        public bool RequiresAdminApproval { get; set; } = true;
+
+        [Column("admin_verified")]
+        public bool AdminVerified { get; set; } = false;
+
+        [Column("admin_reviewed_by")]
+        public int? AdminReviewedBy { get; set; }
+
+        [Column("admin_reviewed_date")]
+        public DateTime? AdminReviewedDate { get; set; }
+
+        // ========== COMPUTED PROPERTIES (NotMapped) ==========
         [NotMapped]
         public string Type
         {
@@ -99,7 +126,6 @@ namespace FurEver_Home.Models
             }
         }
 
-        // NEW: Display age with proper unit
         [NotMapped]
         public string AgeDisplay
         {
@@ -116,27 +142,6 @@ namespace FurEver_Home.Models
             }
         }
 
-        [ForeignKey("PetTypeId")]
-        public virtual PetType PetType { get; set; }
-
-        [ForeignKey("CreatedBy")]
-        public virtual User Creator { get; set; }
-
-        [ForeignKey("UpdatedBy")]
-        public virtual User Updater { get; set; }
-
-
-        // ADD THESE PROPERTIES TO YOUR EXISTING Pet.cs
-
-        [Column("posted_by_type")]
-        [StringLength(50)]
-        public string PostedByType { get; set; } // "User" or "Organization"
-
-        [Column("organization_name")]
-        [StringLength(255)]
-        public string OrganizationName { get; set; } // If posted by admin as organization
-
-        // Computed property for display
         [NotMapped]
         public string PostedByDisplay
         {
@@ -162,5 +167,24 @@ namespace FurEver_Home.Models
                 return PostedByType == "Organization" ? "Posted by Organization" : "Posted by";
             }
         }
+
+        [NotMapped]
+        public bool HasActiveApplications { get; set; }
+
+        // ========== NAVIGATION PROPERTIES ==========
+        [ForeignKey("PetTypeId")]
+        public virtual PetType PetType { get; set; }
+
+        [ForeignKey("CreatedBy")]
+        public virtual User Creator { get; set; }
+
+        [ForeignKey("UpdatedBy")]
+        public virtual User Updater { get; set; }
+
+        [ForeignKey("OwnerUserId")]
+        public virtual User Owner { get; set; }
+
+        [ForeignKey("AdminReviewedBy")]
+        public virtual User AdminReviewer { get; set; }
     }
 }

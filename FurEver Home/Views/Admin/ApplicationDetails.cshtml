@@ -14,356 +14,531 @@
     <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
     <style>
         * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
 
-        body {
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            background: #f0f2f5;
-            padding: 30px;
-        }
+body {
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    background: #f8f9fa;
+    padding: 30px;
+}
 
-        .container {
-            max-width: 1100px;
-            margin: 0 auto;
-        }
+.container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
 
-        .details-card {
-            background: white;
-            border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
-            overflow: hidden;
-        }
+/* Header Card - Clean & Modern */
+.details-card {
+    background: white;
+    border-radius: 16px;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+    overflow: hidden;
+    margin-bottom: 20px;
+}
 
         .header {
             background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-            padding: 40px;
+            padding: 35px 40px;
             color: white;
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 25px;
         }
 
         .pet-image {
-            width: 120px;
-            height: 120px;
-            border-radius: 20px;
+            width: 100px;
+            height: 100px;
+            border-radius: 12px;
             object-fit: cover;
-            border: 5px solid white;
+            border: 4px solid white;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
         }
 
         .header-text h1 {
-            font-size: 2em;
-            margin-bottom: 10px;
+            font-size: 1.6em;
+            color: white;
+            margin-bottom: 12px;
+            font-weight: 700;
         }
 
         .header-text p {
-            opacity: 0.9;
-        }
-
-        .content {
-            padding: 40px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 30px;
-            margin-bottom: 30px;
-        }
-
-        .info-item label {
-            display: block;
-            color: #64748b;
-            font-size: 0.85em;
+            color: rgba(255, 255, 255, 0.95);
+            font-size: 0.95em;
             margin-bottom: 8px;
-            text-transform: uppercase;
-            font-weight: 600;
         }
 
-        .info-item .value {
-            font-size: 1.1em;
-            color: #334155;
-            font-weight: 600;
-        }
-
-        .status-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
-        }
-
-        .status-pending {
-            background: #fef3c7;
-            color: #92400e;
-        }
-
-        .status-approved {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .status-rejected {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .status-completed {
-            background: #dbeafe;
-            color: #1e40af;
-        }
-
-        .section-title {
-            font-size: 1.5em;
-            color: #2E8BC0;
-            margin: 30px 0 15px;
-            font-weight: 700;
-            display: flex;
+        .id-badge {
+            display: inline-flex;
             align-items: center;
-            gap: 10px;
+            gap: 6px;
+            padding: 6px 14px;
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            backdrop-filter: blur(10px);
         }
 
-        .message-box {
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 10px;
-            border-left: 4px solid #3FA9F5;
-            margin-bottom: 20px;
-            line-height: 1.6;
-        }
 
-        .screening-section {
-            background: linear-gradient(135deg, #FFF9E6 0%, #FFF4D4 100%);
-            padding: 30px;
-            border-radius: 15px;
-            margin: 30px 0;
+.content {
+    padding: 30px 40px;
+}
+
+/* Alert */
+.alert-success {
+    background: #ecfdf5;
+    color: #065f46;
+    padding: 14px 18px;
+    border-radius: 10px;
+    margin-bottom: 25px;
+    border-left: 3px solid #10b981;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+/* Info Grid - Cleaner Layout */
+.info-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 25px;
+    background: #f8fafc;
+    border-radius: 12px;
+    border: 1px solid #e2e8f0;
+}
+
+.info-item label {
+    display: block;
+    color: #64748b;
+    font-size: 0.8em;
+    margin-bottom: 6px;
+    text-transform: uppercase;
+    font-weight: 600;
+    letter-spacing: 0.5px;
+}
+
+.info-item .value {
+    font-size: 1.05em;
+    color: #1e293b;
+    font-weight: 600;
+}
+
+/* Status Badges - Consistent */
+.status-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    border-radius: 16px;
+    font-size: 0.85em;
+    font-weight: 700;
+    border: 2px solid;
+}
+
+.status-pending {
+    background: #fef3c7;
+    color: #92400e;
+    border-color: #fbbf24;
+}
+
+.status-approved {
+    background: #dbeafe;
+    color: #1e40af;
+    border-color: #3b82f6;
+}
+
+.status-rejected {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #ef4444;
+}
+
+.status-completed {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #10b981;
+}
+
+/* Section Titles */
+.section-title {
+    font-size: 1.15em;
+    color: #1e293b;
+    margin: 25px 0 12px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.section-title i {
+    color: #64748b;
+    font-size: 0.9em;
+}
+
+/* Message Box - Minimal */
+.message-box {
+    background: #f8fafc;
+    padding: 18px;
+    border-radius: 10px;
+    border: 1px solid #e2e8f0;
+    margin-bottom: 20px;
+    line-height: 1.7;
+    color: #475569;
+}
+
+/* Screening Section - Clean & Organized */
+.screening-section {
+    background: #fefce8;
+    padding: 25px;
+    border-radius: 12px;
+    margin: 25px 0;
+    border: 1px solid #fde047;
+}
+
+.screening-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid #fde047;
+}
+
+.screening-header i {
+    font-size: 1.5em;
+    color: #ca8a04;
+}
+
+.screening-header h3 {
+    color: #713f12;
+    font-size: 1.2em;
+    font-weight: 700;
+}
+
+.screening-question {
+    background: white;
+    padding: 18px;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #e2e8f0;
+}
+
+.screening-question:last-child {
+    margin-bottom: 0;
+}
+
+.question-label {
+    font-weight: 700;
+    color: #1e293b;
+    margin-bottom: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 0.95em;
+}
+
+.question-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    background: #3b82f6;
+    color: white;
+    border-radius: 50%;
+    font-weight: 700;
+    font-size: 0.85em;
+}
+
+.answer-text {
+    color: #475569;
+    line-height: 1.6;
+    padding: 12px;
+    background: #f8fafc;
+    border-radius: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.answer-badge {
+    display: inline-block;
+    padding: 5px 12px;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 0.85em;
+    border: 2px solid;
+}
+
+.answer-yes {
+    background: #d1fae5;
+    color: #065f46;
+    border-color: #10b981;
+}
+
+.answer-no {
+    background: #fee2e2;
+    color: #991b1b;
+    border-color: #ef4444;
+}
+
+/* Pickup Box - Modern & Clean */
+        .pickup-box {
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFE8A3 100%);
+            padding: 25px;
+            border-radius: 12px;
+            margin: 20px 0;
             border: 2px solid #FFD93D;
         }
 
-        .screening-header {
-            display: flex;
-            align-items: center;
-            gap: 15px;
-            margin-bottom: 25px;
-            padding-bottom: 15px;
-            border-bottom: 2px solid #FFD93D;
-        }
-
-            .screening-header i {
-                font-size: 2em;
-                color: #F6C90E;
-            }
-
-            .screening-header h3 {
+            .pickup-box h3 {
                 color: #92400e;
-                font-size: 1.4em;
+                margin-bottom: 20px;
+                font-size: 1.2em;
+                font-weight: 700;
+                display: flex;
+                align-items: center;
+                gap: 10px;
             }
 
-        .screening-question {
-            background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 20px;
-            border-left: 4px solid #3FA9F5;
+                .pickup-box h3 i {
+                    color: #F6C90E;
+                }
+
+/* Form Elements */
+.form-group {
+    margin-bottom: 18px;
+}
+
+.form-group label {
+    display: block;
+    color: #334155;
+    margin-bottom: 8px;
+    font-weight: 600;
+    font-size: 0.9em;
+}
+
+.form-group input,
+.form-group textarea {
+    width: 100%;
+    padding: 12px 14px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    font-size: 0.95em;
+    transition: all 0.2s;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Buttons - Minimal & Clean */
+.action-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 30px;
+}
+
+.btn {
+    flex: 1;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 8px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+    font-size: 0.95em;
+}
+
+.btn-approve {
+    background: #10b981;
+    color: white;
+}
+
+.btn-approve:hover {
+    background: #059669;
+}
+
+.btn-reject {
+    background: #ef4444;
+    color: white;
+}
+
+.btn-reject:hover {
+    background: #dc2626;
+}
+
+.btn-back {
+    background: #f1f5f9;
+    color: #475569;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    border: 1px solid #e2e8f0;
+}
+
+.btn-back:hover {
+    background: #e2e8f0;
+}
+
+.btn-pickup {
+    background: #3b82f6;
+    color: white;
+}
+
+.btn-pickup:hover {
+    background: #2563eb;
+}
+
+.btn-turnover {
+    background: #10b981;
+    color: white;
+}
+
+.btn-turnover:hover {
+    background: #059669;
+}
+
+/* Modal - Clean Design */
+.rejection-modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    padding: 30px;
+    border-radius: 16px;
+    max-width: 500px;
+    width: 90%;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+}
+
+.modal-content h3 {
+    color: #1e293b;
+    margin-bottom: 15px;
+    font-size: 1.3em;
+    font-weight: 700;
+}
+
+.modal-content textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #d1d5db;
+    border-radius: 8px;
+    min-height: 120px;
+    font-size: 0.95em;
+}
+
+.modal-content textarea:focus {
+    outline: none;
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+.modal-buttons {
+    display: flex;
+    gap: 12px;
+    margin-top: 20px;
+}
+
+/* Info Boxes */
+        .pickup-box.success-box {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%) !important;
+            border: 2px solid #10b981 !important;
         }
 
-            .screening-question:last-child {
-                margin-bottom: 0;
+            .pickup-box.success-box h3 {
+                color: #065f46 !important;
             }
 
-        .question-label {
-            font-weight: 700;
+            .pickup-box.success-box p {
+                color: #065f46 !important;
+            }
+
+        /* Blue Completed Box */
+        .pickup-box.completed-box {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%) !important;
+            border: 2px solid #3b82f6 !important;
+        }
+
+            .pickup-box.completed-box h3 {
+                color: #1e40af !important;
+            }
+
+            .pickup-box.completed-box p {
+                color: #1e40af !important;
+            }
+
+        /* Section Titles - BLUE COLOR */
+        .section-title {
+            font-size: 1.15em;
             color: #2E8BC0;
-            margin-bottom: 10px;
+            margin: 25px 0 12px;
+            font-weight: 700;
             display: flex;
             align-items: center;
-            gap: 10px;
-            font-size: 1.05em;
-        }
-
-        .question-number {
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            width: 28px;
-            height: 28px;
-            background: #3FA9F5;
-            color: white;
-            border-radius: 50%;
-            font-weight: 700;
-            font-size: 0.9em;
-        }
-
-        .answer-text {
-            color: #334155;
-            line-height: 1.7;
-            padding: 12px;
-            background: #f8fafc;
-            border-radius: 8px;
-            border: 1px solid #e2e8f0;
-        }
-
-        .answer-badge {
-            display: inline-block;
-            padding: 6px 14px;
-            border-radius: 20px;
-            font-weight: 700;
-            font-size: 0.9em;
-        }
-
-        .answer-yes {
-            background: #d1fae5;
-            color: #065f46;
-        }
-
-        .answer-no {
-            background: #fee2e2;
-            color: #991b1b;
-        }
-
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 14px;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1em;
-        }
-
-        .btn-approve {
-            background: #10b981;
-            color: white;
-        }
-
-        .btn-reject {
-            background: #ef4444;
-            color: white;
-        }
-
-        .btn-back {
-            background: #e2e8f0;
-            color: #334155;
-            text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
             gap: 8px;
         }
 
+            .section-title i {
+                color: #3FA9F5;
+                font-size: 1em;
+            }
+
+        /* Buttons - COLORFUL! */
         .btn-pickup {
             background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
-            color: #2E8BC0;
+            color: #92400e;
+            font-weight: 700;
         }
+
+            .btn-pickup:hover {
+                background: linear-gradient(135deg, #F6C90E 0%, #e5b800 100%);
+                transform: translateY(-1px);
+            }
 
         .btn-turnover {
             background: linear-gradient(135deg, #10b981 0%, #059669 100%);
             color: white;
         }
 
-        .pickup-box {
-            background: linear-gradient(135deg, #FFF9E6 0%, #FFD93D 30%);
-            padding: 30px;
-            border-radius: 15px;
-            margin: 20px 0;
-        }
-
-            .pickup-box h3 {
-                color: #92400e;
-                margin-bottom: 20px;
+            .btn-turnover:hover {
+                background: linear-gradient(135deg, #059669 0%, #047857 100%);
+                transform: translateY(-1px);
             }
 
-        .form-group {
-            margin-bottom: 20px;
-        }
+/* Responsive */
+@@media (max-width: 768px) {
+    .info-grid {
+        grid-template-columns: 1fr;
+    }
 
-            .form-group label {
-                display: block;
-                color: #334155;
-                margin-bottom: 8px;
-                font-weight: 600;
-            }
+    .header {
+        flex-direction: column;
+        text-align: center;
+    }
 
-            .form-group input, .form-group textarea {
-                width: 100%;
-                padding: 12px;
-                border: 2px solid #e2e8f0;
-                border-radius: 10px;
-                font-size: 15px;
-            }
-
-        .alert-success {
-            background: #d1fae5;
-            color: #065f46;
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
-            border-left: 4px solid #10b981;
-        }
-
-        .rejection-modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0,0,0,0.5);
-            z-index: 1000;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .modal-content {
-            background: white;
-            padding: 40px;
-            border-radius: 20px;
-            max-width: 500px;
-            width: 90%;
-        }
-
-            .modal-content h3 {
-                color: #2E8BC0;
-                margin-bottom: 20px;
-            }
-
-            .modal-content textarea {
-                width: 100%;
-                padding: 15px;
-                border: 2px solid #e2e8f0;
-                border-radius: 10px;
-                min-height: 120px;
-                font-size: 15px;
-            }
-
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 20px;
-        }
-
-        .id-badge {
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            padding: 8px 16px;
-            background: #d1fae5;
-            color: #065f46;
-            border-radius: 20px;
-            font-weight: 600;
-            font-size: 0.9em;
-        }
+    .action-buttons {
+        flex-direction: column;
+    }
+}
     </style>
 </head>
 <body>
@@ -524,7 +699,14 @@
 
                             <div class="form-group">
                                 <label>Pickup Date & Time *</label>
-                                <input type="datetime-local" name="pickupDate" required />
+                                <input type="datetime-local"
+                                       name="pickupDate"
+                                       required
+                                       min="@DateTime.Now.ToString("yyyy-MM-ddTHH:mm")"
+                                       style="font-size: 1.05em; padding: 14px;" />
+                                <small style="color: #64748b; font-size: 0.85em; display: block; margin-top: 6px;">
+                                    <i class="fas fa-info-circle"></i> Click on the calendar icon to easily select date and time
+                                </small>
                             </div>
 
                             <div class="form-group">
@@ -541,7 +723,7 @@
 
                 @if (Model.IsReadyForPickup && Model.ClaimedDate == null)
                 {
-                    <div class="pickup-box" style="background: linear-gradient(135deg, #d1fae5 0%, #10b981 30%);">
+                    <div class="pickup-box success-box">
                         <h3 style="color: #065f46;"><i class="fas fa-info-circle"></i> Pickup Details Set</h3>
                         <p style="color: #065f46; margin-bottom: 15px;">
                             <strong>Location:</strong> @Model.PickupLocation<br>
@@ -565,7 +747,7 @@
 
                 @if (Model.ClaimedDate != null)
                 {
-                    <div class="pickup-box" style="background: linear-gradient(135deg, #dbeafe 0%, #3b82f6 30%);">
+                    <div class="pickup-box completed-box">Pickup Date
                         <h3 style="color: #1e40af;"><i class="fas fa-check-circle"></i> Adoption Completed!</h3>
                         <p style="color: #1e40af;">
                             <strong>Pet Claimed On:</strong> @Model.ClaimedDate?.ToString("MMMM dd, yyyy hh:mm tt")<br>
@@ -678,6 +860,8 @@
             }
         </div>
     </div>
+
+
 
     <script>
         function showRejectModal() {

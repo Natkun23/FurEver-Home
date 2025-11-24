@@ -433,6 +433,14 @@
                 <i class="fas fa-paw menu-icon"></i>
                 <span class="menu-text">Manage Pets</span>
             </a>
+            <a href="@Url.Action("ApprovePets", "Admin")" class="menu-item">
+                <i class="fas fa-check-circle menu-icon"></i>
+                <span class="menu-text">Approve Posts</span>
+                @if (ViewBag.PendingCount > 0)
+                {
+                    <span class="badge">@ViewBag.PendingCount</span>
+                }
+            </a>
             <a href="@Url.Action("Applications", "Admin")" class="menu-item">
                 <i class="fas fa-file-alt menu-icon"></i>
                 <span class="menu-text">Applications</span>
@@ -440,7 +448,7 @@
             <a href="@Url.Action("AdoptedPets", "Admin")" class="menu-item">
                 <i class="fas fa-heart menu-icon"></i>
                 <span class="menu-text">Adopted Pets</span>
-                <span class="badge">@Model.Count</span>
+                
             </a>
             <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
             <a href="@Url.Action("Logout", "Account")" class="menu-item">

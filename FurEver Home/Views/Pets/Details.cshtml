@@ -572,6 +572,8 @@
         </div>
     </nav>
 
+
+
     <!-- Pet Details -->
     <div class="pet-details-container">
         <div class="pet-details-grid">
@@ -652,74 +654,83 @@
                     </div>
                 }
 
-                <div class="adoption-box">
-                    <h3>Ready to Adopt @Model.Name?</h3>
+                
+            <div class="adoption-box">
+                <h3>Ready to Adopt @Model.Name?</h3>
 
-                    @{
-                        var isAdmin = Session["UserRole"] != null && Session["UserRole"].ToString() == "Admin";
-                    }
+                @{
+                    var isAdmin = Session["UserRole"] != null && Session["UserRole"].ToString() == "Admin";
+                    var currentUserId = Session["UserId"] != null ? (int)Session["UserId"] : 0;
+                    var isOwner = Model.OwnerUserId.HasValue && Model.OwnerUserId.Value == currentUserId;
+                }
 
-                    @if (isAdmin)
+                @if (isOwner)
+                {
+                    <div class="alert-box" style="background: rgba(255, 255, 255, 0.25); border: 2px solid rgba(255, 255, 255, 0.3);">
+                        <i class="fas fa-user-check"></i> <strong>You are the owner of this pet.</strong>
+                    </div>
+                    <p style="margin: 15px 0;">You cannot apply to adopt your own pet. Manage your pet posts and view applications in your dashboard.</p>
+                    <a href="@Url.Action("CustomerDashboard", "MyPets")" class="btn-adopt-now">
+                        <i class="fas fa-tachometer-alt"></i> Go to My Dashboard
+                    </a>
+                }
+                else if (isAdmin)
+                {
+                    <div class="alert-box">
+                        <i class="fas fa-user-shield"></i> You are viewing this as an admin.
+                    </div>
+                    <a href="@Url.Action("Pets", "Admin")" class="btn-adopt-now">
+                        <i class="fas fa-arrow-left"></i> Back to Admin Dashboard
+                    </a>
+                }
+                else
+                {
+                    if (ViewBag.PendingApplicationsCount > 0)
                     {
                         <div class="alert-box">
-                            <i class="fas fa-user-shield"></i> You are viewing this as an admin.
+                            <i class="fas fa-info-circle"></i>
+                            <strong>@ViewBag.PendingApplicationsCount</strong>
+                            @(ViewBag.PendingApplicationsCount == 1 ? "person is" : "people are")
+                            currently interested in adopting @Model.Name.
                         </div>
-                        <a href="@Url.Action("Pets", "Admin")" class="btn-adopt-now">
-                            <i class="fas fa-arrow-left"></i> Back to Admin Dashboard
+                    }
+
+                    if (ViewBag.UserHasApplied == true)
+                    {
+                        <div class="alert-box" style="margin-bottom: 20px;">
+                            ✅ You have already applied to adopt @Model.Name.
+                            <a href="@Url.Action("MyApplications", "Pets")" style="color: white; text-decoration: underline; font-weight: 700;">
+                                Check your application status
+                            </a>
+                        </div>
+                        <a href="@Url.Action("Index", "Pets")" class="btn-adopt-now">
+                            🐾 Browse More Pets
                         </a>
                     }
                     else
                     {
-                        if (ViewBag.PendingApplicationsCount > 0)
-                        {
-                            <div class="alert-box">
-                                <i class="fas fa-info-circle"></i>
-                                <strong>@ViewBag.PendingApplicationsCount</strong>
-                                @(ViewBag.PendingApplicationsCount == 1 ? "person is" : "people are")
-                                currently interested in adopting @Model.Name.
-                            </div>
-                        }
-
-                        if (ViewBag.UserHasApplied == true)
-                        {
-                            <div class="alert-box" style="margin-bottom: 20px;">
-                                ✅ You have already applied to adopt @Model.Name.
-                                <a href="@Url.Action("MyApplications", "Pets")" style="color: white; text-decoration: underline; font-weight: 700;">
-                                    Check your application status
-                                </a>
-                            </div>
-                            <a href="@Url.Action("Index", "Pets")" class="btn-adopt-now">
-                                🐾 Browse More Pets
-                            </a>
-                        }
-                        else
-                        {
-                            <p>@Model.Name is ready to find their forever home! Complete our simple adoption application and we'll be in touch shortly.</p>
-                            <a href="@Url.Action("Apply", "Pets", new { id = Model.PetId })" class="btn-adopt-now">
-                                🏠 Apply to Adopt @Model.Name
-                            </a>
-                        }
+                        <p>@Model.Name is ready to find their forever home! Complete our simple adoption application and we'll be in touch shortly.</p>
+                        <a href="@Url.Action("Apply", "Pets", new { id = Model.PetId })" class="btn-adopt-now">
+                            🏠 Apply to Adopt @Model.Name
+                        </a>
                     }
+                }
 
-                    <div class="info-grid">
-                        <div class="info-item">
-                            
-                            <div>
-                                <div class="info-label">Health Status</div>
-                                <div class="info-value">@(Model.IsHealthy ? "Healthy" : "Under Care")</div>
-                            </div>
-                        </div>
-                        <div class="info-item">
-                            
-                            <div>
-                                <div class="info-label">@(Model.Gender == "Male" ? "Neutered" : "Spayed")</div>
-                                <div class="info-value">@(Model.IsNeutered ? "Yes" : "No")</div>
-                            </div>
-                        </div>
-                       
-                      
+                <div class="info-grid">
+                    <div class="info-item">
+                        <div>
+                            <div class="info-label">Health Status</div>
+                            <div class="info-value">@(Model.IsHealthy ? "Healthy" : "Under Care")</div>
                         </div>
                     </div>
+                    <div class="info-item">
+                        <div>
+                            <div class="info-label">@(Model.Gender == "Male" ? "Neutered" : "Spayed")</div>
+                            <div class="info-value">@(Model.IsNeutered ? "Yes" : "No")</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
                 </div>
             </div>
         </div>
