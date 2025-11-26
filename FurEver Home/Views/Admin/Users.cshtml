@@ -4,6 +4,8 @@
     Layout = null;
 }
 
+@using FurEver_Home.Models
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -43,11 +45,11 @@
             text-align: center;
         }
 
-        .sidebar-header img {
-            max-width: 200px;
-            margin: 0 auto 15px;
-            display: block;
-        }
+            .sidebar-header img {
+                max-width: 200px;
+                margin: 0 auto 15px;
+                display: block;
+            }
 
         .sidebar-subtitle {
             font-size: 0.9em;
@@ -73,16 +75,16 @@
             position: relative;
         }
 
-        .menu-item:hover {
-            background: rgba(255,255,255,0.08);
-            padding-left: 28px;
-        }
+            .menu-item:hover {
+                background: rgba(255,255,255,0.08);
+                padding-left: 28px;
+            }
 
-        .menu-item.active {
-            background: rgba(255,255,255,0.12);
-            border-left-color: #FFD93D;
-            padding-left: 25px;
-        }
+            .menu-item.active {
+                background: rgba(255,255,255,0.12);
+                border-left-color: #FFD93D;
+                padding-left: 25px;
+            }
 
         .menu-icon {
             font-size: 1.2em;
@@ -156,18 +158,23 @@
         }
 
         .alert {
-            padding: 15px 20px;
-            border-radius: 10px;
-            margin-bottom: 20px;
+            padding: 20px 25px;
+            border-radius: 12px;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
             gap: 15px;
+            font-size: 0.95em;
         }
 
         .alert-success {
-            background: #d4edda;
-            border: 1px solid #c3e6cb;
-            color: #155724;
+            background: #E8F9F0;
+            border-left: 4px solid #4CAF50;
+            color: #2e7d32;
+        }
+
+        .alert-icon {
+            font-size: 1.3em;
         }
 
         /* Users Table */
@@ -179,64 +186,86 @@
         }
 
         .table-header {
-            padding: 25px 30px;
+            padding: 30px;
             background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
             display: flex;
             justify-content: space-between;
             align-items: center;
+            border-bottom: 2px solid #d4e9f7;
         }
 
         .table-title {
-            font-size: 1.5em;
+            font-size: 1.6em;
             color: #2E8BC0;
             font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
         }
+
+            .table-title i {
+                font-size: 1.2em;
+            }
 
         .search-box {
             position: relative;
         }
 
-        .search-box input {
-            padding: 10px 15px 10px 40px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
-            width: 300px;
-            font-size: 14px;
-        }
+            .search-box input {
+                padding: 12px 18px 12px 45px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                width: 320px;
+                font-size: 14px;
+                transition: all 0.3s;
+            }
 
-        .search-box i {
-            position: absolute;
-            left: 15px;
-            top: 50%;
-            transform: translateY(-50%);
-            color: #94a3b8;
-        }
+                .search-box input:focus {
+                    outline: none;
+                    border-color: #3FA9F5;
+                    box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+                }
+
+            .search-box i {
+                position: absolute;
+                left: 16px;
+                top: 50%;
+                transform: translateY(-50%);
+                color: #94a3b8;
+                font-size: 1.1em;
+            }
 
         .users-table {
             width: 100%;
             border-collapse: collapse;
         }
 
-        .users-table th {
-            background: #f8fafc;
-            padding: 15px 20px;
-            text-align: left;
-            font-weight: 600;
-            color: #334155;
-            border-bottom: 2px solid #e2e8f0;
-            font-size: 0.9em;
-            text-transform: uppercase;
-        }
+            .users-table th {
+                background: #f8fafc;
+                padding: 18px 25px;
+                text-align: left;
+                font-weight: 700;
+                color: #334155;
+                border-bottom: 2px solid #e2e8f0;
+                font-size: 0.85em;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
 
-        .users-table td {
-            padding: 20px;
-            border-bottom: 1px solid #e2e8f0;
-            color: #334155;
-        }
+            .users-table td {
+                padding: 22px 25px;
+                border-bottom: 1px solid #e2e8f0;
+                color: #334155;
+            }
 
-        .users-table tr:hover {
-            background: #f8fafc;
-        }
+            .users-table tr {
+                transition: all 0.3s;
+            }
+
+            .users-table tbody tr:hover {
+                background: #f8fafc;
+                transform: scale(1.001);
+            }
 
         .user-cell {
             display: flex;
@@ -245,8 +274,8 @@
         }
 
         .user-cell-avatar {
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
             border-radius: 50%;
             display: flex;
@@ -254,54 +283,83 @@
             justify-content: center;
             color: white;
             font-weight: 700;
-            font-size: 1.1em;
+            font-size: 1.2em;
+            flex-shrink: 0;
+            box-shadow: 0 4px 12px rgba(63, 169, 245, 0.2);
         }
+
+            .user-cell-avatar img {
+                width: 100%;
+                height: 100%;
+                border-radius: 50%;
+                object-fit: cover;
+            }
 
         .user-cell-info {
             flex: 1;
         }
 
         .user-cell-name {
-            font-weight: 600;
+            font-weight: 700;
             color: #2E8BC0;
-            margin-bottom: 3px;
+            margin-bottom: 5px;
+            font-size: 1em;
         }
 
         .user-cell-email {
             font-size: 0.85em;
             color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 6px;
         }
 
+            .user-cell-email i {
+                font-size: 0.9em;
+            }
+
         .status-badge {
-            padding: 6px 14px;
+            padding: 8px 16px;
             border-radius: 20px;
             font-size: 0.85em;
             font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
         }
 
+            .status-badge i {
+                font-size: 1em;
+            }
+
         .status-verified {
-            background: #d1fae5;
-            color: #065f46;
+            background: #E8F9F0;
+            color: #2e7d32;
+            border: 2px solid #C8E6C9;
         }
 
         .status-pending {
-            background: #fef3c7;
-            color: #92400e;
+            background: #FFF4E6;
+            color: #e65100;
+            border: 2px solid #FFE0B2;
         }
 
         .status-rejected {
-            background: #fee2e2;
-            color: #991b1b;
+            background: #FFEBEE;
+            color: #c62828;
+            border: 2px solid #FFCDD2;
         }
 
         .status-active {
-            background: #dbeafe;
-            color: #1e40af;
+            background: #E8F4FC;
+            color: #1565c0;
+            border: 2px solid #BBDEFB;
         }
 
         .status-inactive {
-            background: #e5e7eb;
-            color: #374151;
+            background: #f8f9fa;
+            color: #4b5563;
+            border: 2px solid #e5e7eb;
         }
 
         .action-buttons {
@@ -310,7 +368,7 @@
         }
 
         .btn-view {
-            padding: 8px 16px;
+            padding: 10px 18px;
             background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
             color: white;
             border: none;
@@ -321,17 +379,22 @@
             text-decoration: none;
             display: inline-flex;
             align-items: center;
-            gap: 6px;
+            gap: 8px;
             transition: all 0.3s;
         }
 
-        .btn-view:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(63, 169, 245, 0.3);
-        }
+            .btn-view:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(63, 169, 245, 0.3);
+                color: white;
+            }
+
+            .btn-view i {
+                font-size: 1.1em;
+            }
 
         .btn-toggle {
-            padding: 8px 16px;
+            padding: 10px 18px;
             background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
             color: #2E8BC0;
             border: none;
@@ -340,32 +403,83 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
         }
 
-        .btn-toggle:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 217, 61, 0.3);
-        }
+            .btn-toggle:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(255, 217, 61, 0.3);
+            }
+
+            .btn-toggle i {
+                font-size: 1.1em;
+            }
 
         .empty-state {
             text-align: center;
             padding: 80px 40px;
-            color: #94a3b8;
         }
 
-        .empty-state i {
+        .empty-icon {
             font-size: 5em;
+            color: #cbd5e1;
             margin-bottom: 20px;
         }
 
+        .empty-title {
+            font-size: 1.8em;
+            color: #2E8BC0;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .empty-text {
+            color: #666;
+            font-size: 1.1em;
+        }
+
         /* Responsive */
+        @@media (max-width: 1400px) {
+            .users-table {
+                font-size: 0.9em;
+            }
+
+            .search-box input {
+                width: 250px;
+            }
+        }
+
         @@media (max-width: 1024px) {
             .sidebar {
                 width: 0;
                 transform: translateX(-100%);
             }
+
             .main-content {
                 margin-left: 0;
+            }
+
+            .table-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .search-box input {
+                width: 100%;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .users-table {
+                display: block;
+                overflow-x: auto;
+            }
+
+            .action-buttons {
+                flex-direction: column;
             }
         }
     </style>
@@ -424,33 +538,65 @@
         <div class="top-bar">
             <div class="page-title">Manage Users</div>
             <div class="user-info">
-                <div class="user-avatar">A</div>
+                @if (Session["UserId"] != null)
+                {
+                    var db = new FurEver_Home.Models.FurEverHomeContext();
+                    var userId = (int)Session["UserId"];
+                    var admin = db.Users.Find(userId);
+
+                    if (admin != null && !string.IsNullOrEmpty(admin.ProfilePictureUrl))
+                    {
+                        <img src="@admin.ProfilePictureUrl" alt="Profile" class="user-avatar" style="object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="user-avatar">
+                            @if (Session["UserName"] != null)
+                            {
+                                @Session["UserName"].ToString().Substring(0, 1).ToUpper()
+                            }
+                            else
+                            {
+                                <text>A</text>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="user-avatar">A</div>
+                }
             </div>
         </div>
 
         @if (TempData["Success"] != null)
         {
             <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i>
+                <i class="fas fa-check-circle alert-icon"></i>
                 <span>@TempData["Success"]</span>
             </div>
         }
 
         <div class="users-container">
             <div class="table-header">
-                <div class="table-title">All Users (@Model.Count)</div>
+                <div class="table-title">
+                    <i class="fas fa-users"></i>
+                    All Users (@Model.Count)
+                </div>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search users..." id="searchInput">
+                    <input type="text" placeholder="Search users by name or email..." id="searchInput">
                 </div>
             </div>
 
             @if (Model.Count == 0)
             {
                 <div class="empty-state">
-                    <i class="fas fa-users"></i>
-                    <h3>No Users Yet</h3>
-                    <p>Users will appear here once they register</p>
+                    <div class="empty-icon">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="empty-title">No Users Yet</div>
+                    <div class="empty-text">Users will appear here once they register</div>
                 </div>
             }
             else
@@ -458,11 +604,11 @@
                 <table class="users-table">
                     <thead>
                         <tr>
-                            <th>User</th>
-                            <th>ID Status</th>
-                            <th>Account Status</th>
-                            <th>Registered</th>
-                            <th>Actions</th>
+                            <th><i class="fas fa-user"></i> User</th>
+                            <th><i class="fas fa-id-card"></i> ID Status</th>
+                            <th><i class="fas fa-toggle-on"></i> Account Status</th>
+                            <th><i class="fas fa-calendar-alt"></i> Registered</th>
+                            <th><i class="fas fa-cog"></i> Actions</th>
                         </tr>
                     </thead>
                     <tbody id="usersTableBody">
@@ -471,10 +617,22 @@
                             <tr>
                                 <td>
                                     <div class="user-cell">
-                                        <div class="user-cell-avatar">@user.FullName.Substring(0, 1).ToUpper()</div>
+                                        <div class="user-cell-avatar">
+                                            @if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+                                            {
+                                                <img src="@user.ProfilePictureUrl" alt="@user.FullName">
+                                            }
+                                            else
+                                            {
+                                                @user.FullName.Substring(0, 1).ToUpper()
+                                            }
+                                        </div>
                                         <div class="user-cell-info">
                                             <div class="user-cell-name">@user.FullName</div>
-                                            <div class="user-cell-email">@user.Email</div>
+                                            <div class="user-cell-email">
+                                                <i class="fas fa-envelope"></i>
+                                                @user.Email
+                                            </div>
                                         </div>
                                     </div>
                                 </td>
@@ -499,24 +657,29 @@
                                     }
                                     else
                                     {
-                                        <span class="status-badge status-pending">Not Submitted</span>
+                                        <span class="status-badge status-pending">
+                                            <i class="fas fa-exclamation-circle"></i> Not Submitted
+                                        </span>
                                     }
                                 </td>
                                 <td>
                                     @if (user.IsActive)
                                     {
                                         <span class="status-badge status-active">
-                                            <i class="fas fa-circle"></i> Active
+                                            <i class="fas fa-check-circle"></i> Active
                                         </span>
                                     }
                                     else
                                     {
                                         <span class="status-badge status-inactive">
-                                            <i class="fas fa-circle"></i> Inactive
+                                            <i class="fas fa-ban"></i> Inactive
                                         </span>
                                     }
                                 </td>
-                                <td>@user.DateRegistered.ToString("MMM dd, yyyy")</td>
+                                <td>
+                                    <i class="fas fa-calendar" style="color: #3FA9F5; margin-right: 6px;"></i>
+                                    @user.DateRegistered.ToString("MMM dd, yyyy")
+                                </td>
                                 <td>
                                     <div class="action-buttons">
                                         <a href="@Url.Action("UserDetails", "Admin", new { id = user.UserId })" class="btn-view">

@@ -7,7 +7,7 @@ using System.Web.Mvc;
 
 namespace FurEver_Home.Controllers
 {
-    public class MyPetsController : Controller
+    public class MyPetsController : BaseController
     {
         private FurEverHomeContext db = new FurEverHomeContext();
 

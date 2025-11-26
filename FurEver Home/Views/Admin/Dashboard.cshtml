@@ -3,6 +3,24 @@
     Layout = null;
 }
 
+@using FurEver_Home.Models
+
+
+
+@functions {
+    public string GetTimeAgo(DateTime timestamp)
+    {
+        var timeSpan = DateTime.Now - timestamp;
+
+        if (timeSpan.TotalMinutes < 1) return "Just now";
+        if (timeSpan.TotalMinutes < 60) return $"{(int)timeSpan.TotalMinutes} minutes ago";
+        if (timeSpan.TotalHours < 24) return $"{(int)timeSpan.TotalHours} hours ago";
+        if (timeSpan.TotalDays < 30) return $"{(int)timeSpan.TotalDays} days ago";
+        if (timeSpan.TotalDays < 365) return $"{(int)(timeSpan.TotalDays / 30)} months ago";
+        return $"{(int)(timeSpan.TotalDays / 365)} years ago";
+    }
+}
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -42,11 +60,11 @@
             text-align: center;
         }
 
-        .sidebar-header img {
-            max-width: 200px;
-            margin: 0 auto 15px;
-            display: block;
-        }
+            .sidebar-header img {
+                max-width: 200px;
+                margin: 0 auto 15px;
+                display: block;
+            }
 
         .sidebar-subtitle {
             font-size: 0.9em;
@@ -72,16 +90,16 @@
             position: relative;
         }
 
-        .menu-item:hover {
-            background: rgba(255,255,255,0.08);
-            padding-left: 28px;
-        }
+            .menu-item:hover {
+                background: rgba(255,255,255,0.08);
+                padding-left: 28px;
+            }
 
-        .menu-item.active {
-            background: rgba(255,255,255,0.12);
-            border-left-color: #FFD93D;
-            padding-left: 25px;
-        }
+            .menu-item.active {
+                background: rgba(255,255,255,0.12);
+                border-left-color: #FFD93D;
+                padding-left: 25px;
+            }
 
         .menu-icon {
             font-size: 1.2em;
@@ -152,6 +170,15 @@
             font-size: 1.3em;
             font-weight: 700;
             color: #2E8BC0;
+            object-fit: cover;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+
+        /* When user-avatar is an img tag */
+        img.user-avatar {
+            background: none;
+            font-size: inherit;
         }
 
         .user-details {
@@ -189,10 +216,10 @@
             transition: transform 0.3s, box-shadow 0.3s;
         }
 
-        .stat-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 25px rgba(63, 169, 245, 0.2);
-        }
+            .stat-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 25px rgba(63, 169, 245, 0.2);
+            }
 
         .stat-icon {
             width: 70px;
@@ -201,24 +228,26 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2em;
+            font-size: 1.8em;
+            color: white;
         }
 
-        .stat-icon.blue {
-            background: linear-gradient(135deg, #E8F4FC 0%, #3FA9F5 100%);
-        }
+            .stat-icon.blue {
+                background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            }
 
-        .stat-icon.yellow {
-            background: linear-gradient(135deg, #FFF9E6 0%, #FFD93D 100%);
-        }
+            .stat-icon.yellow {
+                background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+                color: #2E8BC0;
+            }
 
-        .stat-icon.green {
-            background: linear-gradient(135deg, #E8F9F0 0%, #4CAF50 100%);
-        }
+            .stat-icon.green {
+                background: linear-gradient(135deg, #4CAF50 0%, #388E3C 100%);
+            }
 
-        .stat-icon.orange {
-            background: linear-gradient(135deg, #FFF4E6 0%, #FF9800 100%);
-        }
+            .stat-icon.orange {
+                background: linear-gradient(135deg, #FF9800 0%, #F57C00 100%);
+            }
 
         .stat-info {
             flex: 1;
@@ -228,6 +257,8 @@
             font-size: 0.9em;
             color: #999;
             margin-bottom: 8px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
         }
 
         .stat-value {
@@ -238,9 +269,17 @@
 
         .stat-change {
             font-size: 0.85em;
-            color: #4CAF50;
+            color: #666;
             margin-top: 5px;
         }
+
+            .stat-change.positive {
+                color: #4CAF50;
+            }
+
+            .stat-change i {
+                font-size: 0.9em;
+            }
 
         /* Quick Actions */
         .section {
@@ -275,15 +314,17 @@
             font-weight: 600;
             cursor: pointer;
             text-decoration: none;
-            display: inline-block;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
             transition: all 0.3s;
         }
 
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(63, 169, 245, 0.3);
-            color: white;
-        }
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 5px 15px rgba(63, 169, 245, 0.3);
+                color: white;
+            }
 
         .actions-grid {
             display: grid;
@@ -301,29 +342,32 @@
             text-decoration: none;
             color: inherit;
             display: block;
+            border: 2px solid transparent;
         }
 
-        .action-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
-            background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
-        }
+            .action-card:hover {
+                transform: translateY(-5px);
+                box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+                background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
+                border-color: #3FA9F5;
+            }
 
         .action-icon {
-            font-size: 3em;
+            font-size: 2.5em;
             margin-bottom: 15px;
+            color: #2E8BC0;
         }
 
         .action-title {
             font-weight: 700;
             color: #2E8BC0;
             font-size: 1.1em;
+            margin-bottom: 8px;
         }
 
         .action-description {
             font-size: 0.9em;
             color: #666;
-            margin-top: 8px;
         }
 
         /* Recent Activity */
@@ -338,32 +382,90 @@
             margin-bottom: 15px;
             border-radius: 8px;
             transition: all 0.3s;
+            display: flex;
+            align-items: start;
+            gap: 15px;
         }
 
-        .activity-item:hover {
-            background: #E8F4FC;
-            transform: translateX(5px);
+            .activity-item:hover {
+                background: #E8F4FC;
+                transform: translateX(5px);
+            }
+
+        .activity-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1em;
+            flex-shrink: 0;
+        }
+
+            .activity-icon.blue {
+                background: #E8F4FC;
+                color: #2E8BC0;
+            }
+
+            .activity-icon.green {
+                background: #E8F9F0;
+                color: #4CAF50;
+            }
+
+            .activity-icon.yellow {
+                background: #FFF9E6;
+                color: #FF9800;
+            }
+
+            .activity-icon.purple {
+                background: #F3E5F5;
+                color: #9C27B0;
+            }
+
+        .activity-content {
+            flex: 1;
         }
 
         .activity-title {
             font-weight: 700;
             color: #333;
             margin-bottom: 5px;
+            font-size: 0.95em;
         }
 
         .activity-meta {
             font-size: 0.85em;
             color: #999;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+
+        .status-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 5px;
+            padding: 3px 10px;
+            border-radius: 12px;
+            font-size: 0.85em;
+            font-weight: 600;
         }
 
         .status-pending {
+            background: #FFF4E6;
             color: #FF9800;
-            font-weight: 600;
         }
 
         .status-verified {
+            background: #E8F9F0;
             color: #4CAF50;
-            font-weight: 600;
+        }
+
+        .status-new {
+            background: #E8F4FC;
+            color: #2E8BC0;
         }
 
         .alert {
@@ -383,17 +485,20 @@
 
         .alert-icon {
             font-size: 1.5em;
+            color: #FF9800;
         }
 
         /* Responsive */
-        @@media (max-width: 1024px) {
+        @@media (max-width: 480px) {
             .sidebar {
                 width: 0;
                 transform: translateX(-100%);
             }
+
             .main-content {
                 margin-left: 0;
             }
+
             .stats-grid {
                 grid-template-columns: 1fr;
             }
@@ -401,6 +506,7 @@
     </style>
 </head>
 <body>
+
     <!-- Sidebar -->
     <div class="sidebar">
         <div class="sidebar-header">
@@ -444,7 +550,6 @@
                     <span class="badge">@ViewBag.PendingCount</span>
                 }
             </a>
-
             <a href="@Url.Action("Applications", "Admin")" class="menu-item">
                 <i class="fas fa-file-alt menu-icon"></i>
                 <span class="menu-text">Applications</span>
@@ -456,7 +561,6 @@
             <a href="@Url.Action("AdoptedPets", "Admin")" class="menu-item">
                 <i class="fas fa-heart menu-icon"></i>
                 <span class="menu-text">Adopted Pets</span>
-
             </a>
             <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
             <a href="@Url.Action("Logout", "Account")" class="menu-item">
@@ -470,21 +574,72 @@
     <div class="main-content">
         <!-- Top Bar -->
         <div class="top-bar">
-            <div class="page-title">Dashboard</div>
+            <div style="display: flex; flex-direction: column; gap: 5px;">
+                <div class="page-title">Dashboard</div>
+                <div style="display: flex; align-items: center; gap: 10px; color: #64748b; font-size: 0.9em;">
+                    <i class="fas fa-clock"></i>
+                    <span id="currentDateTime"></span>
+                </div>
+            </div>
             <div class="user-info">
-                <div class="user-avatar">A</div>
+                @if (Session["UserId"] != null)
+                {
+                    var db = new FurEver_Home.Models.FurEverHomeContext();
+                    var userId = (int)Session["UserId"];
+                    var admin = db.Users.Find(userId);
+
+                    if (admin != null && !string.IsNullOrEmpty(admin.ProfilePictureUrl))
+                    {
+                        <img src="@admin.ProfilePictureUrl" alt="Profile" class="user-avatar" style="object-fit: cover;">
+                    }
+                    else
+                    {
+                        <div class="user-avatar">
+                            @if (Session["UserName"] != null)
+                            {
+                                @Session["UserName"].ToString().Substring(0, 1).ToUpper()
+                            }
+                            else
+                            {
+                                <text>A</text>
+                            }
+                        </div>
+                    }
+                }
+                else
+                {
+                    <div class="user-avatar">A</div>
+                }
+
                 <div class="user-details">
-                    <div class="user-name">Admin User</div>
-                    <div class="user-role">Administrator</div>
+                    <div class="user-name">
+                        @if (Session["UserName"] != null)
+                        {
+                            @Session["UserName"]
+                        }
+                        else
+                        {
+                            <text>Admin User</text>
+                        }
+                    </div>
+                    <div class="user-role">
+                        @if (Session["UserRole"] != null)
+                        {
+                            @Session["UserRole"]
+                        }
+                        else
+                        {
+                            <text>Administrator</text>
+                        }
+                    </div>
                 </div>
             </div>
         </div>
-
         <!-- Alerts -->
         @if (ViewBag.PendingVerifications > 0)
         {
             <div class="alert alert-warning">
-                <span class="alert-icon">⚠️</span>
+                <i class="fas fa-exclamation-triangle alert-icon"></i>
                 <div>
                     <strong>Action Required:</strong> You have @ViewBag.PendingVerifications ID verification(s) pending review.
                     <a href="@Url.Action("VerifyIDs", "Admin")" style="color: #e65100; font-weight: 700; text-decoration: underline;">Review Now</a>
@@ -495,16 +650,22 @@
         <!-- Stats Cards -->
         <div class="stats-grid">
             <div class="stat-card">
-                <div class="stat-icon blue">👥</div>
+                <div class="stat-icon blue">
+                    <i class="fas fa-users"></i>
+                </div>
                 <div class="stat-info">
                     <div class="stat-label">Total Users</div>
                     <div class="stat-value">@ViewBag.TotalUsers</div>
-                    <div class="stat-change">↑ +12% this month</div>
+                    <div class="stat-change positive">
+                        <i class="fas fa-arrow-up"></i> +12% this month
+                    </div>
                 </div>
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon yellow">🐾</div>
+                <div class="stat-icon yellow">
+                    <i class="fas fa-paw"></i>
+                </div>
                 <div class="stat-info">
                     <div class="stat-label">Available Pets</div>
                     <div class="stat-value">@ViewBag.TotalPets</div>
@@ -513,7 +674,9 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon green">✅</div>
+                <div class="stat-icon green">
+                    <i class="fas fa-check-circle"></i>
+                </div>
                 <div class="stat-info">
                     <div class="stat-label">Verified IDs</div>
                     <div class="stat-value">@(ViewBag.TotalUsers - ViewBag.PendingVerifications)</div>
@@ -522,7 +685,9 @@
             </div>
 
             <div class="stat-card">
-                <div class="stat-icon orange">📋</div>
+                <div class="stat-icon orange">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
                 <div class="stat-info">
                     <div class="stat-label">Applications</div>
                     <div class="stat-value">@ViewBag.PendingApplications</div>
@@ -538,25 +703,33 @@
             </div>
             <div class="actions-grid">
                 <a href="@Url.Action("AddPet", "Admin")" class="action-card">
-                    <div class="action-icon">➕</div>
+                    <div class="action-icon">
+                        <i class="fas fa-plus-circle"></i>
+                    </div>
                     <div class="action-title">Add New Pet</div>
                     <div class="action-description">List a new pet for adoption</div>
                 </a>
 
                 <a href="@Url.Action("VerifyIDs", "Admin")" class="action-card">
-                    <div class="action-icon">🆔</div>
+                    <div class="action-icon">
+                        <i class="fas fa-id-card-alt"></i>
+                    </div>
                     <div class="action-title">Verify IDs</div>
                     <div class="action-description">Review pending verifications</div>
                 </a>
 
                 <a href="@Url.Action("Applications", "Admin")" class="action-card">
-                    <div class="action-icon">📝</div>
+                    <div class="action-icon">
+                        <i class="fas fa-file-signature"></i>
+                    </div>
                     <div class="action-title">Review Applications</div>
                     <div class="action-description">Process adoption requests</div>
                 </a>
 
                 <a href="@Url.Action("Users", "Admin")" class="action-card">
-                    <div class="action-icon">👤</div>
+                    <div class="action-icon">
+                        <i class="fas fa-user-cog"></i>
+                    </div>
                     <div class="action-title">Manage Users</div>
                     <div class="action-description">View and edit user accounts</div>
                 </a>
@@ -567,34 +740,112 @@
         <div class="section">
             <div class="section-header">
                 <div class="section-title">Recent Activity</div>
-                <a href="@Url.Action("Applications", "Admin")" class="btn-primary">View All</a>
             </div>
-            <ul class="activity-list">
-                <li class="activity-item">
-                    <div class="activity-title">New adoption application submitted</div>
-                    <div class="activity-meta">John Doe applied to adopt Max • <span class="status-pending">Pending</span> • 2 hours ago</div>
-                </li>
-                <li class="activity-item">
-                    <div class="activity-title">ID verification completed</div>
-                    <div class="activity-meta">Jane Smith's ID was verified • <span class="status-verified">Verified</span> • 5 hours ago</div>
-                </li>
-                <li class="activity-item">
-                    <div class="activity-title">New pet added</div>
-                    <div class="activity-meta">Luna (Cat, 2 years) added to available pets • Yesterday</div>
-                </li>
-                <li class="activity-item">
-                    <div class="activity-title">User registered</div>
-                    <div class="activity-meta">New user Mike Johnson created an account • <span class="status-pending">ID Pending</span> • Yesterday</div>
-                </li>
-            </ul>
+            @if (ViewBag.RecentActivities != null && ViewBag.RecentActivities.Count > 0)
+            {
+                <ul class="activity-list">
+                    @foreach (var activity in ViewBag.RecentActivities)
+                    {
+                        <li class="activity-item">
+                            <div class="activity-icon @activity.IconColor">
+                                <i class="fas fa-@activity.Icon"></i>
+                            </div>
+                            <div class="activity-content">
+                                <div class="activity-title">@activity.Title</div>
+                                <div class="activity-meta">
+                                    <span>@activity.Description</span>
+                                    @if (!string.IsNullOrEmpty(activity.Status))
+                                    {
+                                        <span class="status-badge status-@activity.Status.ToLower()">
+                                            @if (activity.Status == "Verified")
+                                            {
+                                                <i class="fas fa-check"></i>
+                                            }
+                                            else if (activity.Status == "Pending")
+                                            {
+                                                <i class="fas fa-clock"></i>
+                                            }
+                                            else
+                                            {
+                                                <i class="fas fa-star"></i>
+                                            }
+                                            @activity.Status
+                                        </span>
+                                    }
+                                    <span>• @GetTimeAgo(activity.Timestamp)</span>
+                                </div>
+                            </div>
+                        </li>
+                    }
+                </ul>
+            }
+            else
+            {
+                <div style="text-align: center; padding: 40px; color: #999;">
+                    <i class="fas fa-inbox" style="font-size: 3em; margin-bottom: 15px; opacity: 0.5;"></i>
+                    <p>No recent activity to display</p>
+                </div>
+            }
         </div>
     </div>
 
-    <script>// Prevent back button after logout
-    window.history.forward();
-    function noBack() {
+    <script>
+        // Prevent back button after logout
         window.history.forward();
-    }</script>
+        function noBack() {
+            window.history.forward();
+        }
+    </script>
+
+    <script>
+        // Method 2: Prevent back button after logout
+        if (window.history && window.history.pushState) {
+            window.history.pushState(null, null, window.location.href);
+
+            window.addEventListener('popstate', function() {
+                // Push state again to prevent back
+                window.history.pushState(null, null, window.location.href);
+
+                // Verify session is still valid by making a quick check
+                fetch('@Url.Action("CheckSession", "Account")', {
+                    method: 'GET',
+                    cache: 'no-cache'
+                }).then(function(response) {
+                    if (!response.ok) {
+                        // Session expired, redirect to login
+                        window.location.href = '@Url.Action("Login", "Account")';
+                    }
+                }).catch(function() {
+                    // On error, redirect to login
+                    window.location.href = '@Url.Action("Login", "Account")';
+                });
+            });
+        }
+    </script>
+
+    <script>
+        // Real-time clock
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+                second: '2-digit',
+                hour12: true
+            };
+
+            const dateTimeString = now.toLocaleDateString('en-US', options);
+            document.getElementById('currentDateTime').textContent = dateTimeString;
+        }
+
+        // Update immediately and then every second
+        updateDateTime();
+        setInterval(updateDateTime, 1000);
+    </script>
 
 </body>
 </html>

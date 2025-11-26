@@ -23,124 +23,302 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f0f2f5;
             padding: 30px;
+            min-height: 100vh;
         }
 
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 0 auto;
             background: white;
             border-radius: 20px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 20px rgba(0,0,0,0.08);
             overflow: hidden;
         }
 
         .header {
             background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-            padding: 40px;
+            padding: 50px 40px;
             color: white;
             display: flex;
             align-items: center;
-            gap: 30px;
+            gap: 35px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 400px;
+            height: 400px;
+            background: rgba(255,255,255,0.1);
+            border-radius: 50%;
         }
 
         .user-avatar-large {
-            width: 100px;
-            height: 100px;
+            width: 120px;
+            height: 120px;
             background: white;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 3em;
+            font-size: 3.5em;
             font-weight: 700;
             color: #3FA9F5;
+            box-shadow: 0 8px 25px rgba(0,0,0,0.15);
+            position: relative;
+            z-index: 1;
+            flex-shrink: 0;
+        }
+
+        .user-avatar-large img {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .header-info {
+            flex: 1;
+            position: relative;
+            z-index: 1;
         }
 
         .header-info h1 {
-            font-size: 2em;
-            margin-bottom: 8px;
+            font-size: 2.2em;
+            margin-bottom: 12px;
+            font-weight: 800;
         }
 
         .header-info p {
-            opacity: 0.9;
+            opacity: 0.95;
+            font-size: 1.1em;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .header-info p i {
+            font-size: 1.1em;
+        }
+
+        .header-badges {
+            display: flex;
+            gap: 12px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .header-badge {
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            background: rgba(255,255,255,0.2);
+            backdrop-filter: blur(10px);
         }
 
         .content {
-            padding: 40px;
+            padding: 45px;
+        }
+
+        .section-title {
+            font-size: 1.6em;
+            color: #2E8BC0;
+            font-weight: 700;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding-bottom: 15px;
+            border-bottom: 3px solid #E8F4FC;
+        }
+
+        .section-title i {
+            font-size: 1.2em;
         }
 
         .info-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 30px;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+        }
+
+        .info-item {
+            background: #f8f9fa;
+            padding: 20px;
+            border-radius: 12px;
+            border-left: 4px solid #3FA9F5;
+            transition: all 0.3s;
+        }
+
+        .info-item:hover {
+            background: #E8F4FC;
+            transform: translateX(5px);
         }
 
         .info-item label {
-            display: block;
+            display: flex;
+            align-items: center;
+            gap: 8px;
             color: #64748b;
             font-size: 0.85em;
-            margin-bottom: 8px;
+            margin-bottom: 10px;
             text-transform: uppercase;
-            font-weight: 600;
+            font-weight: 700;
+            letter-spacing: 0.5px;
+        }
+
+        .info-item label i {
+            color: #3FA9F5;
+            font-size: 1.1em;
         }
 
         .info-item .value {
-            font-size: 1.1em;
+            font-size: 1.15em;
             color: #334155;
-            font-weight: 600;
+            font-weight: 700;
         }
 
         .status-badge {
-            display: inline-block;
-            padding: 8px 16px;
-            border-radius: 20px;
-            font-size: 0.9em;
-            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 18px;
+            border-radius: 25px;
+            font-size: 0.95em;
+            font-weight: 700;
+            border: 2px solid;
         }
 
         .status-verified {
-            background: #d1fae5;
-            color: #065f46;
+            background: #E8F9F0;
+            color: #2e7d32;
+            border-color: #C8E6C9;
         }
 
         .status-pending {
-            background: #fef3c7;
-            color: #92400e;
+            background: #FFF4E6;
+            color: #e65100;
+            border-color: #FFE0B2;
+        }
+
+        .status-rejected {
+            background: #FFEBEE;
+            color: #c62828;
+            border-color: #FFCDD2;
+        }
+
+        .status-active {
+            background: #E8F4FC;
+            color: #1565c0;
+            border-color: #BBDEFB;
+        }
+
+        .status-inactive {
+            background: #f8f9fa;
+            color: #4b5563;
+            border-color: #e5e7eb;
         }
 
         .id-preview {
-            margin-top: 30px;
-            padding: 30px;
-            background: #f8fafc;
+            margin-top: 40px;
+            padding: 35px;
+            background: linear-gradient(135deg, #f8f9fa 0%, #e9ecef 100%);
             border-radius: 15px;
+            border: 2px solid #e2e8f0;
         }
 
-            .id-preview h3 {
-                color: #2E8BC0;
-                margin-bottom: 20px;
-            }
+        .id-preview h3 {
+            color: #2E8BC0;
+            margin-bottom: 25px;
+            font-size: 1.4em;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .id-preview h3 i {
+            font-size: 1.2em;
+        }
+
+        .id-image-wrapper {
+            background: white;
+            padding: 20px;
+            border-radius: 12px;
+            text-align: center;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+        }
 
         .id-image {
             max-width: 100%;
+            max-height: 600px;
             border-radius: 10px;
-            border: 2px solid #e2e8f0;
+            border: 2px solid #d4e9f7;
+            cursor: pointer;
+            transition: transform 0.3s;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .id-image:hover {
+            transform: scale(1.02);
+        }
+
+        .id-description {
+            margin-top: 15px;
+            padding: 12px 15px;
+            background: #E8F4FC;
+            border-radius: 8px;
+            font-size: 0.9em;
+            color: #2E8BC0;
+            text-align: center;
+            border-left: 3px solid #3FA9F5;
+        }
+
+        .no-id-message {
+            text-align: center;
+            padding: 60px 40px;
+            color: #94a3b8;
+        }
+
+        .no-id-message i {
+            font-size: 4em;
+            margin-bottom: 15px;
+            color: #cbd5e1;
         }
 
         .action-buttons {
             display: flex;
             gap: 15px;
-            margin-top: 30px;
+            margin-top: 40px;
+            padding-top: 30px;
+            border-top: 2px solid #e2e8f0;
         }
 
         .btn {
             flex: 1;
-            padding: 14px;
+            padding: 16px 24px;
             border: none;
-            border-radius: 10px;
-            font-weight: 600;
+            border-radius: 12px;
+            font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            font-size: 1em;
+        }
+
+        .btn i {
+            font-size: 1.1em;
         }
 
         .btn-primary {
@@ -148,81 +326,289 @@
             color: white;
         }
 
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(63, 169, 245, 0.3);
+        }
+
         .btn-back {
-            background: #e2e8f0;
+            background: linear-gradient(135deg, #e2e8f0 0%, #cbd5e1 100%);
             color: #334155;
             text-decoration: none;
-            display: inline-flex;
-            align-items: center;
-            justify-content: center;
-            gap: 8px;
+        }
+
+        .btn-back:hover {
+            background: linear-gradient(135deg, #cbd5e1 0%, #b0b8c1 100%);
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Additional Stats Section */
+        .stats-section {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 20px;
+            margin-bottom: 40px;
+        }
+
+        .stat-card {
+            background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
+            padding: 25px;
+            border-radius: 12px;
+            text-align: center;
+            border: 2px solid #BBDEFB;
+            transition: all 0.3s;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 20px rgba(63, 169, 245, 0.2);
+        }
+
+        .stat-card i {
+            font-size: 2.5em;
+            color: #3FA9F5;
+            margin-bottom: 12px;
+        }
+
+        .stat-card .stat-value {
+            font-size: 2em;
+            font-weight: 800;
+            color: #2E8BC0;
+            margin-bottom: 5px;
+        }
+
+        .stat-card .stat-label {
+            font-size: 0.9em;
+            color: #64748b;
+            font-weight: 600;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            body {
+                padding: 15px;
+            }
+
+            .header {
+                flex-direction: column;
+                text-align: center;
+                padding: 35px 25px;
+            }
+
+            .header-info h1 {
+                font-size: 1.8em;
+            }
+
+            .content {
+                padding: 30px 20px;
+            }
+
+            .info-grid {
+                grid-template-columns: 1fr;
+                gap: 20px;
+            }
+
+            .stats-section {
+                grid-template-columns: 1fr;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
         }
     </style>
 </head>
 <body>
     <div class="container">
         <div class="header">
-            <div class="user-avatar-large">@Model.FullName.Substring(0, 1).ToUpper()</div>
+            <div class="user-avatar-large">
+                @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
+                {
+                    <img src="@Model.ProfilePictureUrl" alt="@Model.FullName">
+                }
+                else
+                {
+                    @Model.FullName.Substring(0, 1).ToUpper()
+                }
+            </div>
             <div class="header-info">
                 <h1>@Model.FullName</h1>
-                <p><i class="fas fa-envelope"></i> @Model.Email</p>
+                <p>
+                    <i class="fas fa-envelope"></i>
+                    @Model.Email
+                </p>
+                <div class="header-badges">
+                    @if (Model.IsActive)
+                    {
+                        <div class="header-badge">
+                            <i class="fas fa-check-circle"></i>
+                            Active Account
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="header-badge">
+                            <i class="fas fa-ban"></i>
+                            Inactive Account
+                        </div>
+                    }
+                    <div class="header-badge">
+                        <i class="fas fa-user-tag"></i>
+                        @Model.Role
+                    </div>
+                </div>
             </div>
         </div>
 
         <div class="content">
+            <h2 class="section-title">
+                <i class="fas fa-user-circle"></i>
+                Account Information
+            </h2>
+
             <div class="info-grid">
                 <div class="info-item">
-                    <label>User ID</label>
+                    <label>
+                        <i class="fas fa-hashtag"></i>
+                        User ID
+                    </label>
                     <div class="value">#@Model.UserId.ToString("D6")</div>
                 </div>
                 <div class="info-item">
-                    <label>Account Status</label>
+                    <label>
+                        <i class="fas fa-envelope"></i>
+                        Email Address
+                    </label>
+                    <div class="value" style="word-break: break-all;">@Model.Email</div>
+                </div>
+                <div class="info-item">
+                    <label>
+                        <i class="fas fa-mobile-alt"></i>
+                        Mobile Number
+                    </label>
+                    <div class="value">@(Model.PhoneNumber ?? "Not Provided")</div>
+                </div>
+                <div class="info-item">
+                    <label>
+                        <i class="fas fa-toggle-on"></i>
+                        Account Status
+                    </label>
                     <div class="value">
                         @if (Model.IsActive)
                         {
-                            <span class="status-badge status-verified">Active</span>
+                            <span class="status-badge status-active">
+                                <i class="fas fa-check-circle"></i> Active
+                            </span>
                         }
                         else
                         {
-                            <span class="status-badge status-pending">Inactive</span>
+                            <span class="status-badge status-inactive">
+                                <i class="fas fa-ban"></i> Inactive
+                            </span>
                         }
                     </div>
                 </div>
                 <div class="info-item">
-                    <label>ID Type</label>
+                    <label>
+                        <i class="fas fa-id-badge"></i>
+                        ID Type
+                    </label>
                     <div class="value">@(Model.IDType ?? "Not Provided")</div>
                 </div>
                 <div class="info-item">
-                    <label>ID Status</label>
+                    <label>
+                        <i class="fas fa-shield-alt"></i>
+                        ID Verification Status
+                    </label>
                     <div class="value">
-                        <span class="status-badge status-@(Model.IDStatus == "Verified" ? "verified" : "pending")">
-                            @Model.IDStatus
-                        </span>
+                        @if (Model.IDStatus == "Verified")
+                        {
+                            <span class="status-badge status-verified">
+                                <i class="fas fa-check-circle"></i> Verified
+                            </span>
+                        }
+                        else if (Model.IDStatus == "Pending")
+                        {
+                            <span class="status-badge status-pending">
+                                <i class="fas fa-clock"></i> Pending
+                            </span>
+                        }
+                        else if (Model.IDStatus == "Rejected")
+                        {
+                            <span class="status-badge status-rejected">
+                                <i class="fas fa-times-circle"></i> Rejected
+                            </span>
+                        }
+                        else
+                        {
+                            <span class="status-badge status-pending">
+                                <i class="fas fa-exclamation-circle"></i> Not Submitted
+                            </span>
+                        }
                     </div>
                 </div>
                 <div class="info-item">
-                    <label>Registered Date</label>
+                    <label>
+                        <i class="fas fa-calendar-check"></i>
+                        Registered Date
+                    </label>
                     <div class="value">@Model.DateRegistered.ToString("MMMM dd, yyyy")</div>
                 </div>
                 <div class="info-item">
-                    <label>Role</label>
+                    <label>
+                        <i class="fas fa-user-tag"></i>
+                        Role
+                    </label>
                     <div class="value">@Model.Role</div>
                 </div>
             </div>
 
             @if (!string.IsNullOrEmpty(Model.IDImageUrl))
             {
+                <h2 class="section-title">
+                    <i class="fas fa-id-card"></i>
+                    Uploaded ID Document
+                </h2>
+
                 <div class="id-preview">
-                    <h3><i class="fas fa-id-card"></i> Uploaded ID</h3>
-                    <img src="@Model.IDImageUrl" alt="User ID" class="id-image">
+                    <div class="id-image-wrapper">
+                        <img src="@Model.IDImageUrl" alt="User ID" class="id-image" onclick="window.open(this.src, '_blank')">
+                        <div class="id-description">
+                            <i class="fas fa-info-circle"></i>
+                            Click image to view full size
+                        </div>
+                    </div>
+                </div>
+            }
+            else
+            {
+                <h2 class="section-title">
+                    <i class="fas fa-id-card"></i>
+                    ID Document
+                </h2>
+
+                <div class="id-preview">
+                    <div class="no-id-message">
+                        <i class="fas fa-id-card"></i>
+                        <h3 style="color: #2E8BC0; margin-bottom: 8px;">No ID Uploaded</h3>
+                        <p>This user has not uploaded an ID document yet.</p>
+                    </div>
                 </div>
             }
 
             <div class="action-buttons">
                 <a href="@Url.Action("Users", "Admin")" class="btn btn-back">
-                    <i class="fas fa-arrow-left"></i> Back to Users
+                    <i class="fas fa-arrow-left"></i>
+                    Back to Users
                 </a>
-                
+                @if (Model.IDStatus == "Pending")
+                {
+                    <a href="@Url.Action("VerifyIDs", "Admin")" class="btn btn-primary">
+                        <i class="fas fa-check-circle"></i>
+                        Go to ID Verification
+                    </a>
+                }
             </div>
         </div>
     </div>

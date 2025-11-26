@@ -16,6 +16,7 @@ namespace FurEver_Home.Controllers
 
         public ActionResult Dashboard()
         {
+            // ============ EXISTING STATS ============
             ViewBag.TotalUsers = db.Users.Count(u => u.Role == "Client");
             ViewBag.TotalPets = db.Pets.Count(p => !p.IsAdopted);
             ViewBag.TotalDogs = db.Pets.Count(p => p.PetTypeId == 1 && !p.IsAdopted);
@@ -23,9 +24,183 @@ namespace FurEver_Home.Controllers
             ViewBag.PendingVerifications = db.Users.Count(u => u.IDStatus == "Pending");
             ViewBag.PendingApplications = db.AdoptionApplications.Count(a => a.Status == "Pending");
             ViewBag.PendingCancellations = db.AdoptionApplications.Count(a => a.CancellationRequested && !a.CancellationApproved);
-            ViewBag.PendingPosts = db.Pets.Count(p => p.PostStatus == "Pending" && p.PostedByType == "Customer"); // ⭐ NEW
+            ViewBag.PendingCount = db.Pets.Count(p => p.PostStatus == "Pending" && p.PostedByType == "Customer");
+
+            // ============ NEW: RECENT ACTIVITIES ============
+            var recentActivities = new List<ActivityLog>();
+
+            // 1. Recent Adoption Applications (last 2)
+            var recentApplications = db.AdoptionApplications
+                .Include(a => a.User)
+                .Include(a => a.Pet)
+                .OrderByDescending(a => a.ApplicationDate)
+                .Take(2)
+                .ToList();
+
+            foreach (var a in recentApplications)
+            {
+                recentActivities.Add(new ActivityLog
+                {
+                    Title = "New adoption application submitted",
+                    Description = $"{a.User.FullName} applied to adopt {a.Pet.Name}",
+                    Status = a.Status,
+                    Icon = "file-alt",
+                    IconColor = "blue",
+                    Timestamp = a.ApplicationDate,
+                    ActivityType = "Application",
+                    UserId = a.UserId,
+                    PetId = a.PetId,
+                    ApplicationId = a.ApplicationId
+                });
+            }
+
+            // 2. Recently Verified IDs (last 2)
+            var verifiedUsers = db.Users
+                .Where(u => u.IDStatus == "Verified")
+                .OrderByDescending(u => u.UpdatedAt)
+                .Take(2)
+                .ToList();
+
+            foreach (var u in verifiedUsers)
+            {
+                recentActivities.Add(new ActivityLog
+                {
+                    Title = "ID verification completed",
+                    Description = $"{u.FullName}'s ID was verified",
+                    Status = "Verified",
+                    Icon = "check-circle",
+                    IconColor = "green",
+                    Timestamp = u.UpdatedAt,
+                    ActivityType = "Verification",
+                    UserId = u.UserId
+                });
+            }
+
+            // 3. Pending Customer Pet Posts (last 2)
+            var pendingPosts = db.Pets
+                .Include(p => p.Owner)
+                .Where(p => p.PostStatus == "Pending" && p.PostedByType == "Customer")
+                .OrderByDescending(p => p.DateAdded)
+                .Take(2)
+                .ToList();
+
+            foreach (var p in pendingPosts)
+            {
+                recentActivities.Add(new ActivityLog
+                {
+                    Title = "New pet post awaiting approval",
+                    Description = $"{p.Name} ({p.Type}, {p.Age} {p.AgeUnit}) posted by {p.Owner?.FullName ?? "Unknown"}",
+                    Status = "Pending",
+                    Icon = "paw",
+                    IconColor = "yellow",
+                    Timestamp = p.DateAdded,
+                    ActivityType = "PetAdded",
+                    PetId = p.PetId
+                    // UserId removed - Pet model doesn't have this property
+                });
+            }
+
+            // 4. Recent User Registrations (last 2)
+            var newUsers = db.Users
+                .Where(u => u.Role == "Client")
+                .OrderByDescending(u => u.DateRegistered)
+                .Take(2)
+                .ToList();
+
+            foreach (var u in newUsers)
+            {
+                recentActivities.Add(new ActivityLog
+                {
+                    Title = "User registration completed",
+                    Description = $"{u.FullName} created an account",
+                    Status = u.IDStatus,
+                    Icon = "user-plus",
+                    IconColor = "purple",
+                    Timestamp = u.DateRegistered,
+                    ActivityType = "UserRegistered",
+                    UserId = u.UserId
+                });
+            }
+
+            // 5. Recently Completed Adoptions (last 2)
+            var completedAdoptions = db.AdoptionApplications
+                .Include(a => a.User)
+                .Include(a => a.Pet)
+                .Where(a => a.Status == "Completed")
+                .OrderByDescending(a => a.ClaimedDate)
+                .Take(2)
+                .ToList();
+
+            foreach (var a in completedAdoptions)
+            {
+                recentActivities.Add(new ActivityLog
+                {
+                    Title = "Pet successfully adopted",
+                    Description = $"{a.Pet.Name} found their forever home with {a.User.FullName}!",
+                    Status = "Completed",
+                    Icon = "heart",
+                    IconColor = "green",
+                    Timestamp = a.ClaimedDate ?? a.UpdatedAt,
+                    ActivityType = "Adoption",
+                    UserId = a.UserId,
+                    PetId = a.PetId,
+                    ApplicationId = a.ApplicationId
+                });
+            }
+
+            // 6. Recent Cancellation Requests (last 2)
+            var cancellationRequests = db.AdoptionApplications
+                .Include(a => a.User)
+                .Include(a => a.Pet)
+                .Where(a => a.CancellationRequested && !a.CancellationApproved)
+                .OrderByDescending(a => a.CancellationRequestedDate)
+                .Take(2)
+                .ToList();
+
+            foreach (var a in cancellationRequests)
+            {
+                recentActivities.Add(new ActivityLog
+                {
+                    Title = "Cancellation request received",
+                    Description = $"{a.User.FullName} requested to cancel adoption of {a.Pet.Name}",
+                    Status = "Pending",
+                    Icon = "exclamation-triangle",
+                    IconColor = "yellow",
+                    Timestamp = a.CancellationRequestedDate ?? DateTime.Now,
+                    ActivityType = "Application",
+                    UserId = a.UserId,
+                    PetId = a.PetId,
+                    ApplicationId = a.ApplicationId
+                });
+            }
+
+            // Sort by timestamp and take top 8
+            ViewBag.RecentActivities = recentActivities
+                .OrderByDescending(a => a.Timestamp)
+                .Take(5)
+                .ToList();
 
             return View();
+        }
+        // ========== HELPER METHOD: Time Ago ==========
+        private string GetTimeAgo(DateTime date)
+        {
+            var timeSpan = DateTime.Now - date;
+
+            if (timeSpan.TotalMinutes < 1)
+                return "Just now";
+            if (timeSpan.TotalMinutes < 60)
+                return $"{(int)timeSpan.TotalMinutes} minute{((int)timeSpan.TotalMinutes != 1 ? "s" : "")} ago";
+            if (timeSpan.TotalHours < 24)
+                return $"{(int)timeSpan.TotalHours} hour{((int)timeSpan.TotalHours != 1 ? "s" : "")} ago";
+            if (timeSpan.TotalDays < 7)
+                return $"{(int)timeSpan.TotalDays} day{((int)timeSpan.TotalDays != 1 ? "s" : "")} ago";
+            if (timeSpan.TotalDays < 30)
+                return $"{(int)(timeSpan.TotalDays / 7)} week{((int)(timeSpan.TotalDays / 7) != 1 ? "s" : "")} ago";
+            if (timeSpan.TotalDays < 365)
+                return $"{(int)(timeSpan.TotalDays / 30)} month{((int)(timeSpan.TotalDays / 30) != 1 ? "s" : "")} ago";
+
+            return $"{(int)(timeSpan.TotalDays / 365)} year{((int)(timeSpan.TotalDays / 365) != 1 ? "s" : "")} ago";
         }
 
         // ========== USER MANAGEMENT ==========

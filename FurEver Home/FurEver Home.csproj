@@ -53,6 +53,14 @@
       <HintPath>..\packages\EntityFramework.6.5.1\lib\net45\EntityFramework.SqlServer.dll</HintPath>
     </Reference>
     <Reference Include="Microsoft.CSharp" />
+    <Reference Include="Otp.NET, Version=1.4.0.0, Culture=neutral, PublicKeyToken=38a48df817e173a6, processorArchitecture=MSIL">
+      <HintPath>..\packages\Otp.NET.1.4.0\lib\net461\Otp.NET.dll</HintPath>
+    </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
+    <Reference Include="QRCoder, Version=1.7.0.0, Culture=neutral, PublicKeyToken=c4ed5b9ae8358a28, processorArchitecture=MSIL">
+      <HintPath>..\packages\QRCoder.1.7.0\lib\net40\QRCoder.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
@@ -117,6 +125,7 @@
       <Private>True</Private>
       <HintPath>..\packages\Antlr.3.5.0.2\lib\Antlr3.Runtime.dll</HintPath>
     </Reference>
+    <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
     <Reference Include="Microsoft.CodeDom.Providers.DotNetCompilerPlatform">
@@ -137,9 +146,11 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Models\ActivityLog.cs" />
     <Compile Include="Models\AdoptedPetViewModel.cs" />
     <Compile Include="Models\AdoptionApplication.cs" />
     <Compile Include="Models\AdoptionHistory.cs" />
+    <Compile Include="Models\ChangePasswordViewModel.cs" />
     <Compile Include="Models\EmailService.cs" />
     <Compile Include="Models\ForgotPasswordViewModel.cs" />
     <Compile Include="Models\FurEverHomeContext.cs" />
@@ -150,9 +161,11 @@
     <Compile Include="Models\PetType.cs" />
     <Compile Include="Models\RegisterViewModel.cs" />
     <Compile Include="Models\ResetPasswordViewModel.cs" />
+    <Compile Include="Models\UpdateAdminProfileView.cs" />
     <Compile Include="Models\User.cs" />
     <Compile Include="Models\UserNotification.cs" />
     <Compile Include="Models\VerifyOtpViewModel.cs" />
+    <Compile Include="Models\VerifyTwoFactorViewModel.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -209,6 +222,7 @@
     <Content Include="Views\Admin\ApprovePets.cshtml" />
     <Content Include="Views\Admin\ReviewPetPost.cshtml" />
     <Content Include="Views\Home\NotificationHistory.cshtml" />
+    <Content Include="Views\Account\VerifyTwoFactor.cshtml" />
     <None Include="Views\Pets\PostForAdoption.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">

@@ -7,11 +7,14 @@
 <!DOCTYPE html>
 <html>
 <head>
+
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <!-- ✅ ADD JQUERY HERE -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <style>
         * {
             margin: 0;
@@ -316,6 +319,701 @@
             font-weight: 600;
             margin-bottom: 10px;
         }
+
+        /* MODAL STYLES */
+        .crop-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+            .crop-modal.show {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+        .crop-modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 95%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .crop-modal-header {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            padding: 25px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .crop-modal-header h2 {
+                font-size: 1.5em;
+                margin: 0;
+            }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+        }
+
+        .crop-modal-body {
+            padding: 30px;
+        }
+
+        .image-editor {
+            position: relative;
+            width: 100%;
+            height: 400px;
+            background: #f0f2f5;
+            border-radius: 12px;
+            overflow: hidden;
+            border: 2px solid #e5e7eb;
+            margin-bottom: 20px;
+        }
+
+        .image-container {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            cursor: grab;
+            user-select: none;
+        }
+
+            .image-container.dragging {
+                cursor: grabbing;
+            }
+
+        .editor-image {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            object-fit: contain;
+            pointer-events: none;
+        }
+
+        .preview-overlay {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 200px;
+            height: 200px;
+            border-radius: 50%;
+            border: 3px solid #3FA9F5;
+            box-shadow: inset 0 0 0 2000px rgba(0, 0, 0, 0.3);
+            pointer-events: none;
+            z-index: 10;
+        }
+
+        .crosshair {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            width: 40px;
+            height: 40px;
+            pointer-events: none;
+            z-index: 11;
+        }
+
+            .crosshair::before,
+            .crosshair::after {
+                content: '';
+                position: absolute;
+                background: #3FA9F5;
+            }
+
+            .crosshair::before {
+                width: 100%;
+                height: 2px;
+                top: 50%;
+                left: 0;
+            }
+
+            .crosshair::after {
+                width: 2px;
+                height: 100%;
+                left: 50%;
+                top: 0;
+            }
+
+        .controls {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .zoom-controls {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .zoom-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 8px;
+            background: #e5e7eb;
+            color: #1c1e21;
+            font-size: 1.2em;
+            cursor: pointer;
+        }
+
+        .zoom-slider {
+            width: 120px;
+            height: 6px;
+        }
+
+        .reset-btn {
+            padding: 8px 16px;
+            background: #f0f2f5;
+            border: 2px solid #e5e7eb;
+            border-radius: 8px;
+            color: #65676b;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.9em;
+        }
+
+        .preview-section {
+            text-align: center;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 12px;
+            margin-bottom: 20px;
+        }
+
+        .preview-circle {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            margin: 0 auto;
+            overflow: hidden;
+            border: 3px solid #3FA9F5;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .crop-modal-footer {
+            padding: 20px 30px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .crop-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95em;
+        }
+
+        .crop-btn-save {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+        }
+
+        .crop-btn-cancel {
+            background: #e5e7eb;
+            color: #1c1e21;
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Upload New Button Styles */
+        .btn-upload-new {
+            width: 100%;
+            padding: 12px 16px;
+            margin-top: 12px;
+            border: 2px solid #3FA9F5;
+            border-radius: 10px;
+            background: white;
+            color: #3FA9F5;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+            .btn-upload-new:hover {
+                background: #3FA9F5;
+                color: white;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(63, 169, 245, 0.3);
+            }
+
+        .btn-upload-warning {
+            border-color: #f59e0b;
+            color: #f59e0b;
+        }
+
+            .btn-upload-warning:hover {
+                background: #f59e0b;
+                color: white;
+                box-shadow: 0 4px 12px rgba(245, 158, 11, 0.3);
+            }
+
+        /* Fix image preview sizing */
+        .current-image-preview,
+        .current-id-preview {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: all 0.3s ease;
+        }
+
+        /* Make sure preview overlay fits perfectly */
+        .image-hover-overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            top: auto;
+            height: 60px;
+            background: linear-gradient(to top, rgba(0,0,0,0.8) 0%, rgba(0,0,0,0.4) 100%);
+            color: white;
+            padding: 15px;
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-weight: 600;
+            font-size: 14px;
+        }
+
+        .image-thumbnail-wrapper:hover .image-hover-overlay,
+        .id-thumbnail-wrapper:hover .image-hover-overlay {
+            opacity: 1;
+            background: linear-gradient(to top, rgba(63, 169, 245, 0.95) 0%, rgba(46, 139, 192, 0.85) 100%);
+        }
+
+        .image-thumbnail-wrapper:hover .current-image-preview,
+        .id-thumbnail-wrapper:hover .current-id-preview {
+            transform: scale(1.05);
+            filter: brightness(0.9);
+        }
+
+        /* Better crop preview styling */
+        .preview-circle {
+            margin: 0 auto;
+            overflow: hidden;
+            border: 3px solid #3FA9F5;
+            box-shadow: 0 4px 12px rgba(63, 169, 245, 0.3);
+            background: #f0f2f5;
+        }
+
+        .preview-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* ==================== CONFIRMATION MODAL STYLES ==================== */
+        .confirm-modal {
+            display: none;
+            position: fixed;
+            z-index: 4000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+        }
+
+            .confirm-modal.show {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.3s ease;
+            }
+
+        .confirm-modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .confirm-modal-header {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+        }
+
+        .confirm-icon-warning {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 15px;
+            font-size: 2.5em;
+            animation: pulse 2s infinite;
+        }
+
+        .confirm-modal-header h2 {
+            font-size: 1.5em;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .confirm-modal-body {
+            padding: 30px;
+        }
+
+        .confirm-text-main {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .confirm-text-details {
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+        }
+
+        .confirm-note {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            color: #92400e;
+        }
+
+            .confirm-note i {
+                font-size: 1.2em;
+                margin-top: 2px;
+            }
+
+        .confirm-modal-footer {
+            padding: 20px 30px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .confirm-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.95em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .confirm-btn-cancel {
+            background: #e5e7eb;
+            color: #1c1e21;
+        }
+
+            .confirm-btn-cancel:hover {
+                background: #d1d5db;
+                transform: translateY(-2px);
+            }
+
+        .confirm-btn-continue {
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+            color: white;
+        }
+
+            .confirm-btn-continue:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(245, 158, 11, 0.4);
+            }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+
+        /* ADD THESE STYLES TO YOUR <style> SECTION IN PROFILE.CSHTML */
+
+        /* ==================== STATUS NOTIFICATION MODAL STYLES ==================== */
+        .status-notification-modal {
+            display: none;
+            position: fixed;
+            z-index: 5000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(10px);
+        }
+
+            .status-notification-modal.show {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                animation: fadeIn 0.4s ease;
+            }
+
+        .status-modal-content {
+            background: white;
+            border-radius: 24px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 30px 80px rgba(0,0,0,0.5);
+            overflow: hidden;
+            animation: modalBounce 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .status-modal-body {
+            padding: 50px 40px;
+            text-align: center;
+        }
+
+        /* Pending Status Icon */
+        .status-icon-pending {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 3em;
+            color: white;
+            box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+            animation: pulse 2s infinite;
+        }
+
+        /* Verified Status Icon */
+        .status-icon-verified {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 3em;
+            color: white;
+            box-shadow: 0 10px 30px rgba(16, 185, 129, 0.4);
+            animation: successPop 0.6s ease;
+        }
+
+        .status-title {
+            font-size: 1.8em;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 15px;
+        }
+
+        .status-message {
+            font-size: 1.1em;
+            color: #475569;
+            margin-bottom: 15px;
+        }
+
+        .status-details {
+            color: #64748b;
+            line-height: 1.7;
+            margin-bottom: 25px;
+        }
+
+        /* Info Box for Pending */
+        .status-info-box {
+            background: #fef3c7;
+            border-left: 4px solid #fbbf24;
+            padding: 18px 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 30px;
+            text-align: left;
+            color: #92400e;
+        }
+
+            .status-info-box i {
+                font-size: 1.3em;
+                margin-top: 2px;
+                color: #f59e0b;
+            }
+
+        /* Success Box for Verified */
+        .status-success-box {
+            background: #d1fae5;
+            border-left: 4px solid #10b981;
+            padding: 18px 20px;
+            border-radius: 10px;
+            display: flex;
+            align-items: flex-start;
+            gap: 15px;
+            margin-bottom: 30px;
+            text-align: left;
+            color: #065f46;
+        }
+
+            .status-success-box i {
+                font-size: 1.3em;
+                margin-top: 2px;
+                color: #10b981;
+            }
+
+        /* Status Modal Buttons */
+        .status-btn {
+            width: 100%;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .status-btn-ok {
+            background: linear-gradient(135deg, #64748b 0%, #475569 100%);
+            color: white;
+        }
+
+            .status-btn-ok:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(100, 116, 139, 0.4);
+            }
+
+        .status-btn-primary {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+        }
+
+            .status-btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            }
+
+        /* Animations */
+        @@keyframes modalBounce {
+            0% {
+                opacity: 0;
+                transform: scale(0.7) translateY(-30px);
+            }
+
+            50% {
+                transform: scale(1.05) translateY(0);
+            }
+
+            100% {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @@keyframes successPop {
+            0% {
+                transform: scale(0);
+                opacity: 0;
+            }
+
+            50% {
+                transform: scale(1.2);
+            }
+
+            100% {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+                box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);
+            }
+
+            50% {
+                transform: scale(1.05);
+                box-shadow: 0 15px 40px rgba(251, 191, 36, 0.6);
+            }
+        }
+
+
     </style>
 </head>
 <body>
@@ -396,20 +1094,25 @@
                     </div>
 
                     <div class="form-grid">
-                        <!-- ✅ FIXED: Profile Picture Section -->
+                        <!-- ✅ PROFILE PICTURE SECTION -->
                         <div class="form-group">
                             <label>Profile Picture</label>
                             <div class="image-upload-container">
                                 @if (!string.IsNullOrEmpty(Model.ProfilePictureUrl))
                                 {
                                     <span class="image-label">Current Profile Picture:</span>
-                                    <div class="image-thumbnail-wrapper" onclick="document.getElementById('profilePic').click()">
+                                    <div class="image-thumbnail-wrapper" onclick="openCropModalOrUpload('profile', '@Model.ProfilePictureUrl')">
                                         <img src="@Model.ProfilePictureUrl" alt="Profile" class="current-image-preview" />
                                         <div class="image-hover-overlay">
-                                            <i class="fas fa-camera"></i>
-                                            <span>Edit Profile Photo</span>
+                                            <i class="fas fa-crop"></i>
+                                            <span>Reposition Photo</span>
                                         </div>
                                     </div>
+
+                                    <!-- Upload New Button -->
+                                    <button type="button" class="btn-upload-new" onclick="uploadNewProfilePic()">
+                                        <i class="fas fa-upload"></i> Upload New Photo
+                                    </button>
                                 }
                                 else
                                 {
@@ -426,6 +1129,7 @@
                         </div>
 
                         <!-- ✅ FIXED: Valid ID Section -->
+                        <!-- ✅ VALID ID SECTION -->
                         <div class="form-group">
                             <label>Valid ID @(Model.IDStatus == "Verified" ? "(Verified ✓)" : "")</label>
                             <div class="image-upload-container">
@@ -434,28 +1138,68 @@
                                     <span class="image-label">Current ID Document:</span>
                                     if (Model.IDImageUrl.EndsWith(".pdf"))
                                     {
-                                        <div class="id-thumbnail-wrapper" onclick="document.getElementById('idPic').click()">
+                                        <div class="id-thumbnail-wrapper" style="cursor: default;">
                                             <div class="pdf-thumbnail">
                                                 <i class="fas fa-file-pdf" style="font-size: 4em; color: #ef4444; margin-bottom: 15px;"></i>
                                                 <div style="color: #64748b; font-weight: 600; margin-bottom: 8px;">PDF Document</div>
-                                                <a href="@Model.IDImageUrl" target="_blank" style="color: #3FA9F5; font-size: 0.9em;" onclick="event.stopPropagation();">View PDF</a>
-                                            </div>
-                                            <div class="image-hover-overlay">
-                                                <i class="fas fa-id-card"></i>
-                                                <span>Change Valid ID</span>
+                                                <a href="@Model.IDImageUrl" target="_blank" style="color: #3FA9F5; font-size: 0.9em;">View PDF</a>
                                             </div>
                                         </div>
                                     }
                                     else
                                     {
-                                        <div class="id-thumbnail-wrapper" onclick="document.getElementById('idPic').click()">
+                                        <div class="id-thumbnail-wrapper" onclick="openCropModalOrUpload('id', '@Model.IDImageUrl')">
                                             <img src="@Model.IDImageUrl" alt="ID Document" class="current-id-preview" />
                                             <div class="image-hover-overlay">
-                                                <i class="fas fa-id-card"></i>
-                                                <span>Change Valid ID</span>
+                                                <i class="fas fa-crop"></i>
+                                                <span>Reposition ID</span>
                                             </div>
                                         </div>
                                     }
+
+                                    <!-- Confirmation Modal for ID Change -->
+                                    <div id="confirmModal" class="confirm-modal">
+                                        <div class="confirm-modal-content">
+                                            <div class="confirm-modal-header">
+                                                <div class="confirm-icon-warning">
+                                                    <i class="fas fa-exclamation-triangle"></i>
+                                                </div>
+                                                <h2>Change Your ID Document?</h2>
+                                            </div>
+
+                                            <div class="confirm-modal-body">
+                                                <p class="confirm-text-main">
+                                                    Are you sure you want to change your ID?
+                                                </p>
+                                                <p class="confirm-text-details">
+                                                    Your ID will need to undergo <strong>verification again by the admin</strong>.
+                                                    This process may take some time and your account status will be set to "Pending"
+                                                    until the review is complete.
+                                                </p>
+                                                <div class="confirm-note">
+                                                    <i class="fas fa-info-circle"></i>
+                                                    <span>Click <strong>Continue</strong> to proceed or <strong>Cancel</strong> to keep your current ID.</span>
+                                                </div>
+                                            </div>
+
+                                            <div class="confirm-modal-footer">
+                                                <button type="button" class="confirm-btn confirm-btn-cancel" onclick="cancelIDChange()">
+                                                    <i class="fas fa-times"></i> Cancel
+                                                </button>
+                                                <button type="button" class="confirm-btn confirm-btn-continue" onclick="confirmIDChange()">
+                                                    <i class="fas fa-check"></i> Continue
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- Upload New Button with Warning -->
+                                    <button type="button" class="btn-upload-new btn-upload-warning" onclick="uploadNewID()">
+                                        <i class="fas fa-exclamation-triangle"></i> Upload New ID
+                                    </button>
+                                    <small style="display: block; margin-top: 8px; color: #92400e; font-size: 0.85em;">
+                                        ⚠️ Changing your ID will require admin verification again
+                                    </small>
                                 }
                                 else
                                 {
@@ -472,6 +1216,7 @@
                         </div>
                     </div>
 
+
                     <div class="action-buttons">
                         <a href="@Url.Action("Index", "Pets")" class="btn btn-back">
                             <i class="fas fa-arrow-left"></i> Back to Home
@@ -481,26 +1226,940 @@
                         </button>
                     </div>
                 }
+
+                <!-- ==================== TWO-FACTOR AUTHENTICATION SECTION ==================== -->
+                <div style="margin-top: 50px; padding-top: 40px; border-top: 2px solid #e2e8f0;">
+                    <h2 style="font-size: 1.5em; color: #1e293b; margin-bottom: 10px;">
+                        <i class="fas fa-shield-halved" style="color: #10b981;"></i> Two-Factor Authentication
+                    </h2>
+                    <p style="color: #64748b; margin-bottom: 30px;">
+                        Add an extra layer of security to your account using an authenticator app.
+                    </p>
+
+                    @if (!Model.TwoFactorEnabled)
+                    {
+                        <!-- 2FA Disabled State -->
+                        <div id="twoFaDisabled" style="background: #f8fafc; padding: 30px; border-radius: 16px; border: 2px solid #e2e8f0;">
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-shield-halved" style="font-size: 1.8em; color: #94a3b8;"></i>
+                                </div>
+                                <div>
+                                    <h3 style="color: #1e293b; font-size: 1.1em; margin-bottom: 4px;">2FA Not Enabled</h3>
+                                    <p style="color: #64748b; font-size: 0.9em; margin: 0;">Your account is only protected by password</p>
+                                </div>
+                            </div>
+
+                            <p style="color: #64748b; line-height: 1.6; margin-bottom: 20px;">
+                                Enable Two-Factor Authentication to secure your account with an authenticator app like:
+                            </p>
+
+                            <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
+                                <div style="background: white; padding: 12px 20px; border-radius: 10px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fab fa-google" style="color: #ea4335; font-size: 1.3em;"></i>
+                                    <span style="color: #475569; font-weight: 600;">Google Authenticator</span>
+                                </div>
+                                <div style="background: white; padding: 12px 20px; border-radius: 10px; border: 1px solid #e2e8f0; display: flex; align-items: center; gap: 10px;">
+                                    <i class="fab fa-microsoft" style="color: #00a4ef; font-size: 1.3em;"></i>
+                                    <span style="color: #475569; font-weight: 600;">Microsoft Authenticator</span>
+                                </div>
+                            </div>
+
+                            <button type="button" class="btn" onclick="initiate2FA()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; width: 100%; max-width: 300px;">
+                                <i class="fas fa-shield-halved"></i> Enable 2FA
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- 2FA Enabled State -->
+                        <div id="twoFaEnabled" style="background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); padding: 30px; border-radius: 16px; border: 2px solid #10b981;">
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                                <div style="width: 60px; height: 60px; border-radius: 50%; background: white; display: flex; align-items: center; justify-content: center;">
+                                    <i class="fas fa-shield-halved" style="font-size: 1.8em; color: #10b981;"></i>
+                                </div>
+                                <div>
+                                    <h3 style="color: #065f46; font-size: 1.1em; margin-bottom: 4px;">
+                                        <i class="fas fa-check-circle"></i> 2FA Enabled
+                                    </h3>
+                                    <p style="color: #047857; font-size: 0.9em; margin: 0;">Your account is protected with 2FA</p>
+                                </div>
+                            </div>
+
+                            <p style="color: #065f46; line-height: 1.6; margin-bottom: 20px;">
+                                Two-Factor Authentication is active. You'll need your authenticator app code to sign in.
+                            </p>
+
+                            <button type="button" class="btn" onclick="disable2FA()" style="background: #ef4444; color: white; width: 100%; max-width: 300px;">
+                                <i class="fas fa-shield-xmark"></i> Disable 2FA
+                            </button>
+                        </div>
+                    }
+                </div>
+
+                <!-- 2FA Setup Modal -->
+                <div id="twoFaModal" class="crop-modal" style="display: none;">
+                    <div class="crop-modal-content" style="max-width: 550px;">
+                        <div class="crop-modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                            <h2><i class="fas fa-shield-halved"></i> Set Up Two-Factor Authentication</h2>
+                            <button type="button" class="close-btn" onclick="closeTwoFaModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="crop-modal-body" style="padding: 35px;">
+                            <!-- Step 1: QR Code -->
+                            <div id="step1" style="text-align: center;">
+                                <h3 style="color: #1e293b; margin-bottom: 15px; font-size: 1.2em;">
+                                    <span style="display: inline-block; width: 30px; height: 30px; background: #10b981; color: white; border-radius: 50%; line-height: 30px; margin-right: 8px;">1</span>
+                                    Scan QR Code
+                                </h3>
+                                <p style="color: #64748b; margin-bottom: 25px; line-height: 1.6;">
+                                    Open your authenticator app and scan this QR code
+                                </p>
+
+                                <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; display: inline-block; border: 2px solid #e2e8f0;">
+                                    <img id="qrCodeImage" src="" alt="QR Code" style="width: 250px; height: 250px;">
+                                </div>
+
+                                <div style="background: #f8fafc; padding: 16px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #e2e8f0;">
+                                    <p style="color: #475569; font-size: 0.9em; margin-bottom: 8px; font-weight: 600;">Can't scan? Enter this key manually:</p>
+                                    <code id="secretKey" style="background: white; padding: 10px 15px; border-radius: 6px; font-size: 1em; color: #10b981; border: 1px solid #e2e8f0; display: inline-block; letter-spacing: 2px;"></code>
+                                </div>
+
+                                <button type="button" class="btn" onclick="showStep2()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; width: 100%;">
+                                    <i class="fas fa-arrow-right"></i> Next: Verify Code
+                                </button>
+                            </div>
+
+                            <!-- Step 2: Verification -->
+                            <div id="step2" style="display: none;">
+                                <h3 style="color: #1e293b; margin-bottom: 15px; font-size: 1.2em; text-align: center;">
+                                    <span style="display: inline-block; width: 30px; height: 30px; background: #10b981; color: white; border-radius: 50%; line-height: 30px; margin-right: 8px;">2</span>
+                                    Verify Code
+                                </h3>
+                                <p style="color: #64748b; margin-bottom: 25px; text-align: center; line-height: 1.6;">
+                                    Enter the 6-digit code from your authenticator app
+                                </p>
+
+                                <div style="display: flex; justify-content: center; gap: 10px; margin-bottom: 20px;">
+                                    <input type="text" class="code-digit" id="verify1" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" style="width: 50px; height: 60px;">
+                                    <input type="text" class="code-digit" id="verify2" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" style="width: 50px; height: 60px;">
+                                    <input type="text" class="code-digit" id="verify3" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" style="width: 50px; height: 60px;">
+                                    <input type="text" class="code-digit" id="verify4" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" style="width: 50px; height: 60px;">
+                                    <input type="text" class="code-digit" id="verify5" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" style="width: 50px; height: 60px;">
+                                    <input type="text" class="code-digit" id="verify6" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off" style="width: 50px; height: 60px;">
+                                </div>
+
+                                <div id="verifyError" style="display: none; background: #fef2f2; padding: 12px; border-radius: 8px; margin-bottom: 20px; color: #991b1b; border: 1px solid #fecaca; text-align: center;">
+                                    <i class="fas fa-exclamation-circle"></i> <span id="verifyErrorText"></span>
+                                </div>
+
+                                <div style="display: flex; gap: 12px;">
+                                    <button type="button" class="btn" onclick="showStep1()" style="background: #e5e7eb; color: #1c1e21; flex: 1;">
+                                        <i class="fas fa-arrow-left"></i> Back
+                                    </button>
+                                    <button type="button" class="btn" onclick="confirm2FA()" id="confirmBtn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; flex: 2;">
+                                        <i class="fas fa-check"></i> Enable 2FA
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Disable 2FA Modal -->
+                <div id="disableTwoFaModal" class="crop-modal" style="display: none;">
+                    <div class="crop-modal-content" style="max-width: 480px;">
+                        <div class="crop-modal-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                            <h2><i class="fas fa-shield-xmark"></i> Disable Two-Factor Authentication</h2>
+                            <button type="button" class="close-btn" onclick="closeDisableTwoFaModal()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+
+                        <div class="crop-modal-body" style="padding: 35px;">
+                            <div style="background: #fef2f2; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #fecaca;">
+                                <div style="display: flex; align-items: flex-start; gap: 15px;">
+                                    <i class="fas fa-exclamation-triangle" style="color: #ef4444; font-size: 1.5em; margin-top: 2px;"></i>
+                                    <div>
+                                        <h4 style="color: #991b1b; margin-bottom: 8px; font-size: 1em;">Warning</h4>
+                                        <p style="color: #991b1b; font-size: 0.9em; line-height: 1.6; margin: 0;">
+                                            Disabling 2FA will make your account less secure. You'll only be protected by your password and email OTP.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="form-group">
+                                <label style="font-weight: 600; color: #1e293b; margin-bottom: 10px; display: block;">
+                                    Enter your password to confirm:
+                                </label>
+                                <input type="password" id="disablePassword" placeholder="Your password" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px; font-size: 15px;">
+                            </div>
+
+                            <div id="disableError" style="display: none; background: #fef2f2; padding: 12px; border-radius: 8px; margin-top: 15px; color: #991b1b; border: 1px solid #fecaca; text-align: center;">
+                                <i class="fas fa-exclamation-circle"></i> <span id="disableErrorText"></span>
+                            </div>
+
+                            <div style="display: flex; gap: 12px; margin-top: 25px;">
+                                <button type="button" class="btn" onclick="closeDisableTwoFaModal()" style="background: #e5e7eb; color: #1c1e21; flex: 1;">
+                                    Cancel
+                                </button>
+                                <button type="button" class="btn" onclick="confirmDisable2FA()" id="disableBtn" style="background: #ef4444; color: white; flex: 1;">
+                                    <i class="fas fa-shield-xmark"></i> Disable 2FA
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
+                <input type="hidden" id="cropOffsetX_profile" name="cropOffsetX_profile" value="0">
+                <input type="hidden" id="cropOffsetY_profile" name="cropOffsetY_profile" value="0">
+                <input type="hidden" id="cropZoom_profile" name="cropZoom_profile" value="1">
+
+                <input type="hidden" id="cropOffsetX_id" name="cropOffsetX_id" value="0">
+                <input type="hidden" id="cropOffsetY_id" name="cropOffsetY_id" value="0">
+                <input type="hidden" id="cropZoom_id" name="cropZoom_id" value="1">
             </div>
         </div>
     </div>
 
+
+    <!-- ADD THIS STATUS NOTIFICATION MODAL AFTER YOUR CONFIRMATION MODAL -->
+    <!-- ID Status Notification Modal -->
+    <div id="statusModal" class="status-notification-modal">
+        <div class="status-modal-content">
+            <!-- Pending Status -->
+            <div id="pendingStatus" class="status-modal-body" style="display: none;">
+                <div class="status-icon-pending">
+                    <i class="fas fa-clock"></i>
+                </div>
+                <h2 class="status-title">ID Verification Pending</h2>
+                <p class="status-message">
+                    Your ID is currently being reviewed by our admin team.
+                </p>
+                <p class="status-details">
+                    This process typically takes <strong>24 to 48 hours</strong>.
+                    You'll be notified once your ID has been verified.
+                </p>
+                <div class="status-info-box">
+                    <i class="fas fa-info-circle"></i>
+                    <span>You can browse pets but cannot post for adoption until verification is complete.</span>
+                </div>
+                <button type="button" class="status-btn status-btn-ok" onclick="closeStatusModal()">
+                    <i class="fas fa-check"></i> Got it
+                </button>
+            </div>
+
+            <!-- Verified Status -->
+            <div id="verifiedStatus" class="status-modal-body" style="display: none;">
+                <div class="status-icon-verified">
+                    <i class="fas fa-check-circle"></i>
+                </div>
+                <h2 class="status-title">ID Verified Successfully!</h2>
+                <p class="status-message">
+                    Congratulations! Your ID has been verified by our admin team.
+                </p>
+                <p class="status-details">
+                    You can now <strong>post pets for adoption</strong> and access all features of FurEver Home.
+                </p>
+                <div class="status-success-box">
+                    <i class="fas fa-star"></i>
+                    <span>Thank you for helping pets find their forever homes!</span>
+                </div>
+                <button type="button" class="status-btn status-btn-primary" onclick="closeStatusModal()">
+                    <i class="fas fa-heart"></i> Start Posting Pets
+                </button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Crop Modal -->
+    <div id="cropModal" class="crop-modal">
+        <div class="crop-modal-content">
+            <div class="crop-modal-header">
+                <h2 id="modalTitle"><i class="fas fa-crop"></i> Reposition Image</h2>
+                <button type="button" class="close-btn" onclick="closeCropModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="crop-modal-body">
+                <div class="image-editor">
+                    <div class="image-container" id="imageContainer">
+                        <img id="editorImage" src="" alt="Editor" class="editor-image">
+                    </div>
+                    <div class="preview-overlay"></div>
+                    <div class="crosshair"></div>
+                </div>
+
+                <div class="controls">
+                    <div class="zoom-controls">
+                        <button type="button" class="zoom-btn" onclick="zoomOut()"><i class="fas fa-minus"></i></button>
+                        <input type="range" id="zoomSlider" class="zoom-slider" min="50" max="200" value="100" oninput="setZoom(this.value)">
+                        <button type="button" class="zoom-btn" onclick="zoomIn()"><i class="fas fa-plus"></i></button>
+                    </div>
+                    <button type="button" class="reset-btn" onclick="resetPosition()"><i class="fas fa-redo"></i> Reset</button>
+                </div>
+
+                <div class="preview-section">
+                    <div class="preview-circle">
+                        <img id="previewImage" src="" alt="Preview" class="preview-image">
+                    </div>
+                </div>
+            </div>
+
+            <div class="crop-modal-footer">
+                <button type="button" class="crop-btn crop-btn-cancel" onclick="closeCropModal()"><i class="fas fa-times"></i> Cancel</button>
+                <button type="button" class="crop-btn crop-btn-save" onclick="applyCrop()"><i class="fas fa-check"></i> Apply</button>
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Script 1 -->
+
+
     <script>
-        // Profile picture file name display
-        document.getElementById('profilePic').addEventListener('change', function (e) {
-            var fileName = e.target.files[0]?.name;
-            if (fileName) {
-                document.getElementById('profileFileName').textContent = '✓ Selected: ' + fileName;
+    // Check and show status modal on page load
+    window.addEventListener('DOMContentLoaded', function() {
+        var idStatus = '@Model.IDStatus'; // Get ID status from model
+
+        if (idStatus === 'Pending') {
+            // Always show for pending status
+            showStatusModal('pending');
+        } else if (idStatus === 'Verified') {
+            // Only show once for verified status
+            var hasSeenVerified = localStorage.getItem('hasSeenVerifiedModal');
+            if (!hasSeenVerified) {
+                showStatusModal('verified');
+                localStorage.setItem('hasSeenVerifiedModal', 'true');
+            }
+        }
+    });
+
+    function showStatusModal(status) {
+        var modal = document.getElementById('statusModal');
+        var pendingDiv = document.getElementById('pendingStatus');
+        var verifiedDiv = document.getElementById('verifiedStatus');
+
+        if (status === 'pending') {
+            pendingDiv.style.display = 'block';
+            verifiedDiv.style.display = 'none';
+        } else if (status === 'verified') {
+            pendingDiv.style.display = 'none';
+            verifiedDiv.style.display = 'block';
+        }
+
+        modal.classList.add('show');
+    }
+
+    function closeStatusModal() {
+        document.getElementById('statusModal').classList.remove('show');
+    }
+
+    // Close on background click
+    document.addEventListener('click', function(e) {
+        var modal = document.getElementById('statusModal');
+        if (e.target === modal) {
+            closeStatusModal();
+        }
+    });
+
+    // Close on ESC key
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeStatusModal();
+        }
+    });
+
+
+
+    </script>
+
+
+    <script>
+// ==================== TWO-FACTOR AUTHENTICATION FUNCTIONS ====================
+
+function initiate2FA() {
+    $.ajax({
+        url: '@Url.Action("EnableTwoFactor", "Account")',
+        type: 'POST',
+        success: function(response) {
+            if (response.success) {
+                // Show QR Code
+                $('#qrCodeImage').attr('src', '@Url.Action("GetQRCode", "Account")?' + new Date().getTime());
+                $('#secretKey').text(response.secret);
+
+                // ✅ FIXED: Use css display flex to center modal
+                $('#twoFaModal').css('display', 'flex').addClass('show');
+
+                setupVerificationInputs();
+            } else {
+                alert('Failed to generate 2FA setup. Please try again.');
+            }
+        },
+        error: function() {
+            alert('An error occurred. Please try again.');
+        }
+    });
+}
+
+function setupVerificationInputs() {
+    const verifyInputs = document.querySelectorAll('#step2 .code-digit');
+
+    verifyInputs.forEach((input, index) => {
+        input.value = '';
+        input.classList.remove('filled');
+
+        input.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+            if (this.value.length === 1) {
+                this.classList.add('filled');
+                if (index < verifyInputs.length - 1) {
+                    verifyInputs[index + 1].focus();
+                }
+            } else {
+                this.classList.remove('filled');
             }
         });
 
-        // ID document file name display
-        document.getElementById('idPic').addEventListener('change', function (e) {
-            var fileName = e.target.files[0]?.name;
-            if (fileName) {
-                document.getElementById('idFileName').textContent = '✓ Selected: ' + fileName;
+        input.addEventListener('keydown', function(e) {
+            if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                verifyInputs[index - 1].focus();
             }
         });
+    });
+
+    verifyInputs[0].focus();
+}
+
+function showStep2() {
+    $('#step1').hide();
+    $('#step2').show();
+    $('#verify1').focus();
+}
+
+function showStep1() {
+    $('#step2').hide();
+    $('#step1').show();
+    $('#verifyError').hide();
+}
+
+function confirm2FA() {
+    const code = $('#verify1').val() + $('#verify2').val() + $('#verify3').val() +
+                 $('#verify4').val() + $('#verify5').val() + $('#verify6').val();
+
+    if (code.length !== 6) {
+        $('#verifyErrorText').text('Please enter all 6 digits');
+        $('#verifyError').show();
+        return;
+    }
+
+    $('#confirmBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Verifying...');
+
+    $.ajax({
+        url: '@Url.Action("ConfirmTwoFactor", "Account")',
+        type: 'POST',
+        data: { code: code },
+        success: function(response) {
+            if (response.success) {
+                closeTwoFaModal();
+                location.reload(); // Reload to show enabled state
+            } else {
+                $('#verifyErrorText').text(response.message);
+                $('#verifyError').show();
+                $('#confirmBtn').prop('disabled', false).html('<i class="fas fa-check"></i> Enable 2FA');
+            }
+        },
+        error: function() {
+            $('#verifyErrorText').text('An error occurred. Please try again.');
+            $('#verifyError').show();
+            $('#confirmBtn').prop('disabled', false).html('<i class="fas fa-check"></i> Enable 2FA');
+        }
+    });
+}
+
+function closeTwoFaModal() {
+    // ✅ FIXED: Remove class and hide properly
+    $('#twoFaModal').removeClass('show').css('display', 'none');
+    $('#step1').show();
+    $('#step2').hide();
+    $('#verifyError').hide();
+    // Clear inputs
+    $('#verify1, #verify2, #verify3, #verify4, #verify5, #verify6').val('').removeClass('filled');
+}
+
+function disable2FA() {
+    // ✅ FIXED: Use css display flex to center modal
+    $('#disableTwoFaModal').css('display', 'flex').addClass('show');
+    $('#disablePassword').val('').focus();
+    $('#disableError').hide();
+}
+
+function closeDisableTwoFaModal() {
+    // ✅ FIXED: Remove class and hide properly
+    $('#disableTwoFaModal').removeClass('show').css('display', 'none');
+    $('#disablePassword').val('');
+    $('#disableError').hide();
+}
+
+function confirmDisable2FA() {
+    const password = $('#disablePassword').val();
+
+    if (!password) {
+        $('#disableErrorText').text('Please enter your password');
+        $('#disableError').show();
+        return;
+    }
+
+    $('#disableBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+
+    $.ajax({
+        url: '@Url.Action("DisableTwoFactor", "Account")',
+        type: 'POST',
+        data: { password: password },
+        success: function(response) {
+            if (response.success) {
+                closeDisableTwoFaModal();
+                location.reload(); // Reload to show disabled state
+            } else {
+                $('#disableErrorText').text(response.message);
+                $('#disableError').show();
+                $('#disableBtn').prop('disabled', false).html('<i class="fas fa-shield-xmark"></i> Disable 2FA');
+            }
+        },
+        error: function() {
+            $('#disableErrorText').text('An error occurred. Please try again.');
+            $('#disableError').show();
+            $('#disableBtn').prop('disabled', false).html('<i class="fas fa-shield-xmark"></i> Disable 2FA');
+        }
+    });
+}
+
+// Close modals on background click
+$('#twoFaModal, #disableTwoFaModal').on('click', function(e) {
+    if (e.target === this) {
+        closeTwoFaModal();
+        closeDisableTwoFaModal();
+    }
+});
+
+// Close modals on ESC key
+$(document).on('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeTwoFaModal();
+        closeDisableTwoFaModal();
+    }
+});
+    </script>
+
+    <script>
+    // ==================== CROP FUNCTIONALITY ====================
+    let isDragging = false;
+    let startX, startY;
+    let offsetX = 0, offsetY = 0;
+    let zoom = 1;
+    let currentImageType = '';
+    let currentImageSrc = '';
+
+    const imageContainer = document.getElementById('imageContainer');
+    const editorImage = document.getElementById('editorImage');
+    const previewImage = document.getElementById('previewImage');
+    const zoomSlider = document.getElementById('zoomSlider');
+
+    function openCropModal(imageType, imageUrl) {
+        currentImageType = imageType;
+        currentImageSrc = imageUrl;
+        const modal = document.getElementById('cropModal');
+        const titleEl = document.getElementById('modalTitle');
+        const previewOverlay = document.querySelector('.preview-overlay');
+        const previewCircle = document.querySelector('.preview-circle');
+        const editorDiv = document.querySelector('.image-editor');
+
+        if (imageType === 'profile') {
+            titleEl.innerHTML = '<i class="fas fa-crop"></i> Reposition Profile Picture';
+            // Circle crop for profile
+            previewOverlay.style.borderRadius = '50%';
+            previewOverlay.style.width = '200px';
+            previewOverlay.style.height = '200px';
+            previewCircle.style.borderRadius = '50%';
+            previewCircle.style.width = '150px';
+            previewCircle.style.height = '150px';
+        } else {
+            titleEl.innerHTML = '<i class="fas fa-crop"></i> Reposition ID Document';
+            // Rectangle crop for ID (3:2 aspect ratio - standard ID size)
+            previewOverlay.style.borderRadius = '12px';
+            previewOverlay.style.width = '360px';
+            previewOverlay.style.height = '240px';
+            previewCircle.style.borderRadius = '12px';
+            previewCircle.style.width = '300px';
+            previewCircle.style.height = '200px';
+        }
+
+        // Load image and auto-fit it
+        editorImage.onload = function() {
+            // Calculate scale to fit image properly
+            const editorWidth = editorDiv.clientWidth;
+            const editorHeight = editorDiv.clientHeight;
+            const imgAspect = editorImage.naturalWidth / editorImage.naturalHeight;
+            const editorAspect = editorWidth / editorHeight;
+
+            // Reset image container size
+            imageContainer.style.width = '100%';
+            imageContainer.style.height = '100%';
+
+            // Set image to cover the editor area
+            if (imgAspect > editorAspect) {
+                // Image is wider - fit to height
+                editorImage.style.width = 'auto';
+                editorImage.style.height = '100%';
+                editorImage.style.left = '50%';
+                editorImage.style.top = '0';
+                editorImage.style.transform = 'translateX(-50%)';
+            } else {
+                // Image is taller - fit to width
+                editorImage.style.width = '100%';
+                editorImage.style.height = 'auto';
+                editorImage.style.left = '0';
+                editorImage.style.top = '50%';
+                editorImage.style.transform = 'translateY(-50%)';
+            }
+
+            resetPosition();
+            updateImagePosition();
+            modal.classList.add('show');
+        };
+
+        editorImage.src = imageUrl;
+        previewImage.src = imageUrl;
+    }
+
+    function closeCropModal() {
+        document.getElementById('cropModal').classList.remove('show');
+    }
+
+    // Mouse drag handlers
+    imageContainer.addEventListener('mousedown', (e) => {
+        isDragging = true;
+        imageContainer.classList.add('dragging');
+        startX = e.clientX - offsetX;
+        startY = e.clientY - offsetY;
+    });
+
+    document.addEventListener('mousemove', (e) => {
+        if (!isDragging) return;
+        offsetX = e.clientX - startX;
+        offsetY = e.clientY - startY;
+        updateImagePosition();
+    });
+
+    document.addEventListener('mouseup', () => {
+        isDragging = false;
+        imageContainer.classList.remove('dragging');
+    });
+
+    // Touch drag handlers
+    imageContainer.addEventListener('touchstart', (e) => {
+        isDragging = true;
+        const touch = e.touches[0];
+        startX = touch.clientX - offsetX;
+        startY = touch.clientY - offsetY;
+    });
+
+    document.addEventListener('touchmove', (e) => {
+        if (!isDragging) return;
+        e.preventDefault();
+        const touch = e.touches[0];
+        offsetX = touch.clientX - startX;
+        offsetY = touch.clientY - startY;
+        updateImagePosition();
+    });
+
+    document.addEventListener('touchend', () => {
+        isDragging = false;
+    });
+
+    function updateImagePosition() {
+        const transform = `translate(${offsetX}px, ${offsetY}px) scale(${zoom})`;
+        imageContainer.style.transform = transform;
+
+        // Update preview with same transform
+        const previewCircle = document.querySelector('.preview-circle');
+        const previewImg = document.getElementById('previewImage');
+
+        // Calculate the crop area
+        const editorRect = document.querySelector('.image-editor').getBoundingClientRect();
+        const overlayRect = document.querySelector('.preview-overlay').getBoundingClientRect();
+        const imgRect = editorImage.getBoundingClientRect();
+
+        // Calculate position relative to overlay
+        const relativeX = ((overlayRect.left - imgRect.left) / imgRect.width) * 100;
+        const relativeY = ((overlayRect.top - imgRect.top) / imgRect.height) * 100;
+        const relativeWidth = (overlayRect.width / imgRect.width) * 100;
+        const relativeHeight = (overlayRect.height / imgRect.height) * 100;
+
+        // Apply to preview
+        previewImg.style.width = `${100 / (relativeWidth / 100)}%`;
+        previewImg.style.height = `${100 / (relativeHeight / 100)}%`;
+        previewImg.style.objectFit = 'cover';
+        previewImg.style.objectPosition = `${relativeX * (100 / relativeWidth)}% ${relativeY * (100 / relativeHeight)}%`;
+    }
+
+    function setZoom(value) {
+        zoom = value / 100;
+        zoomSlider.value = value;
+        updateImagePosition();
+    }
+
+    function zoomIn() {
+        const newZoom = Math.min(200, parseInt(zoomSlider.value) + 10);
+        setZoom(newZoom);
+    }
+
+    function zoomOut() {
+        const newZoom = Math.max(50, parseInt(zoomSlider.value) - 10);
+        setZoom(newZoom);
+    }
+
+    function resetPosition() {
+        offsetX = 0;
+        offsetY = 0;
+        zoom = 1;
+        zoomSlider.value = 100;
+        imageContainer.style.transform = 'translate(0, 0) scale(1)';
+        updateImagePosition();
+    }
+
+    // ==================== APPLY CROP WITH CANVAS ====================
+    function applyCrop() {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Different output sizes for profile vs ID
+        let outputWidth, outputHeight;
+        if (currentImageType === 'profile') {
+            outputWidth = 400;
+            outputHeight = 400; // Square for profile
+        } else {
+            outputWidth = 1200;
+            outputHeight = 800; // 3:2 ratio for ID (landscape)
+        }
+
+        canvas.width = outputWidth;
+        canvas.height = outputHeight;
+
+        const img = new Image();
+        img.crossOrigin = 'anonymous';
+
+        img.onload = function() {
+            // Get all the necessary dimensions
+            const editorRect = document.querySelector('.image-editor').getBoundingClientRect();
+            const overlayRect = document.querySelector('.preview-overlay').getBoundingClientRect();
+            const containerRect = imageContainer.getBoundingClientRect();
+            const imgRect = editorImage.getBoundingClientRect();
+
+            // Calculate overlay position relative to the actual image
+            const scaleX = img.naturalWidth / imgRect.width;
+            const scaleY = img.naturalHeight / imgRect.height;
+
+            // Calculate crop area in image coordinates
+            const cropX = (overlayRect.left - imgRect.left) * scaleX;
+            const cropY = (overlayRect.top - imgRect.top) * scaleY;
+            const cropWidth = overlayRect.width * scaleX;
+            const cropHeight = overlayRect.height * scaleY;
+
+            // Draw cropped image to canvas
+            ctx.drawImage(
+                img,
+                Math.max(0, cropX),
+                Math.max(0, cropY),
+                cropWidth,
+                cropHeight,
+                0, 0,
+                outputWidth, outputHeight
+            );
+
+            // Convert canvas to blob
+            canvas.toBlob(function(blob) {
+                if (!blob) {
+                    alert('Failed to crop image. Please try again.');
+                    return;
+                }
+
+                const fileName = currentImageType === 'profile'
+                    ? 'profile_cropped.jpg'
+                    : 'id_cropped.jpg';
+
+                const croppedFile = new File([blob], fileName, {
+                    type: 'image/jpeg',
+                    lastModified: Date.now()
+                });
+
+                // Update the file input
+                const dataTransfer = new DataTransfer();
+                dataTransfer.items.add(croppedFile);
+
+                if (currentImageType === 'profile') {
+                    // Update profile picture input
+                    document.getElementById('profilePic').files = dataTransfer.files;
+                    document.getElementById('profileFileName').textContent = '✓ Cropped: ' + fileName;
+
+                    // Update the thumbnail preview
+                    const wrapper = document.querySelector('.image-thumbnail-wrapper img');
+                    if (wrapper) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            wrapper.src = e.target.result;
+                        };
+                        reader.readAsDataURL(croppedFile);
+                    }
+                } else {
+                    // Update ID document input
+                    document.getElementById('idPic').files = dataTransfer.files;
+                    document.getElementById('idFileName').textContent = '✓ Cropped: ' + fileName;
+
+                    // Update the ID preview
+                    const wrapper = document.querySelector('.id-thumbnail-wrapper img');
+                    if (wrapper) {
+                        const reader = new FileReader();
+                        reader.onload = function(e) {
+                            wrapper.src = e.target.result;
+                        };
+                        reader.readAsDataURL(croppedFile);
+                    }
+                }
+
+                closeCropModal();
+            }, 'image/jpeg', 0.92); // 92% quality
+        };
+
+        img.onerror = function() {
+            alert('Failed to load image. Please try again.');
+        };
+
+        img.src = currentImageSrc;
+    }
+
+    // Close modal on background click
+    document.getElementById('cropModal').addEventListener('click', function (e) {
+        if (e.target === this) {
+            closeCropModal();
+        }
+    });
+
+    // Close modal on ESC key
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape') {
+            closeCropModal();
+        }
+    });
+
+    // ==================== FILE INPUT HANDLERS ====================
+
+    // Profile Picture - Auto-open crop modal for new uploads
+    document.getElementById('profilePic').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            if (file.type.startsWith('image/')) {
+                // Validate file size (5MB)
+                if (file.size > 5 * 1024 * 1024) {
+                    alert('File size must be less than 5MB');
+                    this.value = '';
+                    return;
+                }
+
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // Open crop modal immediately for new uploads
+                    openCropModal('profile', event.target.result);
+                };
+                reader.readAsDataURL(file);
+
+                document.getElementById('profileFileName').textContent = '✓ Selected: ' + file.name;
+            } else {
+                alert('Please select a valid image file (JPG, PNG)');
+                this.value = '';
+            }
+        }
+    });
+
+    // ID Document - Auto-open crop modal for images only
+    document.getElementById('idPic').addEventListener('change', function (e) {
+        const file = e.target.files[0];
+        if (file) {
+            // Validate file size (5MB)
+            if (file.size > 5 * 1024 * 1024) {
+                alert('File size must be less than 5MB');
+                this.value = '';
+                return;
+            }
+
+            if (file.type.startsWith('image/')) {
+                const reader = new FileReader();
+                reader.onload = function(event) {
+                    // Open crop modal for ID images
+                    openCropModal('id', event.target.result);
+                };
+                reader.readAsDataURL(file);
+            } else if (file.type === 'application/pdf') {
+                // PDF doesn't need cropping
+                document.getElementById('idFileName').textContent = '✓ Selected: ' + file.name;
+            } else {
+                alert('Please select a valid file (JPG, PNG, PDF)');
+                this.value = '';
+            }
+        }
+    });
+
+    // ==================== HELPER FUNCTION FOR CLICKING EXISTING IMAGES ====================
+
+    // This function is called from the onclick in your Razor view
+    // It's defined in the view as: onclick="openCropModalOrUpload('profile', '@Model.ProfilePictureUrl')"
+    window.openCropModalOrUpload = function(imageType, imageUrl) {
+        if (imageUrl && imageUrl.trim() !== '') {
+            // Image exists - open crop modal to reposition
+            openCropModal(imageType, imageUrl);
+        } else {
+            // No image - open file picker
+            if (imageType === 'profile') {
+                document.getElementById('profilePic').click();
+            } else {
+                document.getElementById('idPic').click();
+            }
+        }
+    };
+
+    // ==================== UPLOAD NEW IMAGE FUNCTIONS ====================
+
+    window.uploadNewProfilePic = function() {
+        document.getElementById('profilePic').click();
+    };
+
+    window.uploadNewID = function() {
+        // Show custom confirmation modal for ID change
+        document.getElementById('confirmModal').classList.add('show');
+    };
+
+    window.confirmIDChange = function() {
+        // User confirmed - open file picker
+        document.getElementById('confirmModal').classList.remove('show');
+        document.getElementById('idPic').click();
+    };
+
+    window.cancelIDChange = function() {
+        // User cancelled - just close modal
+        document.getElementById('confirmModal').classList.remove('show');
+        };
+
+
+
+       
     </script>
 </body>
 </html>

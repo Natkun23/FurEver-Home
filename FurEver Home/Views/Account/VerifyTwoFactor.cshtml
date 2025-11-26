@@ -1,0 +1,497 @@
+﻿@model FurEver_Home.Models.VerifyTwoFactorViewModel
+@{
+    ViewBag.Title = "Two-Factor Authentication - FurEver Home";
+    Layout = null;
+    var userName = ViewBag.FullName ?? "User";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+
+        .twofa-container {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            max-width: 480px;
+            width: 100%;
+            padding: 48px 40px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .twofa-container::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #10b981 0%, #3FA9F5 100%);
+        }
+
+        .icon-circle {
+            width: 100px;
+            height: 100px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .icon-circle i {
+            font-size: 48px;
+            color: #10b981;
+        }
+
+        .welcome-text {
+            font-size: 28px;
+            font-weight: 700;
+            color: #10b981;
+            margin-bottom: 12px;
+            text-align: center;
+        }
+
+        .subtitle {
+            font-size: 15px;
+            color: #64748b;
+            text-align: center;
+            margin-bottom: 24px;
+            line-height: 1.6;
+        }
+
+        .email-display {
+            background: #d1fae5;
+            padding: 14px 20px;
+            border-radius: 12px;
+            text-align: center;
+            margin-bottom: 32px;
+            border: 2px solid #a7f3d0;
+        }
+
+        .email-display i {
+            color: #10b981;
+            margin-right: 8px;
+        }
+
+        .email-display strong {
+            color: #065f46;
+            font-size: 16px;
+        }
+
+        .code-input-wrapper {
+            display: flex;
+            justify-content: center;
+            gap: 12px;
+            margin: 32px 0;
+        }
+
+        .code-digit {
+            width: 56px;
+            height: 64px;
+            text-align: center;
+            font-size: 28px;
+            font-weight: 700;
+            border: 3px solid #e2e8f0;
+            border-radius: 12px;
+            outline: none;
+            transition: all 0.3s;
+            background: #f8fafc;
+            color: #10b981;
+        }
+
+        .code-digit:focus {
+            border-color: #10b981;
+            background: white;
+            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+        }
+
+        .code-digit.filled {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #10b981;
+        }
+
+        .hidden-input {
+            position: absolute;
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .info-box {
+            background: #eff6ff;
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin: 24px 0;
+            border: 2px solid #bfdbfe;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+        .info-box i {
+            color: #3FA9F5;
+            font-size: 1.2em;
+            margin-top: 2px;
+        }
+
+        .info-box-text {
+            color: #1e40af;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        .btn-verify {
+            width: 100%;
+            padding: 16px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            margin-top: 24px;
+        }
+
+        .btn-verify:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-verify:disabled {
+            background: #cbd5e1;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .back-login {
+            text-align: center;
+            margin-top: 24px;
+        }
+
+        .back-login a {
+            color: #64748b;
+            text-decoration: none;
+            font-size: 14px;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            transition: color 0.3s;
+        }
+
+        .back-login a:hover {
+            color: #10b981;
+        }
+
+        .alert {
+            padding: 14px 16px;
+            border-radius: 12px;
+            margin-bottom: 24px;
+            font-size: 14px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideIn 0.3s ease;
+        }
+
+        @@keyframes slideIn {
+            from {
+                transform: translateY(-10px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .alert-success {
+            background: #ecfdf5;
+            border: 1px solid #a7f3d0;
+            color: #065f46;
+        }
+
+        .alert-error {
+            background: #fef2f2;
+            border: 1px solid #fecaca;
+            color: #991b1b;
+        }
+
+        .security-note {
+            background: #f8fafc;
+            padding: 16px;
+            border-radius: 12px;
+            margin-top: 24px;
+            font-size: 13px;
+            color: #475569;
+            text-align: center;
+            border: 1px solid #e2e8f0;
+        }
+
+        .security-note i {
+            color: #10b981;
+            margin-right: 6px;
+        }
+
+        .signin-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .signin-overlay.active {
+            display: flex;
+        }
+
+        .signin-content {
+            text-align: center;
+            color: white;
+        }
+
+        .signin-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: scaleUpDown 2s ease-in-out infinite;
+        }
+
+        @@keyframes scaleUpDown {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .signin-icon i {
+            font-size: 50px;
+            color: white;
+        }
+
+        .signin-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+        }
+
+        .signin-message {
+            font-size: 18px;
+            opacity: 0.9;
+        }
+
+        @@media (max-width: 480px) {
+            .twofa-container {
+                padding: 36px 28px;
+            }
+
+            .code-digit {
+                width: 48px;
+                height: 56px;
+                font-size: 24px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Sign In Loading Overlay -->
+    <div class="signin-overlay" id="signinOverlay">
+        <div class="signin-content">
+            <div class="signin-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="signin-title">Signing in...</h2>
+            <p class="signin-message">Authentication successful!</p>
+        </div>
+    </div>
+
+    <div class="twofa-container">
+        <div class="icon-circle">
+            <i class="fas fa-mobile-screen"></i>
+        </div>
+
+        <h1 class="welcome-text">Two-Factor Authentication</h1>
+        <p class="subtitle">Enter the 6-digit code from your authenticator app</p>
+
+        <div class="email-display">
+            <i class="fas fa-user-shield"></i>
+            <strong>@Model.Email</strong>
+        </div>
+
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <span>@TempData["Success"]</span>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-error">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>@TempData["Error"]</span>
+            </div>
+        }
+
+        @using (Html.BeginForm("VerifyTwoFactor", "Account", FormMethod.Post, new { id = "twoFaForm" }))
+        {
+            @Html.AntiForgeryToken()
+            @Html.HiddenFor(m => m.Email)
+
+            <div class="code-input-wrapper">
+                <input type="text" class="code-digit" id="digit1" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                <input type="text" class="code-digit" id="digit2" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                <input type="text" class="code-digit" id="digit3" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                <input type="text" class="code-digit" id="digit4" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                <input type="text" class="code-digit" id="digit5" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                <input type="text" class="code-digit" id="digit6" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+            </div>
+
+            @Html.TextBoxFor(m => m.TwoFactorCode, new { @class = "hidden-input", id = "codeInput" })
+            @Html.ValidationMessageFor(m => m.TwoFactorCode, "", new { @class = "field-validation-error", style = "text-align: center; display: block;" })
+
+            <div class="info-box">
+                <i class="fas fa-info-circle"></i>
+                <div class="info-box-text">
+                    Open your authenticator app (Google Authenticator, Microsoft Authenticator, etc.) and enter the 6-digit code shown for FurEver Home.
+                </div>
+            </div>
+
+            <button type="submit" class="btn-verify" id="verifyBtn">
+                <i class="fas fa-shield-halved"></i> Verify Code
+            </button>
+        }
+
+        <div class="back-login">
+            <a href="@Url.Action("Login", "Account")">
+                <i class="fas fa-arrow-left"></i> Back to Login
+            </a>
+        </div>
+
+        <div class="security-note">
+            <i class="fas fa-lock"></i>
+            <strong>Security Tip:</strong> Each code expires after 30 seconds and can only be used once.
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script src="~/Scripts/jquery.validate.min.js"></script>
+    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+    <script>
+        const codeInputs = document.querySelectorAll('.code-digit');
+        const hiddenInput = document.getElementById('codeInput');
+        const verifyBtn = document.getElementById('verifyBtn');
+
+        codeInputs[0].focus();
+
+        codeInputs.forEach((input, index) => {
+            input.addEventListener('input', function (e) {
+                this.value = this.value.replace(/[^0-9]/g, '');
+
+                if (this.value.length === 1) {
+                    this.classList.add('filled');
+                    if (index < codeInputs.length - 1) {
+                        codeInputs[index + 1].focus();
+                    }
+                } else {
+                    this.classList.remove('filled');
+                }
+
+                updateCodeValue();
+            });
+
+            input.addEventListener('keydown', function (e) {
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    codeInputs[index - 1].focus();
+                    codeInputs[index - 1].value = '';
+                    codeInputs[index - 1].classList.remove('filled');
+                    updateCodeValue();
+                }
+
+                if (e.key === 'ArrowLeft' && index > 0) {
+                    codeInputs[index - 1].focus();
+                }
+                if (e.key === 'ArrowRight' && index < codeInputs.length - 1) {
+                    codeInputs[index + 1].focus();
+                }
+            });
+
+            input.addEventListener('paste', function (e) {
+                e.preventDefault();
+                const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+
+                if (pastedData.length === 6) {
+                    codeInputs.forEach((inp, idx) => {
+                        inp.value = pastedData[idx] || '';
+                        if (inp.value) inp.classList.add('filled');
+                    });
+                    codeInputs[5].focus();
+                    updateCodeValue();
+                }
+            });
+        });
+
+        function updateCodeValue() {
+            const codeValue = Array.from(codeInputs).map(input => input.value).join('');
+            hiddenInput.value = codeValue;
+            verifyBtn.disabled = codeValue.length !== 6;
+        }
+
+        document.getElementById('twoFaForm').addEventListener('submit', function (e) {
+            if (hiddenInput.value.length !== 6) {
+                e.preventDefault();
+                alert('Please enter all 6 digits of the code.');
+                return;
+            }
+
+            e.preventDefault();
+            document.getElementById('signinOverlay').classList.add('active');
+
+            setTimeout(function () {
+                e.target.submit();
+            }, 2000);
+        });
+    </script>
+</body>
+</html>

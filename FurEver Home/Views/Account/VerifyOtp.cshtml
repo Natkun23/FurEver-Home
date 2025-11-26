@@ -2,6 +2,7 @@
 @{
     ViewBag.Title = "Verify OTP - FurEver Home";
     Layout = null;
+    var userName = ViewBag.FullName ?? "User";
 }
 
 <!DOCTYPE html>
@@ -222,7 +223,7 @@
             font-size: 14px;
         }
 
-        .btn-resend:hover {
+        .btn-resend:hover:not(:disabled) {
             background: #3FA9F5;
             color: white;
         }
@@ -230,6 +231,8 @@
         .btn-resend:disabled {
             opacity: 0.5;
             cursor: not-allowed;
+            border-color: #cbd5e1;
+            color: #94a3b8;
         }
 
         .back-login {
@@ -301,6 +304,201 @@
             margin-right: 6px;
         }
 
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Loading/Sign In Animation Overlay */
+        .signin-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            z-index: 10000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.5s ease;
+        }
+
+        .signin-overlay.active {
+            display: flex;
+        }
+
+        .signin-content {
+            text-align: center;
+            color: white;
+        }
+
+        .signin-spinner {
+            width: 80px;
+            height: 80px;
+            border: 6px solid rgba(255, 255, 255, 0.3);
+            border-top: 6px solid white;
+            border-radius: 50%;
+            margin: 0 auto 32px;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .signin-icon {
+            width: 100px;
+            height: 100px;
+            background: rgba(255, 255, 255, 0.2);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+            animation: scaleUpDown 2s ease-in-out infinite;
+        }
+
+        @@keyframes scaleUpDown {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.1); }
+        }
+
+        .signin-icon i {
+            font-size: 50px;
+            color: white;
+        }
+
+        .signin-title {
+            font-size: 32px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            animation: fadeInUp 0.6s ease;
+        }
+
+        .signin-message {
+            font-size: 18px;
+            opacity: 0.9;
+            animation: fadeInUp 0.8s ease;
+        }
+
+        @@keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .signin-dots {
+            display: inline-block;
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        @@keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        .signin-dots::after {
+            content: '';
+            animation: dots 1.5s steps(4, end) infinite;
+        }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            padding: 40px;
+            border-radius: 20px;
+            max-width: 420px;
+            width: 90%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+            animation: scaleIn 0.3s ease;
+            position: relative;
+        }
+
+        @@keyframes scaleIn {
+            from {
+                transform: scale(0.9);
+                opacity: 0;
+            }
+            to {
+                transform: scale(1);
+                opacity: 1;
+            }
+        }
+
+        .modal-icon {
+            width: 80px;
+            height: 80px;
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 24px;
+        }
+
+        .modal-icon i {
+            font-size: 40px;
+            color: #10b981;
+        }
+
+        .modal-title {
+            font-size: 24px;
+            font-weight: 700;
+            color: #065f46;
+            margin-bottom: 12px;
+        }
+
+        .modal-message {
+            font-size: 16px;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 24px;
+        }
+
+        .modal-close-btn {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 14px 32px;
+            border-radius: 10px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+        .modal-close-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+        }
+
         @@media (max-width: 480px) {
             .otp-container {
                 padding: 36px 28px;
@@ -311,10 +509,37 @@
                 height: 56px;
                 font-size: 24px;
             }
+
+            .modal-content {
+                padding: 32px 24px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Sign In Loading Overlay -->
+    <div class="signin-overlay" id="signinOverlay">
+        <div class="signin-content">
+            <div class="signin-icon">
+                <i class="fas fa-check-circle"></i>
+            </div>
+            <h2 class="signin-title">Signing in<span class="signin-dots"></span></h2>
+            <p class="signin-message">Welcome, <strong id="userName">User</strong>!</p>
+        </div>
+    </div>
+
+    <!-- Success Modal -->
+    <div class="modal-overlay" id="successModal">
+        <div class="modal-content">
+            <div class="modal-icon">
+                <i class="fas fa-paper-plane"></i>
+            </div>
+            <h2 class="modal-title">OTP Resent Successfully!</h2>
+            <p class="modal-message">OTP has been resent to your email again, please do check it!</p>
+            <button class="modal-close-btn" onclick="closeModal()">Got it!</button>
+        </div>
+    </div>
+
     <div class="otp-container">
         <div class="icon-circle">
             <i class="fas fa-shield-halved"></i>
@@ -377,8 +602,8 @@
             {
                 @Html.AntiForgeryToken()
                 <input type="hidden" name="email" value="@Model.Email">
-                <button type="submit" class="btn-resend" id="resendBtn">
-                    <i class="fas fa-rotate"></i> Resend OTP
+                <button type="button" class="btn-resend" id="resendBtn" onclick="handleResendOtp(event)">
+                    <i class="fas fa-rotate"></i> <span id="resendBtnText">Resend OTP</span>
                 </button>
             }
         </div>
@@ -506,8 +731,96 @@
             if (hiddenInput.value.length !== 6) {
                 e.preventDefault();
                 alert('Please enter all 6 digits of the OTP code.');
+                return;
+            }
+
+            // Show signing in animation
+            e.preventDefault();
+            showSignInAnimation();
+
+            // Get username from ViewBag
+            const username = '@Html.Raw(userName)';
+            document.getElementById('userName').textContent = username;
+
+            // Submit form after 3 seconds
+            setTimeout(function() {
+                e.target.submit();
+            }, 3000);
+        });
+
+        // Show Sign In Animation
+        function showSignInAnimation() {
+            document.getElementById('signinOverlay').classList.add('active');
+        }
+
+        // Modal Functions
+        function closeModal() {
+            document.getElementById('successModal').classList.remove('active');
+        }
+
+        function showModal() {
+            document.getElementById('successModal').classList.add('active');
+        }
+
+        // Click outside modal to close
+        document.getElementById('successModal').addEventListener('click', function(e) {
+            if (e.target === this) {
+                closeModal();
             }
         });
+
+        // Resend OTP Handler with 60-second cooldown
+        let resendCooldown = 0;
+        let resendInterval = null;
+
+        function handleResendOtp(event) {
+            event.preventDefault();
+
+            if (resendCooldown > 0) {
+                return; // Still in cooldown
+            }
+
+            // Submit the form via AJAX or regular form submit
+            const form = document.getElementById('resendForm');
+            const formData = new FormData(form);
+
+            fetch(form.action, {
+                method: 'POST',
+                body: formData
+            })
+            .then(response => {
+                if (response.ok) {
+                    // Show success modal
+                    showModal();
+
+                    // Start 60-second cooldown
+                    startResendCooldown();
+                }
+                return response;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Failed to resend OTP. Please try again.');
+            });
+        }
+
+        function startResendCooldown() {
+            resendCooldown = 60;
+            resendBtn.disabled = true;
+
+            resendInterval = setInterval(function() {
+                resendCooldown--;
+                document.getElementById('resendBtnText').textContent = `Resend OTP (${resendCooldown}s)`;
+
+                if (resendCooldown <= 0) {
+                    clearInterval(resendInterval);
+                    resendBtn.disabled = false;
+                    document.getElementById('resendBtnText').textContent = 'Resend OTP';
+                }
+            }, 1000);
+        }
     </script>
+
+
 </body>
 </html>

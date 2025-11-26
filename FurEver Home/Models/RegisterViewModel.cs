@@ -33,5 +33,11 @@ namespace FurEver_Home.Models
 
         [Display(Name = "ID Image")]
         public HttpPostedFileBase IDImage { get; set; }
+
+        [Required(ErrorMessage = "Mobile number is required")]
+        [StringLength(20)]
+        [Display(Name = "Mobile Number")]
+        [RegularExpression(@"^(\+63|0)?[0-9]{10}$", ErrorMessage = "Please enter a valid Philippine mobile number")]
+        public string MobileNumber { get; set; }
     }
 }

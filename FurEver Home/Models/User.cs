@@ -1,5 +1,4 @@
-﻿
-using System;
+﻿using System;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
@@ -62,7 +61,7 @@ namespace FurEver_Home.Models
         [Column("reset_token_expiry")]
         public DateTime? ResetTokenExpiry { get; set; }
 
-        // OTP PROPERTIES - ADD THESE
+        // OTP PROPERTIES
         [Column("otp_code")]
         [StringLength(6)]
         public string OtpCode { get; set; }
@@ -72,6 +71,14 @@ namespace FurEver_Home.Models
 
         [Column("otp_attempts")]
         public int OtpAttempts { get; set; } = 0;
+
+        // ✅ NEW: TWO-FACTOR AUTHENTICATION PROPERTIES
+        [Column("two_factor_enabled")]
+        public bool TwoFactorEnabled { get; set; } = false;
+
+        [Column("two_factor_secret_key")]
+        [StringLength(100)]
+        public string TwoFactorSecretKey { get; set; }
 
         [Column("date_registered")]
         public DateTime DateRegistered { get; set; } = DateTime.Now;

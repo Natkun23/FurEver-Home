@@ -325,6 +325,19 @@
             </div>
 
             <div class="form-group">
+                @Html.LabelFor(m => m.MobileNumber)
+                <div class="input-wrapper">
+                    <i class="fas fa-mobile-alt input-icon"></i>
+                    @Html.TextBoxFor(m => m.MobileNumber, new { placeholder = "09XX XXX XXXX or +639XX XXX XXXX", type = "tel" })
+                </div>
+                @Html.ValidationMessageFor(m => m.MobileNumber, "", new { @class = "field-validation-error" })
+                <small style="color: #64748b; display: block; margin-top: 6px; margin-left: 4px; font-size: 12px;">
+                    <i class="fas fa-info-circle"></i> Enter your Philippine mobile number
+                </small>
+            </div>
+
+
+            <div class="form-group">
                 @Html.LabelFor(m => m.Password)
                 <div class="input-wrapper">
                     <i class="fas fa-lock input-icon"></i>
@@ -383,7 +396,7 @@
             Already have an account? <a href="@Url.Action("Login", "Account")">Sign In</a>
         </div>
 
-     
+
     </div>
 
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
@@ -400,5 +413,7 @@
 
        
     </script>
+
+
 </body>
 </html>

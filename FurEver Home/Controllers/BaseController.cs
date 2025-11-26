@@ -2,7 +2,6 @@
 using System.Web.Mvc;
 using FurEver_Home.Filters;
 
-
 namespace FurEver_Home.Controllers
 {
     public class BaseController : Controller
@@ -18,13 +17,18 @@ namespace FurEver_Home.Controllers
                         new { controller = "Account", action = "Login" }
                     )
                 );
+                return; // Important: return immediately after redirect
             }
 
-            // Prevent caching of authenticated pages
+            // ✅ ENHANCED: Aggressive cache prevention for all authenticated pages
             Response.Cache.SetCacheability(System.Web.HttpCacheability.NoCache);
             Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1));
             Response.Cache.SetNoStore();
+
+            // Additional headers to prevent all types of caching
+            Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate, private");
             Response.AppendHeader("Pragma", "no-cache");
+            Response.AppendHeader("Expires", "0");
 
             base.OnActionExecuting(filterContext);
         }

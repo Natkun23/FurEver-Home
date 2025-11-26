@@ -5,6 +5,10 @@ using System.Web;
 using System.Web.Mvc;
 using FurEver_Home.Models;
 using FurEver_Home.Services;
+using OtpNet; // ✅ NEW
+using QRCoder; // ✅ NEW
+using System.Drawing;
+using System.Drawing.Imaging;
 
 namespace FurEver_Home.Controllers
 {
@@ -32,14 +36,13 @@ namespace FurEver_Home.Controllers
             return View();
         }
 
-        // POST: Account/Login (Step 1: Verify credentials and send OTP)
+        // ==================== UPDATED: Login Method (Step 1) ====================
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult Login(LoginViewModel model)
         {
             if (ModelState.IsValid)
             {
-                // Allow login with either Email OR Full Name
                 var user = db.Users.FirstOrDefault(u =>
                     u.Email == model.Email ||
                     u.FullName.ToLower() == model.Email.ToLower()
@@ -47,41 +50,47 @@ namespace FurEver_Home.Controllers
 
                 if (user != null)
                 {
-                    // Verify password
-                    if (user.Password == model.Password) // TODO: Use proper password hashing in production!
+                    if (user.Password == model.Password)
                     {
-                        // Check if account is active
                         if (!user.IsActive)
                         {
                             TempData["Error"] = "Your account has been deactivated. Please contact support.";
                             return View(model);
                         }
 
-                        // Generate 6-digit OTP
-                        Random random = new Random();
-                        string otpCode = random.Next(100000, 999999).ToString();
-
-                        // Save OTP to database
-                        user.OtpCode = otpCode;
-                        user.OtpExpiry = DateTime.Now.AddMinutes(5); // OTP valid for 5 minutes
-                        user.OtpAttempts = 0;
-                        user.UpdatedAt = DateTime.Now;
-                        db.SaveChanges();
-
-                        // Send OTP via email
-                        bool emailSent = emailService.SendOtpEmail(user.Email, user.FullName, otpCode);
-
-                        if (emailSent)
+                        // ✅ NEW: Check if 2FA is enabled
+                        if (user.TwoFactorEnabled)
                         {
-                            // Store email in TempData for OTP verification
-                            TempData["OtpEmail"] = user.Email;
-                            TempData["Success"] = "OTP code has been sent to your email. Please check your inbox.";
-                            return RedirectToAction("VerifyOtp");
+                            // Skip email OTP, go directly to 2FA
+                            TempData["TwoFactorEmail"] = user.Email;
+                            TempData["Success"] = "Please enter the 6-digit code from your authenticator app.";
+                            return RedirectToAction("VerifyTwoFactor");
                         }
                         else
                         {
-                            TempData["Error"] = "Failed to send OTP email. Please try again or contact support.";
-                            return View(model);
+                            // Original flow: Generate and send email OTP
+                            Random random = new Random();
+                            string otpCode = random.Next(100000, 999999).ToString();
+
+                            user.OtpCode = otpCode;
+                            user.OtpExpiry = DateTime.Now.AddMinutes(5);
+                            user.OtpAttempts = 0;
+                            user.UpdatedAt = DateTime.Now;
+                            db.SaveChanges();
+
+                            bool emailSent = emailService.SendOtpEmail(user.Email, user.FullName, otpCode);
+
+                            if (emailSent)
+                            {
+                                TempData["OtpEmail"] = user.Email;
+                                TempData["Success"] = "OTP code has been sent to your email. Please check your inbox.";
+                                return RedirectToAction("VerifyOtp");
+                            }
+                            else
+                            {
+                                TempData["Error"] = "Failed to send OTP email. Please try again or contact support.";
+                                return View(model);
+                            }
                         }
                     }
                 }
@@ -90,6 +99,202 @@ namespace FurEver_Home.Controllers
             }
 
             return View(model);
+        }
+        // ==================== NEW: VERIFY TWO-FACTOR CODE ====================
+
+        // GET: Account/VerifyTwoFactor
+        public ActionResult VerifyTwoFactor()
+        {
+            if (TempData["TwoFactorEmail"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            var model = new VerifyTwoFactorViewModel
+            {
+                Email = TempData["TwoFactorEmail"].ToString()
+            };
+
+            TempData.Keep("TwoFactorEmail");
+            return View(model);
+        }
+
+        // POST: Account/VerifyTwoFactor
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult VerifyTwoFactor(VerifyTwoFactorViewModel model)
+        {
+            if (ModelState.IsValid)
+            {
+                var user = db.Users.FirstOrDefault(u => u.Email == model.Email);
+                if (user != null && user.TwoFactorEnabled)
+                {
+                    // Verify TOTP code
+                    var totp = new Totp(Base32Encoding.ToBytes(user.TwoFactorSecretKey));
+                    bool isValid = totp.VerifyTotp(model.TwoFactorCode, out long timeStepMatched, new VerificationWindow(2, 2));
+
+                    if (isValid)
+                    {
+                        // Create session
+                        Session["UserId"] = user.UserId;
+                        Session["UserName"] = user.FullName;
+                        Session["UserEmail"] = user.Email;
+                        Session["UserRole"] = user.Role;
+
+                        // Redirect based on role
+                        if (user.Role == "Admin")
+                        {
+                            return RedirectToAction("Dashboard", "Admin");
+                        }
+                        else
+                        {
+                            return RedirectToAction("Index", "Pets");
+                        }
+                    }
+                    else
+                    {
+                        TempData["Error"] = "Invalid authenticator code. Please try again.";
+                        TempData["TwoFactorEmail"] = model.Email;
+                        return View(model);
+                    }
+                }
+
+                TempData["Error"] = "User not found or 2FA not enabled.";
+                return RedirectToAction("Login");
+            }
+
+            TempData["TwoFactorEmail"] = model.Email;
+            return View(model);
+        }
+
+        // ==================== NEW: 2FA MANAGEMENT IN PROFILE ====================
+
+        // POST: Account/EnableTwoFactor
+        [HttpPost]
+        public ActionResult EnableTwoFactor()
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login");
+            }
+
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+
+            if (user == null)
+            {
+                return HttpNotFound();
+            }
+
+            // Generate secret key
+            var key = KeyGeneration.GenerateRandomKey(20);
+            var base32Secret = Base32Encoding.ToString(key);
+
+            user.TwoFactorSecretKey = base32Secret;
+            user.TwoFactorEnabled = false; // Not enabled until user verifies the setup
+            user.UpdatedAt = DateTime.Now;
+            db.SaveChanges();
+
+            return Json(new { success = true, secret = base32Secret });
+        }
+
+        // POST: Account/ConfirmTwoFactor
+        [HttpPost]
+        public ActionResult ConfirmTwoFactor(string code)
+        {
+            if (Session["UserId"] == null)
+            {
+                return Json(new { success = false, message = "Session expired" });
+            }
+
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+
+            if (user == null || string.IsNullOrEmpty(user.TwoFactorSecretKey))
+            {
+                return Json(new { success = false, message = "2FA setup not initiated" });
+            }
+
+            // Verify the code
+            var totp = new Totp(Base32Encoding.ToBytes(user.TwoFactorSecretKey));
+            bool isValid = totp.VerifyTotp(code, out long timeStepMatched, new VerificationWindow(2, 2));
+
+            if (isValid)
+            {
+                user.TwoFactorEnabled = true;
+                user.UpdatedAt = DateTime.Now;
+                db.SaveChanges();
+
+                return Json(new { success = true, message = "2FA enabled successfully!" });
+            }
+            else
+            {
+                return Json(new { success = false, message = "Invalid code. Please try again." });
+            }
+        }
+
+        // POST: Account/DisableTwoFactor
+        [HttpPost]
+        public ActionResult DisableTwoFactor(string password)
+        {
+            if (Session["UserId"] == null)
+            {
+                return Json(new { success = false, message = "Session expired" });
+            }
+
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+
+            if (user == null)
+            {
+                return Json(new { success = false, message = "User not found" });
+            }
+
+            // Verify password
+            if (user.Password != password) // TODO: Use proper password hashing in production
+            {
+                return Json(new { success = false, message = "Incorrect password" });
+            }
+
+            user.TwoFactorEnabled = false;
+            user.TwoFactorSecretKey = null;
+            user.UpdatedAt = DateTime.Now;
+            db.SaveChanges();
+
+            return Json(new { success = true, message = "2FA disabled successfully" });
+        }
+
+        // GET: Account/GetQRCode
+        public ActionResult GetQRCode()
+        {
+            if (Session["UserId"] == null)
+            {
+                return null;
+            }
+
+            int userId = (int)Session["UserId"];
+            var user = db.Users.Find(userId);
+
+            if (user == null || string.IsNullOrEmpty(user.TwoFactorSecretKey))
+            {
+                return null;
+            }
+
+            // Generate QR code
+            string issuer = "FurEver Home";
+            string account = user.Email;
+            string otpAuthUrl = $"otpauth://totp/{Uri.EscapeDataString(issuer)}:{Uri.EscapeDataString(account)}?secret={user.TwoFactorSecretKey}&issuer={Uri.EscapeDataString(issuer)}";
+
+            QRCodeGenerator qrGenerator = new QRCodeGenerator();
+            QRCodeData qrCodeData = qrGenerator.CreateQrCode(otpAuthUrl, QRCodeGenerator.ECCLevel.Q);
+            QRCode qrCode = new QRCode(qrCodeData);
+            Bitmap qrCodeImage = qrCode.GetGraphic(20);
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                qrCodeImage.Save(ms, ImageFormat.Png);
+                return File(ms.ToArray(), "image/png");
+            }
         }
 
         // GET: Account/VerifyOtp
@@ -119,7 +324,6 @@ namespace FurEver_Home.Controllers
             if (ModelState.IsValid)
             {
                 var user = db.Users.FirstOrDefault(u => u.Email == model.Email);
-
                 if (user != null)
                 {
                     // Check if OTP has expired
@@ -128,7 +332,6 @@ namespace FurEver_Home.Controllers
                         TempData["Error"] = "OTP has expired. Please login again to receive a new code.";
                         return RedirectToAction("Login");
                     }
-
                     // Check OTP attempts (max 3 attempts)
                     if (user.OtpAttempts >= 3)
                     {
@@ -137,11 +340,9 @@ namespace FurEver_Home.Controllers
                         user.OtpExpiry = null;
                         user.OtpAttempts = 0;
                         db.SaveChanges();
-
                         TempData["Error"] = "Maximum OTP attempts exceeded. Please login again.";
                         return RedirectToAction("Login");
                     }
-
                     // Verify OTP
                     if (user.OtpCode == model.OtpCode)
                     {
@@ -150,13 +351,11 @@ namespace FurEver_Home.Controllers
                         user.OtpExpiry = null;
                         user.OtpAttempts = 0;
                         db.SaveChanges();
-
                         // Create session
                         Session["UserId"] = user.UserId;
                         Session["UserName"] = user.FullName;
                         Session["UserEmail"] = user.Email;
                         Session["UserRole"] = user.Role;
-
                         // Redirect based on role
                         if (user.Role == "Admin")
                         {
@@ -172,21 +371,27 @@ namespace FurEver_Home.Controllers
                         // Increment OTP attempts
                         user.OtpAttempts++;
                         db.SaveChanges();
-
                         int remainingAttempts = 3 - user.OtpAttempts;
                         TempData["Error"] = $"Invalid OTP code. {remainingAttempts} attempt(s) remaining.";
                         TempData["OtpEmail"] = model.Email;
+                        TempData["FullName"] = user.FullName; // ADD THIS LINE - Keep name on error
                         return View(model);
                     }
                 }
-
                 TempData["Error"] = "User not found.";
                 return RedirectToAction("Login");
             }
 
             TempData["OtpEmail"] = model.Email;
+            // ADD THESE LINES - Keep name even on validation error
+            var userForName = db.Users.FirstOrDefault(u => u.Email == model.Email);
+            if (userForName != null)
+            {
+                TempData["FullName"] = userForName.FullName;
+            }
             return View(model);
         }
+
 
         // POST: Account/ResendOtp
         [HttpPost]
@@ -283,6 +488,7 @@ namespace FurEver_Home.Controllers
                     FullName = model.FullName,
                     Email = model.Email,
                     Password = model.Password, // TODO: Hash password in production!
+                    PhoneNumber = model.MobileNumber,
                     Role = "Client",
                     IDType = model.IDType,
                     IDImageUrl = idImagePath,
@@ -412,19 +618,38 @@ namespace FurEver_Home.Controllers
         }
 
         // ==================== LOGOUT ====================
-
         // GET: Account/Logout
         public ActionResult Logout()
         {
-            // Clear session
+            // Clear all session data
             Session.Clear();
             Session.Abandon();
+            Session.RemoveAll(); // Extra cleanup
 
-            // Prevent caching
+            // Remove authentication cookie if you're using Forms Authentication
+            if (Request.Cookies[System.Web.Security.FormsAuthentication.FormsCookieName] != null)
+            {
+                var cookie = new HttpCookie(System.Web.Security.FormsAuthentication.FormsCookieName)
+                {
+                    Expires = DateTime.Now.AddDays(-1)
+                };
+                Response.Cookies.Add(cookie);
+            }
+
+            // Remove ASP.NET session cookie
+            if (Request.Cookies["ASP.NET_SessionId"] != null)
+            {
+                Response.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddDays(-1);
+            }
+
+            // ✅ ENHANCED: Aggressive cache prevention on logout
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
             Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1));
             Response.Cache.SetNoStore();
+            Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate, private, max-age=0");
             Response.AppendHeader("Pragma", "no-cache");
+            Response.AppendHeader("Expires", "0");
+            Response.AppendHeader("Clear-Site-Data", "\"cache\", \"cookies\", \"storage\"");
 
             TempData["Success"] = "You have been logged out successfully.";
             return RedirectToAction("Login");
@@ -461,68 +686,165 @@ namespace FurEver_Home.Controllers
                 return RedirectToAction("Login");
             }
 
-            int userId = (int)Session["UserId"];
-            var user = db.Users.Find(userId);
-
-            if (user == null)
+            try
             {
-                return HttpNotFound();
-            }
+                int userId = (int)Session["UserId"];
+                var user = db.Users.Find(userId);
 
-            // Update basic info
-            user.FullName = model.FullName;
-            user.PhoneNumber = model.PhoneNumber;
-            user.Address = model.Address;
-            user.Age = model.Age;
-
-            // Handle Profile Picture Upload
-            if (ProfilePicture != null && ProfilePicture.ContentLength > 0)
-            {
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-                var extension = Path.GetExtension(ProfilePicture.FileName).ToLower();
-
-                if (allowedExtensions.Contains(extension))
+                if (user == null)
                 {
+                    return HttpNotFound();
+                }
+
+                // Update basic info
+                user.FullName = model.FullName;
+                user.PhoneNumber = model.PhoneNumber;
+                user.Address = model.Address;
+                user.Age = model.Age;
+
+                // ==================== Handle Profile Picture Upload ====================
+                if (ProfilePicture != null && ProfilePicture.ContentLength > 0)
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                    var extension = Path.GetExtension(ProfilePicture.FileName).ToLower();
+
+                    if (!allowedExtensions.Contains(extension))
+                    {
+                        TempData["Error"] = "Only JPG and PNG files are allowed for profile pictures.";
+                        return RedirectToAction("Profile");
+                    }
+
+                    if (ProfilePicture.ContentLength > 5 * 1024 * 1024) // 5MB limit
+                    {
+                        TempData["Error"] = "Profile picture must be less than 5MB.";
+                        return RedirectToAction("Profile");
+                    }
+
+                    // Delete old profile picture if exists
+                    if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
+                    {
+                        var oldPath = Server.MapPath("~" + user.ProfilePictureUrl);
+                        if (System.IO.File.Exists(oldPath))
+                        {
+                            try
+                            {
+                                System.IO.File.Delete(oldPath);
+                            }
+                            catch
+                            {
+                                // File might be in use, continue anyway
+                            }
+                        }
+                    }
+
+                    // Save new profile picture (already cropped from JavaScript)
                     var uploadsDir = Server.MapPath("~/Content/Uploads/Profiles");
                     if (!Directory.Exists(uploadsDir))
                     {
                         Directory.CreateDirectory(uploadsDir);
                     }
 
-                    var fileName = Guid.NewGuid().ToString() + extension;
+                    var fileName = $"profile_{userId}_{Guid.NewGuid()}{extension}";
                     var filePath = Path.Combine(uploadsDir, fileName);
                     ProfilePicture.SaveAs(filePath);
+
                     user.ProfilePictureUrl = "/Content/Uploads/Profiles/" + fileName;
                 }
-            }
 
-            // Handle ID Image Upload
-            if (IDImage != null && IDImage.ContentLength > 0)
-            {
-                var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
-                var extension = Path.GetExtension(IDImage.FileName).ToLower();
-
-                if (allowedExtensions.Contains(extension))
+                // ==================== Handle ID Image Upload ====================
+                if (IDImage != null && IDImage.ContentLength > 0)
                 {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
+                    var extension = Path.GetExtension(IDImage.FileName).ToLower();
+
+                    if (!allowedExtensions.Contains(extension))
+                    {
+                        TempData["Error"] = "Only JPG, PNG, and PDF files are allowed for ID documents.";
+                        return RedirectToAction("Profile");
+                    }
+
+                    if (IDImage.ContentLength > 5 * 1024 * 1024) // 5MB limit
+                    {
+                        TempData["Error"] = "ID document must be less than 5MB.";
+                        return RedirectToAction("Profile");
+                    }
+
+                    // Delete old ID if exists
+                    if (!string.IsNullOrEmpty(user.IDImageUrl))
+                    {
+                        var oldPath = Server.MapPath("~" + user.IDImageUrl);
+                        if (System.IO.File.Exists(oldPath))
+                        {
+                            try
+                            {
+                                System.IO.File.Delete(oldPath);
+                            }
+                            catch
+                            {
+                                // File might be in use, continue anyway
+                            }
+                        }
+                    }
+
+                    // Save new ID document (cropped if it's an image)
                     var uploadsDir = Server.MapPath("~/Content/Uploads/IDs");
                     if (!Directory.Exists(uploadsDir))
                     {
                         Directory.CreateDirectory(uploadsDir);
                     }
 
-                    var fileName = Guid.NewGuid().ToString() + extension;
+                    var fileName = $"id_{userId}_{Guid.NewGuid()}{extension}";
                     var filePath = Path.Combine(uploadsDir, fileName);
                     IDImage.SaveAs(filePath);
+
                     user.IDImageUrl = "/Content/Uploads/IDs/" + fileName;
-                    user.IDStatus = "Pending"; // Reset to pending for admin review
+
+                    // Reset to pending for admin review
+                    user.IDStatus = "Pending";
+
+                    // Flag to show modal after redirect
+                    TempData["IDStatusChanged"] = "true";
                 }
+
+                user.UpdatedAt = DateTime.Now;
+                db.SaveChanges();
+
+                // Update session if name changed
+                Session["UserName"] = user.FullName;
+
+                TempData["Success"] = "Profile updated successfully!";
+                return RedirectToAction("Profile");
+            }
+            catch (Exception ex)
+            {
+                // Log the error if you have logging set up
+                TempData["Error"] = "An error occurred while updating your profile. Please try again.";
+                return RedirectToAction("Profile");
             }
 
-            user.UpdatedAt = DateTime.Now;
-            db.SaveChanges();
 
-            TempData["Success"] = "Profile updated successfully!";
-            return RedirectToAction("Profile");
         }
+
+        // GET: Account/CheckSession
+        // Used by JavaScript to verify if session is still valid
+        public ActionResult CheckSession()
+        {
+            // Prevent caching of this check
+            Response.Cache.SetCacheability(HttpCacheability.NoCache);
+            Response.Cache.SetNoStore();
+            Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
+
+            if (Session["UserId"] != null)
+            {
+                // Session is valid
+                return new HttpStatusCodeResult(200, "OK");
+            }
+            else
+            {
+                // Session expired
+                return new HttpStatusCodeResult(401, "Unauthorized");
+            }
+        }
+
     }
 }

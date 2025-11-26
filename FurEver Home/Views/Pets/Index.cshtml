@@ -2,6 +2,9 @@
 @{
     ViewBag.Title = "Browse " + (ViewBag.PetType ?? "Pets") + " - FurEver Home";
     Layout = null;
+
+    // Add this line to access database
+    var db = new FurEver_Home.Models.FurEverHomeContext();
 }
 
 <!DOCTYPE html>
@@ -368,7 +371,12 @@
             background: #f8fafc;
             border-radius: 25px;
             cursor: pointer;
+            transition: all 0.3s;
         }
+
+            .user-menu:hover {
+                background: #E8F4FC;
+            }
 
         .user-avatar-small {
             width: 35px;
@@ -382,6 +390,8 @@
             font-weight: 700;
             font-size: 1em;
             object-fit: cover;
+            border: 2px solid white;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
         .user-name-nav {
@@ -389,35 +399,92 @@
             color: #334155;
         }
 
-        .dropdown-menu {
-            position: absolute;
-            top: 55px;
-            right: 0;
-            background: white;
-            padding: 12px 0;
-            width: 180px;
-            border-radius: 15px;
-            box-shadow: 0 5px 25px rgba(0,0,0,0.12);
-            display: none;
+        .user-menu-chevron {
+            color: #64748b;
+            font-size: 0.8em;
+            transition: transform 0.3s;
         }
 
+        .user-menu:hover .user-menu-chevron {
+            transform: rotate(180deg);
+        }
+
+        .dropdown-menu {
+            position: absolute;
+            top: calc(100% + 10px);
+            right: 0;
+            background: white;
+            padding: 8px 0;
+            min-width: 200px;
+            border-radius: 15px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+            /* Arrow pointer */
+            .dropdown-menu::before {
+                content: '';
+                position: absolute;
+                top: -6px;
+                right: 20px;
+                width: 12px;
+                height: 12px;
+                background: white;
+                transform: rotate(45deg);
+                box-shadow: -2px -2px 5px rgba(0,0,0,0.05);
+            }
+
         .user-menu:hover .dropdown-menu {
-            display: block;
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
         }
 
         .dropdown-menu a {
-            display: block;
-            padding: 12px 18px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px 20px;
             color: #334155;
             text-decoration: none;
             font-weight: 600;
-            transition: 0.2s;
+            transition: all 0.2s;
+            font-size: 0.95em;
         }
 
-            .dropdown-menu a:hover {
-                background: #f1f5f9;
+            .dropdown-menu a i {
+                width: 20px;
                 color: #3FA9F5;
+                font-size: 1.1em;
             }
+
+            .dropdown-menu a:hover {
+                background: #E8F4FC;
+                color: #2E8BC0;
+                padding-left: 24px;
+            }
+
+            .dropdown-menu a:first-child {
+                border-radius: 15px 15px 0 0;
+            }
+
+            .dropdown-menu a:last-child {
+                border-radius: 0 0 15px 15px;
+                color: #ef4444;
+            }
+
+                .dropdown-menu a:last-child i {
+                    color: #ef4444;
+                }
+
+                .dropdown-menu a:last-child:hover {
+                    background: #fee2e2;
+                    color: #dc2626;
+                }
 
         /* Hero Section */
         .hero {
@@ -1236,9 +1303,13 @@
                     <i class="fas fa-times"></i>
                 </div>
                 <div class="sidebar-user-info">
-                    @if (!string.IsNullOrEmpty(Session["UserProfilePicture"] as string))
+                    @{
+                        var userId = (int)Session["UserId"];
+                        var user = db.Users.Find(userId);
+                    }
+                    @if (user != null && !string.IsNullOrEmpty(user.ProfilePictureUrl))
                     {
-                        <img src="@Session["UserProfilePicture"]" alt="Profile" class="sidebar-avatar">
+                        <img src="@user.ProfilePictureUrl" alt="Profile" class="sidebar-avatar">
                     }
                     else
                     {
@@ -1425,7 +1496,7 @@
         </div>
     }
 
-  
+
 
 
     <!-- PART 3: Update JavaScript (Replace the notification functions) -->
@@ -1568,96 +1639,100 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                             </span>
                         }
 
-                    <div id="notificationDropdown" class="notification-dropdown">
-                        <div style="padding: 15px; border-bottom: 2px solid #e2e8f0; background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%); color: white; border-radius: 15px 15px 0 0;">
-                            <h4 style="margin: 0; font-size: 1.1em;">
-                                <i class="fas fa-bell"></i> Notifications
-                            </h4>
-                        </div>
+                        <div id="notificationDropdown" class="notification-dropdown">
+                            <div style="padding: 15px; border-bottom: 2px solid #e2e8f0; background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%); color: white; border-radius: 15px 15px 0 0;">
+                                <h4 style="margin: 0; font-size: 1.1em;">
+                                    <i class="fas fa-bell"></i> Notifications
+                                </h4>
+                            </div>
 
-                        @if (ViewBag.UnreadNotifications != null && ViewBag.UnreadNotifications.Count > 0)
-                        {
-                            foreach (var notif in ViewBag.UnreadNotifications)
+                            @if (ViewBag.UnreadNotifications != null && ViewBag.UnreadNotifications.Count > 0)
                             {
-                                <div class="notification-item"
-                                     style="padding: 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;"
-                                     onmouseover="this.style.background='#f8fafc'"
-                                     onmouseout="this.style.background='white'"
-                                     onclick="handleNotificationClick(@notif.NotificationId, '@notif.NotificationType')">
+                                foreach (var notif in ViewBag.UnreadNotifications)
+                                {
+                                    <div class="notification-item"
+                                         style="padding: 15px; border-bottom: 1px solid #f1f5f9; cursor: pointer; transition: background 0.2s;"
+                                         onmouseover="this.style.background='#f8fafc'"
+                                         onmouseout="this.style.background='white'"
+                                         onclick="handleNotificationClick(@notif.NotificationId, '@notif.NotificationType')">
 
-                                    <div style="display: flex; gap: 12px;">
-                                        <div style="flex-shrink: 0;">
-                                            @if (notif.NotificationType == "Application_Approved")
-                                            {
-                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center;">
-                                                    <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2em;"></i>
-                                                </div>
-                                            }
-                                            else if (notif.NotificationType == "Application_Rejected")
-                                            {
-                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center;">
-                                                    <i class="fas fa-times-circle" style="color: #ef4444; font-size: 1.2em;"></i>
-                                                </div>
-                                            }
-                                            else if (notif.NotificationType == "ID_Verified")
-                                            {
-                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #dbeafe; display: flex; align-items: center; justify-content: center;">
-                                                    <i class="fas fa-id-card" style="color: #3b82f6; font-size: 1.2em;"></i>
-                                                </div>
-                                            }
-                                            else if (notif.NotificationType == "Pickup_Ready")
-                                            {
-                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #FFF9E6; display: flex; align-items: center; justify-content: center;">
-                                                    <i class="fas fa-calendar-check" style="color: #F6C90E; font-size: 1.2em;"></i>
-                                                </div>
-                                            }
-                                            else
-                                            {
-                                                <div style="width: 40px; height: 40px; border-radius: 50%; background: #E8F4FC; display: flex; align-items: center; justify-content: center;">
-                                                    <i class="fas fa-bell" style="color: #3FA9F5; font-size: 1.2em;"></i>
-                                                </div>
-                                            }
-                                        </div>
+                                        <div style="display: flex; gap: 12px;">
+                                            <div style="flex-shrink: 0;">
+                                                @if (notif.NotificationType == "Application_Approved")
+                                                {
+                                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #d1fae5; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.2em;"></i>
+                                                    </div>
+                                                }
+                                                else if (notif.NotificationType == "Application_Rejected")
+                                                {
+                                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #fee2e2; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-times-circle" style="color: #ef4444; font-size: 1.2em;"></i>
+                                                    </div>
+                                                }
+                                                else if (notif.NotificationType == "ID_Verified")
+                                                {
+                                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #dbeafe; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-id-card" style="color: #3b82f6; font-size: 1.2em;"></i>
+                                                    </div>
+                                                }
+                                                else if (notif.NotificationType == "Pickup_Ready")
+                                                {
+                                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #FFF9E6; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-calendar-check" style="color: #F6C90E; font-size: 1.2em;"></i>
+                                                    </div>
+                                                }
+                                                else
+                                                {
+                                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: #E8F4FC; display: flex; align-items: center; justify-content: center;">
+                                                        <i class="fas fa-bell" style="color: #3FA9F5; font-size: 1.2em;"></i>
+                                                    </div>
+                                                }
+                                            </div>
 
-                                        <div style="flex: 1;">
-                                            <div style="font-weight: 700; color: #2E8BC0; margin-bottom: 5px; font-size: 0.95em;">
-                                                @notif.Title
-                                            </div>
-                                            <div style="color: #64748b; font-size: 0.85em; line-height: 1.4;">
-                                                @notif.Message
-                                            </div>
-                                            <div style="color: #94a3b8; font-size: 0.75em; margin-top: 5px;">
-                                                <i class="fas fa-clock"></i> @notif.CreatedAt.ToString("MMM dd, yyyy h:mm tt")
+                                            <div style="flex: 1;">
+                                                <div style="font-weight: 700; color: #2E8BC0; margin-bottom: 5px; font-size: 0.95em;">
+                                                    @notif.Title
+                                                </div>
+                                                <div style="color: #64748b; font-size: 0.85em; line-height: 1.4;">
+                                                    @notif.Message
+                                                </div>
+                                                <div style="color: #94a3b8; font-size: 0.75em; margin-top: 5px;">
+                                                    <i class="fas fa-clock"></i> @notif.CreatedAt.ToString("MMM dd, yyyy h:mm tt")
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
+                                }
+                            }
+                            else
+                            {
+                                <div style="padding: 40px; text-align: center; color: #94a3b8;">
+                                    <i class="fas fa-bell-slash" style="font-size: 3em; margin-bottom: 15px; opacity: 0.3;"></i>
+                                    <div style="font-weight: 600;">No new notifications</div>
+                                    <div style="font-size: 0.9em; margin-top: 5px;">You're all caught up!</div>
                                 </div>
                             }
-                        }
-                        else
-                        {
-                            <div style="padding: 40px; text-align: center; color: #94a3b8;">
-                                <i class="fas fa-bell-slash" style="font-size: 3em; margin-bottom: 15px; opacity: 0.3;"></i>
-                                <div style="font-weight: 600;">No new notifications</div>
-                                <div style="font-size: 0.9em; margin-top: 5px;">You're all caught up!</div>
-                            </div>
-                        }
 
-                        <!-- ⭐ NEW: Add this "See All" link at the bottom -->
-                        <div style="padding: 15px; border-top: 1px solid #e2e8f0; background: #f8fafc; text-align: center; border-radius: 0 0 15px 15px;">
-                            <a href="@Url.Action("NotificationHistory", "Home")"
-                               style="color: #3FA9F5; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
-                                <i class="fas fa-history"></i>
-                                See All Notifications
-                            </a>
+                            <!-- ⭐ NEW: Add this "See All" link at the bottom -->
+                            <div style="padding: 15px; border-top: 1px solid #e2e8f0; background: #f8fafc; text-align: center; border-radius: 0 0 15px 15px;">
+                                <a href="@Url.Action("NotificationHistory", "Home")"
+                                   style="color: #3FA9F5; font-weight: 600; text-decoration: none; display: flex; align-items: center; justify-content: center; gap: 8px;">
+                                    <i class="fas fa-history"></i>
+                                    See All Notifications
+                                </a>
+                            </div>
                         </div>
-                    </div>
                     </div>
 
                     <div class="user-menu">
-                        @if (!string.IsNullOrEmpty(Session["UserProfilePicture"] as string))
+                        @{
+                            var userId = (int)Session["UserId"];
+                            var user = db.Users.Find(userId);
+                        }
+                        @if (user != null && !string.IsNullOrEmpty(user.ProfilePictureUrl))
                         {
-                            <img src="@Session["UserProfilePicture"]" alt="Profile" class="user-avatar-small">
+                            <img src="@user.ProfilePictureUrl" alt="Profile" class="user-avatar-small">
                         }
                         else
                         {
@@ -1667,11 +1742,21 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                         }
 
                         <span class="user-name-nav">@Session["UserName"]</span>
+                        <i class="fas fa-chevron-down user-menu-chevron"></i>
 
                         <div class="dropdown-menu">
-                            <a href="@Url.Action("Profile", "Account")"><i class="fas fa-user"></i> My Profile</a>
-                            <a href="@Url.Action("MyApplications", "Pets")"><i class="fas fa-file-alt"></i> My Applications</a>
-                            <a href="@Url.Action("Logout", "Account")"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                            <a href="@Url.Action("Profile", "Account")">
+                                <i class="fas fa-user-circle"></i>
+                                My Profile
+                            </a>
+                            <a href="@Url.Action("MyApplications", "Pets")">
+                                <i class="fas fa-paper-plane"></i>
+                                My Applications
+                            </a>
+                            <a href="@Url.Action("Logout", "Account")">
+                                <i class="fas fa-sign-out-alt"></i>
+                                Logout
+                            </a>
                         </div>
                     </div>
                 }
@@ -2300,6 +2385,37 @@ function markAsReadAndRedirect(notificationId, notificationType) {
         function noBack() {
             window.history.forward();
         }
+
+
+
+    </script>
+
+    // CLEAR CACHES
+    <script>
+
+      // Method 2: Prevent back button after logout
+    if (window.history && window.history.pushState) {
+        window.history.pushState(null, null, window.location.href);
+
+        window.addEventListener('popstate', function() {
+            // Push state again to prevent back
+            window.history.pushState(null, null, window.location.href);
+
+            // Verify session is still valid by making a quick check
+            fetch('@Url.Action("CheckSession", "Account")', {
+                method: 'GET',
+                cache: 'no-cache'
+            }).then(function(response) {
+                if (!response.ok) {
+                    // Session expired, redirect to login
+                    window.location.href = '@Url.Action("Login", "Account")';
+                }
+            }).catch(function() {
+                // On error, redirect to login
+                window.location.href = '@Url.Action("Login", "Account")';
+            });
+        });
+    }
     </script>
 </body>
 </html>
