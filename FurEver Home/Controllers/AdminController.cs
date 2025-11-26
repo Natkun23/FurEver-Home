@@ -311,62 +311,113 @@ namespace FurEver_Home.Controllers
             return View(pets);
         }
 
+
+
         // GET: Admin/AddPet
         public ActionResult AddPet()
         {
             ViewBag.PetTypes = db.PetTypes.ToList();
+            // Don't load breeds here - we'll load them dynamically via AJAX
             return View();
+        }
+
+        // ⭐ NEW: AJAX method to get breeds by pet type
+        [HttpGet]
+        public JsonResult GetBreedsByPetType(int petTypeId)
+        {
+            try
+            {
+                var breeds = db.Breeds
+                    .Where(b => b.PetTypeId == petTypeId)
+                    .OrderBy(b => b.BreedName)
+                    .Select(b => new {
+                        breedId = b.BreedId,
+                        breedName = b.BreedName
+                    })
+                    .ToList();
+
+                return Json(new { success = true, breeds = breeds }, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception ex)
+            {
+                return Json(new { success = false, message = ex.Message }, JsonRequestBehavior.AllowGet);
+            }
         }
 
         // POST: Admin/AddPet
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult AddPet(Pet model, HttpPostedFileBase PetImage, string OrganizationName)
+        public ActionResult AddPet(Pet model, HttpPostedFileBase PetImage)
         {
-            if (ModelState.IsValid)
+            try
             {
-                // Handle pet image upload
-                if (PetImage != null && PetImage.ContentLength > 0)
+                if (!ModelState.IsValid)
                 {
-                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-                    var extension = Path.GetExtension(PetImage.FileName).ToLower();
-
-                    if (allowedExtensions.Contains(extension))
-                    {
-                        var uploadsDir = Server.MapPath("~/Content/Uploads/Pets");
-                        if (!Directory.Exists(uploadsDir))
-                        {
-                            Directory.CreateDirectory(uploadsDir);
-                        }
-
-                        var fileName = Guid.NewGuid().ToString() + extension;
-                        var filePath = Path.Combine(uploadsDir, fileName);
-                        PetImage.SaveAs(filePath);
-                        model.ImageUrl = "/Content/Uploads/Pets/" + fileName;
-                    }
+                    ViewBag.PetTypes = db.PetTypes.ToList();
+                    return View(model);
                 }
 
-                model.DateAdded = DateTime.Now;
+                // ⭐ Check if breed is new and save it
+                var existingBreed = db.Breeds.FirstOrDefault(b =>
+                    b.BreedName.ToLower() == model.Breed.ToLower() &&
+                    b.PetTypeId == model.PetTypeId);
+
+                if (existingBreed == null)
+                {
+                    // Create new breed
+                    var newBreed = new Breed
+                    {
+                        BreedName = model.Breed,
+                        PetTypeId = model.PetTypeId,
+                        CreatedAt = DateTime.Now,
+                        CreatedBy = Session["UserId"] != null ? (int?)Convert.ToInt32(Session["UserId"]) : null
+                    };
+                    db.Breeds.Add(newBreed);
+                    db.SaveChanges();
+                }
+
+                // Handle image upload
+                if (PetImage != null && PetImage.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileName(PetImage.FileName);
+                    string fileExtension = Path.GetExtension(fileName);
+                    string uniqueFileName = $"pet_{Guid.NewGuid()}{fileExtension}";
+                    string uploadPath = Server.MapPath("~/Content/Images/Pets/");
+
+                    if (!Directory.Exists(uploadPath))
+                    {
+                        Directory.CreateDirectory(uploadPath);
+                    }
+
+                    string fullPath = Path.Combine(uploadPath, uniqueFileName);
+                    PetImage.SaveAs(fullPath);
+                    model.ImageUrl = $"/Content/Images/Pets/{uniqueFileName}";
+                }
+
+                // Set admin posting details
+                model.PostedByType = string.IsNullOrEmpty(model.OrganizationName) ? "Admin" : "Organization";
+                model.CreatedBy = Session["UserId"] != null ? (int?)Convert.ToInt32(Session["UserId"]) : null;
                 model.CreatedAt = DateTime.Now;
                 model.UpdatedAt = DateTime.Now;
-                model.IsAdopted = false;
-                model.CreatedBy = (int)Session["UserId"];
-
-                // Set as organization post
-                model.PostedByType = "Organization";
-                model.OrganizationName = string.IsNullOrWhiteSpace(OrganizationName)
-                    ? "FurEver Home Admin"
-                    : OrganizationName.Trim();
+                model.DateAdded = DateTime.Now;
+                model.AdminVerified = true;
+                model.RequiresAdminApproval = false;
+                model.PostStatus = "Active";
 
                 db.Pets.Add(model);
                 db.SaveChanges();
-                TempData["Success"] = $"Pet '{model.Name}' has been added successfully!";
-                return RedirectToAction("Pets");
-            }
 
-            ViewBag.PetTypes = db.PetTypes.ToList();
-            return View(model);
+                TempData["SuccessMessage"] = "Pet added successfully!";
+                return RedirectToAction("Pets", "Admin");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error adding pet: {ex.Message}";
+                ViewBag.PetTypes = db.PetTypes.ToList();
+                return View(model);
+            }
         }
+
 
         // GET: Admin/EditPet/5
         public ActionResult EditPet(int id)
@@ -376,74 +427,124 @@ namespace FurEver_Home.Controllers
             {
                 return HttpNotFound();
             }
+
             ViewBag.PetTypes = db.PetTypes.ToList();
+
+            // ⭐ Load breeds for the pet’s current type
+            ViewBag.Breeds = db.Breeds
+                .Where(b => b.PetTypeId == pet.PetTypeId)
+                .OrderBy(b => b.BreedName)
+                .ToList();
+
             return View(pet);
         }
+
+
 
         // POST: Admin/EditPet/5
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult EditPet(Pet model, HttpPostedFileBase PetImage, string OrganizationName)
         {
-            if (ModelState.IsValid)
+            try
             {
-                var pet = db.Pets.Find(model.PetId);
-                if (pet != null)
+                if (!ModelState.IsValid)
                 {
-                    // Handle pet image upload if new image is provided
-                    if (PetImage != null && PetImage.ContentLength > 0)
-                    {
-                        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
-                        var extension = Path.GetExtension(PetImage.FileName).ToLower();
+                    ViewBag.PetTypes = db.PetTypes.ToList();
+                    ViewBag.Breeds = db.Breeds
+                        .Where(b => b.PetTypeId == model.PetTypeId)
+                        .OrderBy(b => b.BreedName)
+                        .ToList();
 
-                        if (allowedExtensions.Contains(extension))
-                        {
-                            var uploadsDir = Server.MapPath("~/Content/Uploads/Pets");
-                            if (!Directory.Exists(uploadsDir))
-                            {
-                                Directory.CreateDirectory(uploadsDir);
-                            }
-
-                            var fileName = Guid.NewGuid().ToString() + extension;
-                            var filePath = Path.Combine(uploadsDir, fileName);
-                            PetImage.SaveAs(filePath);
-                            pet.ImageUrl = "/Content/Uploads/Pets/" + fileName;
-                        }
-                    }
-
-                    // Update pet properties
-                    pet.Name = model.Name;
-                    pet.PetTypeId = model.PetTypeId;
-                    pet.Breed = model.Breed;
-                    pet.Age = model.Age;
-                    pet.AgeUnit = model.AgeUnit;
-                    pet.Gender = model.Gender;
-                    pet.Size = model.Size;
-                    pet.Description = model.Description;
-                    pet.Traits = model.Traits;
-                    pet.Vaccines = model.Vaccines;
-                    pet.DaysInCenter = model.DaysInCenter;
-                    pet.WhyAdoptMe = model.WhyAdoptMe;
-                    pet.IsHealthy = model.IsHealthy;
-                    pet.IsNeutered = model.IsNeutered;
-                    pet.UpdatedAt = DateTime.Now;
-                    pet.UpdatedBy = (int)Session["UserId"];
-
-                    // Update organization name if provided
-                    if (!string.IsNullOrWhiteSpace(OrganizationName))
-                    {
-                        pet.PostedByType = "Organization";
-                        pet.OrganizationName = OrganizationName.Trim();
-                    }
-
-                    db.SaveChanges();
-                    TempData["Success"] = $"Pet '{pet.Name}' has been updated successfully!";
-                    return RedirectToAction("Pets");
+                    return View(model);
                 }
-            }
 
-            ViewBag.PetTypes = db.PetTypes.ToList();
-            return View(model);
+                var pet = db.Pets.Find(model.PetId);
+                if (pet == null)
+                {
+                    return HttpNotFound();
+                }
+
+                // ⭐ Check if breed exists (same logic as AddPet)
+                var existingBreed = db.Breeds.FirstOrDefault(b =>
+                    b.BreedName.ToLower() == model.Breed.ToLower() &&
+                    b.PetTypeId == model.PetTypeId);
+
+                if (existingBreed == null)
+                {
+                    var newBreed = new Breed
+                    {
+                        BreedName = model.Breed,
+                        PetTypeId = model.PetTypeId,
+                        CreatedAt = DateTime.Now,
+                        CreatedBy = Session["UserId"] != null ? (int?)Convert.ToInt32(Session["UserId"]) : null
+                    };
+                    db.Breeds.Add(newBreed);
+                    db.SaveChanges();
+                }
+
+                // ⭐ Handle image upload (updated path)
+                if (PetImage != null && PetImage.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileName(PetImage.FileName);
+                    string fileExtension = Path.GetExtension(fileName);
+                    string uniqueFileName = $"pet_{Guid.NewGuid()}{fileExtension}";
+                    string uploadPath = Server.MapPath("~/Content/Images/Pets/");
+
+                    if (!Directory.Exists(uploadPath))
+                    {
+                        Directory.CreateDirectory(uploadPath);
+                    }
+
+                    string fullPath = Path.Combine(uploadPath, uniqueFileName);
+                    PetImage.SaveAs(fullPath);
+                    pet.ImageUrl = $"/Content/Images/Pets/{uniqueFileName}";
+                }
+
+                // ⭐ Update pet fields
+                pet.Name = model.Name;
+                pet.PetTypeId = model.PetTypeId;
+                pet.Breed = model.Breed;
+                pet.Age = model.Age;
+                pet.AgeUnit = model.AgeUnit;
+                pet.Gender = model.Gender;
+                pet.Size = model.Size;
+                pet.Description = model.Description;
+                pet.Traits = model.Traits;
+                pet.Vaccines = model.Vaccines;
+                pet.DaysInCenter = model.DaysInCenter;
+                pet.WhyAdoptMe = model.WhyAdoptMe;
+                pet.IsHealthy = model.IsHealthy;
+                pet.IsNeutered = model.IsNeutered;
+
+                pet.UpdatedAt = DateTime.Now;
+                pet.UpdatedBy = Session["UserId"] != null ? Convert.ToInt32(Session["UserId"]) : (int?)null;
+
+                // ⭐ Update organization/org name
+                pet.PostedByType = string.IsNullOrEmpty(OrganizationName) ? "Admin" : "Organization";
+                pet.OrganizationName = string.IsNullOrEmpty(OrganizationName) ? null : OrganizationName.Trim();
+
+                // Keep active + verified status as AddPet does
+                pet.AdminVerified = true;
+                pet.RequiresAdminApproval = false;
+                pet.PostStatus = "Active";
+
+                db.SaveChanges();
+
+                TempData["Success"] = $"Pet '{pet.Name}' has been updated successfully!";
+                return RedirectToAction("Pets");
+            }
+            catch (Exception ex)
+            {
+                ViewBag.ErrorMessage = $"Error updating pet: {ex.Message}";
+                ViewBag.PetTypes = db.PetTypes.ToList();
+                ViewBag.Breeds = db.Breeds
+                    .Where(b => b.PetTypeId == model.PetTypeId)
+                    .OrderBy(b => b.BreedName)
+                    .ToList();
+
+                return View(model);
+            }
         }
 
         // POST: Admin/DeletePet/5

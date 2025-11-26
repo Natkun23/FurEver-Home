@@ -150,6 +150,7 @@
     <Compile Include="Models\AdoptedPetViewModel.cs" />
     <Compile Include="Models\AdoptionApplication.cs" />
     <Compile Include="Models\AdoptionHistory.cs" />
+    <Compile Include="Models\Breed.cs" />
     <Compile Include="Models\ChangePasswordViewModel.cs" />
     <Compile Include="Models\EmailService.cs" />
     <Compile Include="Models\ForgotPasswordViewModel.cs" />

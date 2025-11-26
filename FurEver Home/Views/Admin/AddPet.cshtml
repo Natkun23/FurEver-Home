@@ -13,6 +13,82 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
     <style>
+
+        /* ==================== TOP NAVIGATION BAR ==================== */
+        .top-nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 30px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-nav {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .btn-back-nav {
+            background: #e2e8f0;
+            color: #334155;
+            border: 2px solid #cbd5e1;
+        }
+
+            .btn-back-nav:hover {
+                background: #cbd5e1;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+        .btn-dashboard-nav {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border: none;
+        }
+
+            .btn-dashboard-nav:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(63, 169, 245, 0.4);
+            }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+
         * {
             margin: 0;
             padding: 0;
@@ -23,6 +99,7 @@
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background: #f0f2f5;
             padding: 30px;
+            padding-top: 80px !important;
         }
 
         .container {
@@ -168,86 +245,56 @@
                     font-size: 1.2em;
                 }
 
-        /* ✅ Enhanced Organization Name Field */
-        .org-name-field {
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 50%, #fbbf24 100%);
-            border: 3px solid #f59e0b;
-            padding: 25px;
-            border-radius: 16px;
+        /* ==================== IMPROVED ORGANIZATION FIELD ==================== */
+        .org-name-field-improved {
+            background: #f8fafc;
+            border: 2px solid #e2e8f0;
+            padding: 20px;
+            border-radius: 12px;
             margin-bottom: 25px;
-            box-shadow: 0 4px 15px rgba(245, 158, 11, 0.2);
-            position: relative;
-            overflow: hidden;
         }
 
-            .org-name-field::before {
-                content: '';
-                position: absolute;
-                top: -50%;
-                right: -50%;
-                width: 200px;
-                height: 200px;
-                background: rgba(255, 255, 255, 0.15);
-                border-radius: 50%;
-            }
-
-            .org-name-field::after {
-                content: '';
-                position: absolute;
-                bottom: -30%;
-                left: -20%;
-                width: 150px;
-                height: 150px;
-                background: rgba(255, 255, 255, 0.1);
-                border-radius: 50%;
-            }
-
-            .org-name-field label {
-                color: #78350f;
-                font-size: 1.1em;
-                font-weight: 700;
-                display: flex;
-                align-items: center;
-                gap: 10px;
-                margin-bottom: 15px;
-                position: relative;
-                z-index: 1;
-            }
-
-                .org-name-field label i {
-                    font-size: 1.3em;
-                    color: #f59e0b;
-                }
-
-            .org-name-field input {
-                background: white;
-                border: 2px solid #f59e0b;
-                position: relative;
-                z-index: 1;
+            .org-name-field-improved label {
+                color: #334155;
+                font-size: 1em;
                 font-weight: 600;
-                color: #92400e;
-            }
-
-                .org-name-field input:focus {
-                    border-color: #d97706;
-                    box-shadow: 0 0 0 4px rgba(245, 158, 11, 0.2);
-                }
-
-            .org-name-field small {
                 display: flex;
                 align-items: center;
                 gap: 8px;
-                color: #78350f;
-                margin-top: 12px;
-                font-size: 0.95em;
-                font-weight: 600;
-                position: relative;
-                z-index: 1;
+                margin-bottom: 12px;
             }
 
-                .org-name-field small i {
-                    color: #f59e0b;
-                    font-size: 1.1em;
+                .org-name-field-improved label i {
+                    color: #3FA9F5;
+                }
+
+            .org-name-field-improved input {
+                background: white;
+                border: 2px solid #e2e8f0;
+                padding: 12px 16px;
+                border-radius: 10px;
+                width: 100%;
+                font-size: 15px;
+                transition: all 0.3s;
+            }
+
+                .org-name-field-improved input:focus {
+                    border-color: #3FA9F5;
+                    box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+                    outline: none;
+                }
+
+            .org-name-field-improved small {
+                display: flex;
+                align-items: center;
+                gap: 6px;
+                color: #64748b;
+                margin-top: 10px;
+                font-size: 0.85em;
+            }
+
+                .org-name-field-improved small i {
+                    color: #3FA9F5;
                 }
 
         .form-grid {
@@ -382,9 +429,114 @@
             font-size: 13px;
             margin-top: 6px;
         }
+
+        /* ==================== BREED FIELD STYLES ==================== */
+        .btn-add-breed {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 6px 12px;
+            border-radius: 8px;
+            font-size: 0.8em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-left: auto;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .btn-add-breed:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+            }
+
+        .btn-cancel-breed {
+            background: #ef4444;
+            color: white;
+            border: none;
+            padding: 12px 16px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+            .btn-cancel-breed:hover {
+                background: #dc2626;
+                transform: translateY(-2px);
+            }
+
+        .breed-select {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            background: #f8fafc;
+            cursor: pointer;
+            transition: all 0.3s;
+        }
+
+            .breed-select:focus {
+                border-color: #3FA9F5;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+                outline: none;
+            }
+
+        .form-group label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        /* Mobile Responsive */
+        @@media (max-width: 768px) {
+            .top-nav-bar {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 20px;
+            }
+
+            .nav-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            body {
+                padding-top: 110px !important;
+            }
+
+            .btn-nav {
+                font-size: 0.85em;
+                padding: 8px 16px;
+            }
+        }
+    </style>
     </style>
 </head>
 <body>
+
+    <!-- ==================== TOP NAVIGATION BAR ==================== -->
+    <div class="top-nav-bar">
+        <div class="nav-left">
+
+            <a href="@Url.Action("Dashboard", "Admin")" class="btn-nav btn-dashboard-nav">
+                <i class="fas fa-dashboard"></i> Dashboard
+            </a>
+        </div>
+
+        <div class="nav-right">
+            <span class="admin-badge">
+                <i class="fas fa-shield-halved"></i> Admin
+            </span>
+        </div>
+    </div>
     <div class="container">
         <div class="page-header">
             <h1 class="page-title"><i class="fas fa-paw"></i> Add New Pet</h1>
@@ -410,24 +562,23 @@
         {
             @Html.AntiForgeryToken()
 
-         
 
-            <!-- Organization Name Field -->
-            <div class="org-name-field">
+
+            <!-- Replace your existing org-name-field div with this: -->
+            <div class="org-name-field-improved">
                 <label>
                     <i class="fas fa-building"></i>
-                    Organization Name (Optional)
+                    Organization Name
                 </label>
                 <input type="text"
                        id="organizationNameInput"
                        name="OrganizationName"
-                       placeholder="e.g., Quezon City Dog Welfare, PAWS, Animal Kingdom Foundation"
+                       placeholder="e.g., Quezon City Dog Welfare, PAWS"
                        maxlength="255"
                        class="form-control" />
                 <small>
                     <i class="fas fa-info-circle"></i>
-                    If provided, this pet will be listed as posted by this organization.
-                    Leave blank to use "FurEver Home Admin" as default.
+                    Optional: Leave blank to use "FurEver Home Admin"
                 </small>
             </div>
 
@@ -447,11 +598,56 @@
                     @Html.ValidationMessageFor(m => m.PetTypeId, "", new { @class = "field-validation-error" })
                 </div>
 
+
+
                 <div class="form-group">
-                    <label>Breed *</label>
-                    @Html.TextBoxFor(m => m.Breed, new { placeholder = "Enter breed", required = "required" })
+                    <label>
+                        Breed *
+                        <button type="button" class="btn-add-breed" onclick="toggleBreedInput()">
+                            <i class="fas fa-plus"></i> Add New Breed
+                        </button>
+                    </label>
+
+                    <!-- Dropdown (shown by default) -->
+                    <div id="breedDropdownContainer">
+                        <select id="breedDropdown" name="Breed" class="breed-select" required>
+                            <option value="">-- Select Breed --</option>
+                            @if (ViewBag.Breeds != null)
+                            {
+                                foreach (var breed in ViewBag.Breeds)
+                                {
+                                    <option value="@breed">@breed</option>
+                                }
+                            }
+                            <!-- Add more breeds as needed -->
+                            <option value="Aspin">Aspin</option>
+                            <option value="Ascat">Ascat</option>
+
+                        </select>
+                    </div>
+
+                    <!-- Text Input (hidden by default) -->
+                    <div id="breedInputContainer" style="display: none;">
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <input type="text"
+                                   id="breedInput"
+                                   placeholder="Enter new breed name"
+                                   class="form-control"
+                                   style="flex: 1;">
+                            <button type="button" class="btn-cancel-breed" onclick="toggleBreedInput()">
+                                <i class="fas fa-times"></i>
+                            </button>
+                        </div>
+                        <small style="color: #64748b; display: block; margin-top: 8px;">
+                            <i class="fas fa-lightbulb"></i> Enter a custom breed name
+                        </small>
+                    </div>
+
                     @Html.ValidationMessageFor(m => m.Breed, "", new { @class = "field-validation-error" })
                 </div>
+
+
+
 
                 <div class="form-group">
                     <label>Age *</label>
@@ -539,9 +735,7 @@
             </div>
 
             <div class="action-buttons">
-                <a href="@Url.Action("Pets", "Admin")" class="btn btn-cancel">
-                    <i class="fas fa-times"></i> Cancel
-                </a>
+
                 <button type="submit" class="btn btn-submit">
                     <i class="fas fa-check"></i> Add Pet
                 </button>
@@ -553,6 +747,51 @@
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
     <script>
+        // Toggle between dropdown and text input for breed
+        function toggleBreedInput() {
+            const dropdownContainer = document.getElementById('breedDropdownContainer');
+            const inputContainer = document.getElementById('breedInputContainer');
+            const dropdown = document.getElementById('breedDropdown');
+            const input = document.getElementById('breedInput');
+
+            if (dropdownContainer.style.display === 'none') {
+                // Switch back to dropdown
+                dropdownContainer.style.display = 'block';
+                inputContainer.style.display = 'none';
+                dropdown.required = true;
+                input.required = false;
+                input.value = '';
+                // Clear the name attribute from input
+                input.removeAttribute('name');
+                dropdown.setAttribute('name', 'Breed');
+            } else {
+                // Switch to text input
+                dropdownContainer.style.display = 'none';
+                inputContainer.style.display = 'block';
+                dropdown.required = false;
+                input.required = true;
+                dropdown.value = '';
+                // Transfer name attribute to input
+                dropdown.removeAttribute('name');
+                input.setAttribute('name', 'Breed');
+                input.focus();
+            }
+        }
+
+        // Handle form submission - make sure the correct field is submitted
+        document.querySelector('form').addEventListener('submit', function (e) {
+            const dropdown = document.getElementById('breedDropdown');
+            const input = document.getElementById('breedInput');
+
+            // If using custom input, ensure it has a value
+            if (inputContainer.style.display !== 'none' && !input.value.trim()) {
+                e.preventDefault();
+                alert('Please enter a breed name');
+                input.focus();
+                return false;
+            }
+        });
+
         document.getElementById('petImage').addEventListener('change', function (e) {
             var fileName = e.target.files[0]?.name;
             if (fileName) {

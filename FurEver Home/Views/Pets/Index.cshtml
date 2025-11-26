@@ -27,37 +27,6 @@
             background: #f8f9fa;
         }
 
-        /* ========== CUSTOMER SIDEBAR STYLES ========== */
-
-        /* Floating Sidebar Toggle Button */
-        .sidebar-toggle-btn {
-            position: fixed;
-            left: 20px;
-            top: 100px;
-            width: 60px;
-            height: 60px;
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            font-size: 1.5em;
-            cursor: pointer;
-            box-shadow: 0 5px 20px rgba(63, 169, 245, 0.4);
-            z-index: 2000;
-            transition: all 0.3s;
-            animation: pulse 2s infinite;
-        }
-
-            .sidebar-toggle-btn:hover {
-                transform: scale(1.1);
-                box-shadow: 0 8px 30px rgba(63, 169, 245, 0.6);
-            }
-
-            .sidebar-toggle-btn.active {
-                background: linear-gradient(135deg, #2E8BC0 0%, #1a6b94 100%);
-            }
 
         @@keyframes pulse {
             0%, 100% {
@@ -564,20 +533,39 @@
                 text-shadow: 0 0 8px rgba(255,255,255,1), 0 0 15px rgba(255,255,255,0.9), 0 0 25px rgba(255,255,255,0.9), 0 0 40px rgba(255,255,255,0.8);
             }
 
-        /* Filter Section */
+        /* Floating Filter Section with Smooth Corners */
+
         .filter-section {
-            background: white;
-            padding: 0;
-            box-shadow: 0 2px 15px rgba(0,0,0,0.08);
-            position: sticky;
-            top: 70px;
+            background: transparent; /* Make outer container transparent */
+            padding: 20px; /* Add padding around the floating card */
+            box-shadow: none; /* Remove old shadow */
+            position: sticky; /* Keeps it sticky */
+            top: 0; /* Changed from 70px to 0 - sticks to very top */
             z-index: 999;
-            border-bottom: 3px solid #E8F4FC;
-            overflow: hidden;
+            border-bottom: none; /* Remove old border */
+            backdrop-filter: blur(10px); /* Optional: adds blur effect to content behind */
         }
 
+            /* Add a background overlay when scrolling */
+            .filter-section::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                background: rgba(248, 249, 250, 0.95);
+                z-index: -1;
+                opacity: 0;
+                transition: opacity 0.3s;
+            }
+
+            .filter-section.scrolled::before {
+                opacity: 1;
+            }
+
         .filter-toggle {
-            padding: 20px;
+            padding: 20px 30px;
             background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
             color: white;
             cursor: pointer;
@@ -585,97 +573,84 @@
             justify-content: space-between;
             align-items: center;
             user-select: none;
+            border-radius: 20px 20px 0 0; /* Rounded top corners only */
+            transition: all 0.3s;
         }
 
             .filter-toggle:hover {
                 background: linear-gradient(135deg, #2E8BC0 0%, #1a6b94 100%);
-            }
-
-        .filter-toggle-text {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-            font-size: 1.1em;
-            font-weight: 700;
-        }
-
-        .filter-toggle-icon {
-            font-size: 1.2em;
-            transition: transform 0.3s;
-        }
-
-            .filter-toggle-icon.active {
-                transform: rotate(180deg);
+                transform: translateY(-2px);
             }
 
         .filter-content {
             max-height: 0;
             overflow: hidden;
             transition: max-height 0.4s ease-out, padding 0.4s ease-out;
+            background: white; /* Add white background */
+            border-radius: 0 0 20px 20px; /* Rounded bottom corners */
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15); /* Add shadow to content */
         }
 
             .filter-content.show {
                 max-height: 500px;
-                padding: 25px 20px;
+                padding: 30px;
+                box-shadow: 0 15px 40px rgba(0, 0, 0, 0.2); /* Stronger shadow when open */
             }
 
-        .filter-container {
+        /* Wrapper for the entire filter card */
+        .filter-card-wrapper {
             max-width: 1400px;
             margin: 0 auto;
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            transition: all 0.3s;
+        }
+
+            .filter-card-wrapper:hover {
+                box-shadow: 0 15px 50px rgba(63, 169, 245, 0.25);
+                transform: translateY(-3px);
+            }
+
+        /* Adjust filter container padding */
+        .filter-container {
+            max-width: 100%;
+            margin: 0;
             display: grid;
             grid-template-columns: 2fr 1fr 1fr 1fr auto;
             gap: 15px;
             align-items: end;
         }
 
-        .filter-group {
-            position: relative;
+        /* Make inputs and selects match the rounded style */
+        .filter-group input,
+        .filter-group select {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+            background: #f8fafc;
+            cursor: pointer;
         }
 
-            .filter-group label {
-                display: block;
-                color: #64748b;
-                font-weight: 600;
-                margin-bottom: 8px;
-                font-size: 0.85em;
-                text-transform: uppercase;
-                letter-spacing: 0.5px;
-            }
-
-                .filter-group label i {
-                    color: #3FA9F5;
-                    margin-right: 5px;
-                }
-
-            .filter-group input,
-            .filter-group select {
-                width: 100%;
-                padding: 12px 16px;
-                border: 2px solid #e2e8f0;
-                border-radius: 10px;
-                font-size: 15px;
-                transition: all 0.3s;
-                outline: none;
+            .filter-group input:focus,
+            .filter-group select:focus {
+                border-color: #3FA9F5;
+                box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
                 background: white;
-                cursor: pointer;
             }
 
-                .filter-group input:focus,
-                .filter-group select:focus {
-                    border-color: #3FA9F5;
-                    box-shadow: 0 0 0 3px rgba(63, 169, 245, 0.1);
-                }
-
-                .filter-group input::placeholder {
-                    color: #cbd5e1;
-                }
-
+        /* Reset button styling */
         .btn-reset {
-            padding: 12px 25px;
+            padding: 14px 28px;
             background: #f1f5f9;
             color: #64748b;
             border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            border-radius: 12px;
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s;
@@ -689,17 +664,19 @@
                 background: #fee2e2;
                 color: #dc2626;
                 border-color: #fecaca;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
             }
 
+        /* Active filters styling */
         .active-filters {
-            max-width: 1400px;
-            margin: 0 auto;
-            padding: 15px 20px 0;
+            max-width: 100%;
+            margin: 0;
+            padding: 20px 0 0;
             display: flex;
             gap: 10px;
             flex-wrap: wrap;
         }
-
         .filter-tag {
             background: #E8F4FC;
             color: #2E8BC0;
@@ -1053,7 +1030,7 @@
         .why-adopt {
             background: linear-gradient(135deg, #FFF9E6 0%, #FFD93D 100%);
             padding: 80px 20px;
-            margin: 60px 0;
+            margin: 60px 0 0 0;
         }
 
         .why-content {
@@ -1200,6 +1177,61 @@
             }
         }
 
+        /* Hide old floating button */
+.sidebar-toggle-btn {
+    display: none !important;
+}
+
+/* Navbar menu toggle button */
+.navbar-menu-toggle {
+    background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+    color: white;
+    border: none;
+    padding: 12px 20px;
+    border-radius: 12px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 1em;
+    box-shadow: 0 4px 15px rgba(63, 169, 245, 0.3);
+}
+
+.navbar-menu-toggle:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(63, 169, 245, 0.5);
+}
+
+.navbar-menu-toggle.active {
+    background: linear-gradient(135deg, #2E8BC0 0%, #1a6b94 100%);
+}
+
+.navbar-menu-toggle i {
+    font-size: 1.2em;
+    transition: transform 0.3s;
+}
+
+.navbar-menu-toggle.active i {
+    transform: rotate(90deg);
+}
+
+@@media (max-width: 968px) {
+    .navbar-menu-toggle span {
+        display: none;
+    }
+    .navbar-menu-toggle {
+        padding: 10px 14px;
+    }
+}
+
+@@media (max-width: 768px) {
+    .navbar-menu-toggle {
+        order: -1;
+    }
+}
+
         @@media (max-width: 768px) {
             .hero h1 {
                 font-size: 2em;
@@ -1229,13 +1261,6 @@
             .customer-sidebar {
                 width: 100%;
                 left: -100%;
-            }
-
-            .sidebar-toggle-btn {
-                left: 15px;
-                top: 90px;
-                width: 50px;
-                height: 50px;
             }
         }
 
@@ -1287,10 +1312,6 @@
     @* ========== CUSTOMER SIDEBAR ========== *@
     @if (Session["UserId"] != null)
     {
-        <!-- Floating Sidebar Toggle Button -->
-        <div class="sidebar-toggle-btn" id="sidebarToggle">
-            <i class="fas fa-bars"></i>
-        </div>
 
         <!-- Sidebar Overlay -->
         <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -1624,9 +1645,15 @@ function markAsReadAndRedirect(notificationId, notificationType) {
     @* ========== NAVBAR ========== *@
     <nav class="navbar">
         <div class="nav-container">
-            <a href="@Url.Action("Index", "Pets")" class="logo">
-                <img src="~/Content/Images/full_furever.png" alt="FurEver Home" style="height: 70px;">
-            </a>
+            @* ⭐ ADD THIS MENU TOGGLE BUTTON *@
+            @if (Session["UserId"] != null)
+            {
+                <button class="navbar-menu-toggle" onclick="openSidebar()" id="navbarMenuToggle">
+                    <i class="fas fa-bars"></i>
+                    <span>Menu</span>
+                </button>
+            }
+            
             <div class="nav-links">
                 @if (Session["UserId"] != null)
                 {
@@ -1821,7 +1848,8 @@ function markAsReadAndRedirect(notificationId, notificationType) {
     </section>
 
     @* ========== FILTER SECTION ========== *@
-    <div class="filter-section">
+<div class="filter-section">
+    <div class="filter-card-wrapper">
         <div class="filter-toggle" onclick="toggleFilters()">
             <div class="filter-toggle-text">
                 <i class="fas fa-filter"></i>
@@ -2097,7 +2125,8 @@ function markAsReadAndRedirect(notificationId, notificationType) {
     <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
     <script>
         // ========== SIDEBAR FUNCTIONALITY ==========
-        const sidebarToggle = document.getElementById('sidebarToggle');
+        const sidebarToggle = document.getElementById('sidebarToggle'); // Keep for backward compatibility
+        const navbarMenuToggle = document.getElementById('navbarMenuToggle'); // NEW
         const sidebarClose = document.getElementById('sidebarClose');
         const sidebarOverlay = document.getElementById('sidebarOverlay');
         const customerSidebar = document.getElementById('customerSidebar');
@@ -2106,7 +2135,17 @@ function markAsReadAndRedirect(notificationId, notificationType) {
             if (customerSidebar) {
                 customerSidebar.classList.add('active');
                 sidebarOverlay.classList.add('active');
-                sidebarToggle.classList.add('active');
+
+                // Update navbar toggle button state
+                if (navbarMenuToggle) {
+                    navbarMenuToggle.classList.add('active');
+                }
+
+                // Keep old toggle button compatibility (if exists)
+                if (sidebarToggle) {
+                    sidebarToggle.classList.add('active');
+                }
+
                 document.body.style.overflow = 'hidden';
             }
         }
@@ -2115,11 +2154,22 @@ function markAsReadAndRedirect(notificationId, notificationType) {
             if (customerSidebar) {
                 customerSidebar.classList.remove('active');
                 sidebarOverlay.classList.remove('active');
-                sidebarToggle.classList.remove('active');
+
+                // Update navbar toggle button state
+                if (navbarMenuToggle) {
+                    navbarMenuToggle.classList.remove('active');
+                }
+
+                // Keep old toggle button compatibility (if exists)
+                if (sidebarToggle) {
+                    sidebarToggle.classList.remove('active');
+                }
+
                 document.body.style.overflow = '';
             }
         }
 
+        // Click handler for old floating button (if exists)
         if (sidebarToggle) {
             sidebarToggle.addEventListener('click', openSidebar);
         }
@@ -2209,6 +2259,16 @@ function markAsReadAndRedirect(notificationId, notificationType) {
         });
 
         // ========== FILTER FUNCTIONALITY ==========
+        $(window).on('scroll', function () {
+            const filterSection = $('.filter-section');
+
+            if ($(window).scrollTop() > 100) {
+                filterSection.addClass('scrolled');
+            } else {
+                filterSection.removeClass('scrolled');
+            }
+        });
+
         function toggleFilters() {
             const content = document.getElementById('filterContent');
             const icon = document.getElementById('filterToggleIcon');
@@ -2283,30 +2343,32 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                     return;
                 }
 
+                // Use data attributes instead of inline onclick
                 if (searchTerm) {
                     $container.append(`
-                        <div class="filter-tag">
-                            <span>Search: "${searchTerm}"</span>
-                        </div>
-                    `);
+            <div class="filter-tag">
+                <span>Search: "${searchTerm}"</span>
+                <i class="fas fa-times" data-filter="search"></i>
+            </div>
+        `);
                 }
 
                 if (gender) {
                     $container.append(`
-                        <div class="filter-tag">
-                            <span>Gender: ${gender}</span>
-                            <i class="fas fa-times" onclick="$('#genderFilter').val(''); filterPets();"></i>
-                        </div>
-                    `);
+            <div class="filter-tag">
+                <span>Gender: ${gender}</span>
+                <i class="fas fa-times" data-filter="gender"></i>
+            </div>
+        `);
                 }
 
                 if (size) {
                     $container.append(`
-                        <div class="filter-tag">
-                            <span>Size: ${size}</span>
-                            <i class="fas fa-times" onclick="$('#sizeFilter').val(''); filterPets();"></i>
-                        </div>
-                    `);
+            <div class="filter-tag">
+                <span>Size: ${size}</span>
+                <i class="fas fa-times" data-filter="size"></i>
+            </div>
+        `);
                 }
 
                 if (ageRange) {
@@ -2317,13 +2379,35 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                         '7-100': 'Senior (7+ years)'
                     };
                     $container.append(`
-                        <div class="filter-tag">
-                            <span>Age: ${ageLabels[ageRange]}</span>
-                            <i class="fas fa-times" onclick="$('#ageFilter').val(''); filterPets();"></i>
-                        </div>
-                    `);
+            <div class="filter-tag">
+                <span>Age: ${ageLabels[ageRange]}</span>
+                <i class="fas fa-times" data-filter="age"></i>
+            </div>
+        `);
                 }
             }
+
+            // Add event delegation for filter tag close buttons
+            $(document).on('click', '.filter-tag i[data-filter]', function () {
+                const filterType = $(this).attr('data-filter');
+
+                switch (filterType) {
+                    case 'search':
+                        $('#searchInput').val('');
+                        break;
+                    case 'gender':
+                        $('#genderFilter').val('');
+                        break;
+                    case 'size':
+                        $('#sizeFilter').val('');
+                        break;
+                    case 'age':
+                        $('#ageFilter').val('');
+                        break;
+                }
+
+                filterPets();
+            });
 
             function sortPets() {
                 const sortValue = $('#sortSelect').val();
