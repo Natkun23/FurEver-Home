@@ -1305,6 +1305,39 @@
                 transform: translateX(-20px);
             }
         }
+
+        /* Success Stories Button */
+.btn-success-stories {
+    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+    color: white;
+    padding: 15px 40px;
+    border-radius: 30px;
+    font-weight: 700;
+    font-size: 1.1em;
+    border: 3px solid white;
+    cursor: pointer;
+    text-decoration: none;
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    transition: all 0.3s;
+    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+    margin-left: 15px;
+}
+
+.btn-success-stories:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 30px rgba(16, 185, 129, 0.6);
+    color: white;
+}
+
+/* Mobile responsive */
+@@media (max-width: 768px) {
+    .btn-success-stories {
+        margin-left: 0;
+        margin-top: 15px;
+    }
+}
     </style>
 </head>
 <body>
@@ -1796,56 +1829,62 @@ function markAsReadAndRedirect(notificationId, notificationType) {
     </nav>
 
     @* ========== HERO SECTION ========== *@
-    <section class="hero">
-        <h1>
-            @if (ViewBag.PetType == "Dogs")
-            {
-                <text>🐕 Browse Our Adorable Dogs</text>
-            }
-            else if (ViewBag.PetType == "Cats")
-            {
-                <text>🐱 Browse Our Lovely Cats</text>
-            }
-            else
-            {
-                <text>Find Your Paw-fect Match!</text>
-            }
-        </h1>
-        <p>Find your perfect furry companion today!</p>
-
-        @if (Session["UserId"] != null)
+<section class="hero">
+    <h1>
+        @if (ViewBag.PetType == "Dogs")
         {
-            <div style="margin-bottom: 50px;">
-                <a href="@Url.Action("PostForAdoption", "Pets")" class="btn-secondary" style="background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%); color: #2E8BC0;">
-                    <i class="fas fa-heart"></i> Post Pet for Adoption!
-                </a>
-            </div>
+            <text>🐕 Browse Our Adorable Dogs</text>
         }
+        else if (ViewBag.PetType == "Cats")
+        {
+            <text>🐱 Browse Our Lovely Cats</text>
+        }
+        else
+        {
+            <text>Find Your Paw-fect Match!</text>
+        }
+    </h1>
+    <p>Find your perfect furry companion today!</p>
 
-        <div class="hero-stats">
-            <div class="stat-item">
-                <div class="stat-icon">🏠</div>
-                <div class="stat-text">
-                    <div class="stat-number">@Model.Count</div>
-                    <div class="stat-label">Available Pets</div>
-                </div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-icon">❤</div>
-                <div class="stat-text">
-                    <div class="stat-number">10,000+</div>
-                    <div class="stat-label">Happy Adoptions</div>
-                </div>
-            </div>
-            <div class="stat-item">
-                <div class="stat-icon">⭐</div>
-                <div class="stat-text">
-                    <div class="stat-number">100%</div>
-                    <div class="stat-label">Vaccinated & Healthy</div>
-                </div>
+    @if (Session["UserId"] != null)
+    {
+        <div style="margin-bottom: 50px;">
+            <a href="@Url.Action("PostForAdoption", "Pets")" class="btn-secondary" style="background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%); color: #2E8BC0;">
+                <i class="fas fa-heart"></i> Post Pet for Adoption!
+            </a>
+        </div>
+    }
+
+    @* ⭐ NEW SUCCESS STORIES BUTTON *@
+    <a href="@Url.Action("SuccessfulStories", "Home")" class="btn-success-stories">
+        <i class="fas fa-star"></i> View Adoption Stories
+    </a>
+    </div>
+
+    <div class="hero-stats">
+        <div class="stat-item">
+            <div class="stat-icon">🏠</div>
+            <div class="stat-text">
+                <div class="stat-number">@Model.Count</div>
+                <div class="stat-label">Available Pets</div>
             </div>
         </div>
-    </section>
+        <div class="stat-item">
+            <div class="stat-icon">❤</div>
+            <div class="stat-text">
+                <div class="stat-number">10,000+</div>
+                <div class="stat-label">Happy Adoptions</div>
+            </div>
+        </div>
+        <div class="stat-item">
+            <div class="stat-icon">⭐</div>
+            <div class="stat-text">
+                <div class="stat-number">100%</div>
+                <div class="stat-label">Vaccinated & Healthy</div>
+            </div>
+        </div>
+    </div>
+</section>
 
     @* ========== FILTER SECTION ========== *@
 <div class="filter-section">

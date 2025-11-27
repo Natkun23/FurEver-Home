@@ -1,0 +1,639 @@
+﻿@{
+    ViewBag.Title = "Adoption Success Stories - FurEver Home";
+    Layout = null;
+
+    // Add this line to access database
+    var db = new FurEver_Home.Models.FurEverHomeContext();
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f8f9fa;
+            line-height: 1.7;
+        }
+
+        /* Navigation */
+        .navbar {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            padding: 15px 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+        }
+
+        .nav-container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+        }
+
+        .logo img {
+            width: 50px;
+            height: 50px;
+        }
+
+        .logo-text {
+            font-size: 1.5em;
+            font-weight: 900;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 30px;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: #333;
+            text-decoration: none;
+            font-weight: 600;
+            transition: color 0.3s;
+        }
+
+        .nav-links a:hover {
+            color: #3FA9F5;
+        }
+
+        /* Hero Section - Blog Style */
+        .hero {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            padding: 80px 20px 60px;
+            text-align: center;
+        }
+
+        .hero h1 {
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: 900;
+            text-shadow: 2px 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .hero p {
+            font-size: 1.2em;
+            max-width: 700px;
+            margin: 0 auto 30px;
+            opacity: 0.95;
+            line-height: 1.6;
+        }
+
+        .hero-meta {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.95em;
+            opacity: 0.9;
+        }
+
+        .hero-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        /* Blog Content Container */
+        .blog-container {
+            max-width: 900px;
+            margin: -30px auto 60px;
+            padding: 0 20px;
+        }
+
+        /* Blog Post Card */
+        .blog-post {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 5px 25px rgba(0,0,0,0.1);
+            margin-bottom: 40px;
+            transition: all 0.3s;
+        }
+
+        .blog-post:hover {
+            box-shadow: 0 10px 40px rgba(63, 169, 245, 0.2);
+            transform: translateY(-3px);
+        }
+
+        /* Featured Image */
+        .blog-featured-image {
+            width: 100%;
+            height: 450px;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* Blog Content */
+        .blog-content {
+            padding: 40px;
+        }
+
+        .blog-meta {
+            display: flex;
+            gap: 20px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            padding-bottom: 20px;
+            border-bottom: 2px solid #f1f5f9;
+        }
+
+        .blog-meta-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            color: #64748b;
+            font-size: 0.9em;
+        }
+
+        .blog-meta-item i {
+            color: #3FA9F5;
+        }
+
+        .blog-category {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            padding: 6px 16px;
+            border-radius: 20px;
+            font-weight: 600;
+            font-size: 0.85em;
+        }
+
+        .blog-title {
+            font-size: 2.2em;
+            color: #2E8BC0;
+            font-weight: 900;
+            margin-bottom: 20px;
+            line-height: 1.3;
+        }
+
+        .blog-excerpt {
+            font-size: 1.15em;
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 25px;
+            padding-left: 20px;
+            border-left: 4px solid #FFD93D;
+            line-height: 1.7;
+        }
+
+        .blog-body {
+            color: #334155;
+            font-size: 1.05em;
+            line-height: 1.8;
+            margin-bottom: 25px;
+        }
+
+        .blog-body p {
+            margin-bottom: 20px;
+        }
+
+        .blog-quote {
+            background: #FFF9E6;
+            border-left: 5px solid #FFD93D;
+            padding: 25px 30px;
+            border-radius: 10px;
+            margin: 30px 0;
+            position: relative;
+        }
+
+        .blog-quote:before {
+            content: '"';
+            font-size: 4em;
+            color: #FFD93D;
+            position: absolute;
+            top: -10px;
+            left: 15px;
+            font-family: Georgia, serif;
+            opacity: 0.5;
+        }
+
+        .blog-quote p {
+            font-size: 1.15em;
+            color: #2E8BC0;
+            font-style: italic;
+            line-height: 1.7;
+            margin-bottom: 10px;
+        }
+
+        .blog-quote-author {
+            font-size: 0.95em;
+            color: #64748b;
+            font-weight: 600;
+            text-align: right;
+        }
+
+        .blog-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 30px;
+            padding-top: 25px;
+            border-top: 2px solid #f1f5f9;
+        }
+
+        .blog-tag {
+            background: #E8F4FC;
+            color: #3FA9F5;
+            padding: 8px 18px;
+            border-radius: 20px;
+            font-size: 0.9em;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+        .blog-tag:hover {
+            background: #3FA9F5;
+            color: white;
+        }
+
+        /* Photo Credit */
+        .photo-credit {
+            background: #f8fafc;
+            padding: 15px 20px;
+            border-radius: 10px;
+            margin-top: 20px;
+            font-size: 0.85em;
+            color: #64748b;
+            border-left: 3px solid #3FA9F5;
+        }
+
+        .photo-credit i {
+            color: #3FA9F5;
+            margin-right: 5px;
+        }
+
+        .photo-credit a {
+            color: #3FA9F5;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .photo-credit a:hover {
+            text-decoration: underline;
+        }
+
+        /* Adoption CTA Section */
+        .adoption-cta {
+            background: linear-gradient(135deg, #FFF9E6 0%, #FFD93D 100%);
+            padding: 60px 40px;
+            border-radius: 20px;
+            margin: 60px 0 40px;
+            text-align: center;
+        }
+
+        .adoption-cta h2 {
+            font-size: 2.2em;
+            color: #2E8BC0;
+            margin-bottom: 20px;
+            font-weight: 900;
+        }
+
+        .adoption-cta-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .adoption-cta p {
+            font-size: 1.1em;
+            color: #334155;
+            line-height: 1.8;
+            margin-bottom: 15px;
+        }
+
+        .adoption-cta ul {
+            text-align: left;
+            margin: 25px auto;
+            max-width: 600px;
+            list-style: none;
+        }
+
+        .adoption-cta li {
+            padding: 12px 0;
+            color: #334155;
+            font-size: 1.05em;
+            position: relative;
+            padding-left: 35px;
+        }
+
+        .adoption-cta li:before {
+            content: "❤️";
+            position: absolute;
+            left: 0;
+            font-size: 1.3em;
+        }
+
+        /* Footer */
+        .footer {
+            background: #1a1a2e;
+            color: white;
+            padding: 40px 20px 20px;
+            text-align: center;
+        }
+
+        .footer p {
+            color: #ccc;
+            font-size: 0.9em;
+        }
+
+        /* Responsive */
+        @@media (max-width: 768px) {
+            .hero h1 {
+                font-size: 2em;
+            }
+
+            .blog-title {
+                font-size: 1.6em;
+            }
+
+            .blog-content {
+                padding: 25px;
+            }
+
+            .blog-featured-image {
+                height: 300px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    @* ========== NAVBAR ========== *@
+    <nav class="navbar">
+        <div class="nav-container">
+            <a href="@Url.Action("Index", "Home")" class="logo">
+                <img src="~/Content/Images/circle_furever.png" alt="FurEver Home">
+                <span class="logo-text">FurEver Home</span>
+            </a>
+
+            <div class="nav-links">
+                <a href="@Url.Action("Index", "Home")">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    @* ========== HERO SECTION ========== *@
+    <section class="hero">
+        <h1>Adoption Success Stories</h1>
+        <p>Real rescues, real transformations, real forever homes. These heartwarming stories from Metro Manila show the incredible impact of pet adoption and rescue work across the Philippines.</p>
+        <div class="hero-meta">
+            <div class="hero-meta-item">
+                <i class="fas fa-calendar"></i>
+                <span>Updated January 2025</span>
+            </div>
+            <div class="hero-meta-item">
+                <i class="fas fa-heart"></i>
+                <span>3 Inspiring Stories</span>
+            </div>
+            <div class="hero-meta-item">
+                <i class="fas fa-map-marker-alt"></i>
+                <span>Metro Manila, Philippines</span>
+            </div>
+        </div>
+    </section>
+
+    @* ========== BLOG CONTAINER ========== *@
+    <div class="blog-container">
+
+        @* Blog Post 1 - CARA Welfare Philippines *@
+        <article class="blog-post">
+            <img src="https://www.wheninmanila.com/wp-content/uploads/2017/03/CARA-Welfare-PH-Animal-Rescue-1.jpg"
+                 alt="CARA Welfare Philippines rescue dog"
+                 class="blog-featured-image">
+
+            <div class="blog-content">
+                <div class="blog-meta">
+                    <span class="blog-category">🐕 Dog Rescue</span>
+                    <div class="blog-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>March 15, 2017</span>
+                    </div>
+                    <div class="blog-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Quezon City</span>
+                    </div>
+                </div>
+
+                <h2 class="blog-title">From Puppy Mill to Forever Home: A CARA Rescue Story</h2>
+
+                <div class="blog-excerpt">
+                    "Every rescue dog deserves a second chance at life, and CARA Welfare Philippines has been making that happen since 2000."
+                </div>
+
+                <div class="blog-body">
+                    <p>
+                        <strong>CARA Welfare Philippines</strong> has been at the forefront of animal rescue in Metro Manila for over two decades. Their mission to end animal cruelty through rescue, rehabilitation, and adoption has saved countless lives.
+                    </p>
+
+                    <p>
+                        One of their most remarkable rescue operations involved liberating dogs from illegal puppy mills across Quezon City. These dogs were living in deplorable conditions—malnourished, sick, and traumatized. But thanks to CARA's dedicated volunteers and veterinary team, these aspins (Asong Pinoy) received medical treatment, behavioral rehabilitation, and eventually found loving forever homes.
+                    </p>
+
+                    <p>
+                        The transformation is nothing short of miraculous. Dogs that once cowered in fear now play freely in their new homes, surrounded by families who chose to adopt rather than shop. Each adoption represents a victory against animal cruelty and a testament to the resilience of these incredible animals.
+                    </p>
+                </div>
+
+                <div class="blog-quote">
+                    <p>"We don't just rescue animals—we rescue souls. Every dog that finds a home is a life transformed, and that's what keeps us going."</p>
+                    <div class="blog-quote-author">— CARA Welfare Philippines Team</div>
+                </div>
+
+                <div class="blog-tags">
+                    <span class="blog-tag">Puppy Mill Rescue</span>
+                    <span class="blog-tag">Aspin</span>
+                    <span class="blog-tag">Quezon City</span>
+                    <span class="blog-tag">Rehabilitation</span>
+                </div>
+
+                <div class="photo-credit">
+                    <i class="fas fa-camera"></i>
+                    <strong>Photo courtesy:</strong> CARA Welfare Philippines via
+                    <a href="https://www.wheninmanila.com/these-8-inspiring-pet-rescues-in-metro-manila-will-restore-your-faith-in-humanity/" target="_blank">WhenInManila.com</a>
+                </div>
+            </div>
+        </article>
+
+        @* Blog Post 2 - PAWS *@
+        <article class="blog-post">
+            <img src="https://www.wheninmanila.com/wp-content/uploads/2017/03/PAWS-Animal-Rescue-PH-1-1024x683.jpg"
+                 alt="PAWS Animal Rehabilitation Center"
+                 class="blog-featured-image">
+
+            <div class="blog-content">
+                <div class="blog-meta">
+                    <span class="blog-category">🐱 Cat Rescue</span>
+                    <div class="blog-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>March 18, 2017</span>
+                    </div>
+                    <div class="blog-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Quezon City</span>
+                    </div>
+                </div>
+
+                <h2 class="blog-title">PAWS: Giving Senior Cats a Second Chance at Life</h2>
+
+                <div class="blog-excerpt">
+                    "Since 1954, PAWS has been the Philippines' pioneer in animal welfare, providing sanctuary and care to thousands of abandoned and abused animals."
+                </div>
+
+                <div class="blog-body">
+                    <p>
+                        The <strong>Philippine Animal Welfare Society (PAWS)</strong> operates one of the most comprehensive animal rehabilitation centers in Metro Manila. Located in Quezon City, their facility provides medical care, shelter, and adoption services for dogs, cats, and other animals in need.
+                    </p>
+
+                    <p>
+                        Senior cats often face the hardest challenge—finding adoptive homes. Many people prefer kittens, overlooking the gentle, calm nature of older felines. But PAWS has been working tirelessly to change this narrative, highlighting the unique joys of adopting senior puspins (Pusang Pinoy).
+                    </p>
+
+                    <p>
+                        Their rehabilitation program includes medical treatment for injured and sick animals, behavioral assessment, spay/neuter services, and vaccination—all preparing these pets for their forever homes. PAWS proves that every animal, regardless of age, deserves love and a warm home.
+                    </p>
+                </div>
+
+                <div class="blog-quote">
+                    <p>"Senior cats have so much love to give. They're calm, affectionate, and just want a peaceful home to spend their golden years. Adopting them is one of the most rewarding experiences."</p>
+                    <div class="blog-quote-author">— PAWS Adoption Coordinator</div>
+                </div>
+
+                <div class="blog-tags">
+                    <span class="blog-tag">Senior Cats</span>
+                    <span class="blog-tag">Puspin</span>
+                    <span class="blog-tag">PAWS</span>
+                    <span class="blog-tag">Rehabilitation</span>
+                </div>
+
+                <div class="photo-credit">
+                    <i class="fas fa-camera"></i>
+                    <strong>Photo courtesy:</strong> PAWS via
+                    <a href="https://www.wheninmanila.com/these-8-inspiring-pet-rescues-in-metro-manila-will-restore-your-faith-in-humanity/" target="_blank">WhenInManila.com</a>
+                </div>
+            </div>
+        </article>
+
+        @* Blog Post 3 - Island Rescue Organization *@
+        <article class="blog-post">
+            <img src="https://www.wheninmanila.com/wp-content/uploads/2017/03/Island-Rescue-Organization-1-1024x683.jpg"
+                 alt="Island Rescue Organization"
+                 class="blog-featured-image">
+
+            <div class="blog-content">
+                <div class="blog-meta">
+                    <span class="blog-category">🐕 Disaster Relief</span>
+                    <div class="blog-meta-item">
+                        <i class="fas fa-calendar-alt"></i>
+                        <span>March 20, 2017</span>
+                    </div>
+                    <div class="blog-meta-item">
+                        <i class="fas fa-map-marker-alt"></i>
+                        <span>Metro Manila & Beyond</span>
+                    </div>
+                </div>
+
+                <h2 class="blog-title">Island Rescue: Saving Animals from Natural Disasters</h2>
+
+                <div class="blog-excerpt">
+                    "When disaster strikes, animals are often left behind. Island Rescue Organization ensures no pet is forgotten in times of crisis."
+                </div>
+
+                <div class="blog-body">
+                    <p>
+                        <strong>Island Rescue Organization</strong> specializes in disaster relief operations, rescuing animals affected by typhoons, floods, and other calamities across the Philippines. Their rapid response teams have saved countless dogs and cats from life-threatening situations.
+                    </p>
+
+                    <p>
+                        The Philippines faces an average of 20 typhoons annually, leaving many pets stranded, injured, or separated from their families. Island Rescue works alongside local communities to evacuate, treat, and shelter these animals until they can be reunited with their owners or find new homes.
+                    </p>
+
+                    <p>
+                        Their work doesn't stop at rescue. They provide post-disaster veterinary care, vaccination drives, and spay/neuter programs to help communities rebuild and prevent future animal suffering. Their dedication to both animals and people makes them true heroes of Metro Manila.
+                    </p>
+                </div>
+
+                <div class="blog-quote">
+                    <p>"During Typhoon Yolanda, we rescued over 300 animals. Seeing them recover and find homes gave us hope that kindness still exists even in the darkest times."</p>
+                    <div class="blog-quote-author">— Island Rescue Organization Volunteer</div>
+                </div>
+
+                <div class="blog-tags">
+                    <span class="blog-tag">Disaster Relief</span>
+                    <span class="blog-tag">Typhoon Rescue</span>
+                    <span class="blog-tag">Community Support</span>
+                    <span class="blog-tag">Emergency Response</span>
+                </div>
+
+                <div class="photo-credit">
+                    <i class="fas fa-camera"></i>
+                    <strong>Photo courtesy:</strong> Island Rescue Organization via
+                    <a href="https://www.wheninmanila.com/these-8-inspiring-pet-rescues-in-metro-manila-will-restore-your-faith-in-humanity/" target="_blank">WhenInManila.com</a>
+                </div>
+            </div>
+        </article>
+
+        @* Adoption CTA Section *@
+        <div class="adoption-cta">
+            <div class="adoption-cta-content">
+                <h2>Why We Encourage You to Adopt</h2>
+                <p>
+                    Every year, thousands of dogs and cats in Metro Manila are abandoned, abused, or left homeless. By choosing to adopt, you're not just saving one life—you're making room for another animal in need and supporting the incredible work of rescue organizations across the Philippines.
+                </p>
+
+                <ul>
+                    <li><strong>Save a Life:</strong> Adoption directly saves an animal from uncertainty and gives them a second chance at happiness.</li>
+                    <li><strong>Combat Animal Cruelty:</strong> Adopting reduces demand for puppy mills and backyard breeders who profit from animal suffering.</li>
+                    <li><strong>Support Local Rescues:</strong> Your adoption fees help rescue organizations continue their life-saving work.</li>
+                    <li><strong>Gain a Loyal Companion:</strong> Rescued pets know they've been given a second chance and often form the deepest bonds with their adopters.</li>
+                    <li><strong>Make Space for More Rescues:</strong> Every adoption opens up shelter space for another animal in desperate need.</li>
+                </ul>
+
+                <p style="margin-top: 25px; font-weight: 600; font-size: 1.15em; color: #2E8BC0;">
+                    Your decision to adopt doesn't just change one life—it creates a ripple effect of compassion that transforms communities. Be the reason a rescued pet gets to experience love, safety, and a forever home.
+                </p>
+            </div>
+        </div>
+
+    </div>
+
+    @* ========== FOOTER ========== *@
+    <footer class="footer">
+        <p>&copy; 2025 FurEver Home. All rights reserved.</p>
+        <p style="margin-top: 10px;">Stories and photos courtesy of rescue organizations featured on WhenInManila.com for educational and inspirational purposes.</p>
+    </footer>
+
+</body>
+</html>

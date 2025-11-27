@@ -186,6 +186,9 @@
     <Content Include="Content\bootstrap.min.css" />
     <Content Include="Content\bootstrap.rtl.css" />
     <Content Include="Content\bootstrap.rtl.min.css" />
+    <Content Include="Content\Images\image1.jpg" />
+    <Content Include="Content\Images\image2.jpg" />
+    <Content Include="Content\Images\image3.jpg" />
     <Content Include="Content\Images\circle_furever.png" />
     <Content Include="Content\Images\full_furever.png" />
     <Content Include="Content\Images\FUREVER HOME LOGO.png" />
@@ -224,6 +227,7 @@
     <Content Include="Views\Admin\ReviewPetPost.cshtml" />
     <Content Include="Views\Home\NotificationHistory.cshtml" />
     <Content Include="Views\Account\VerifyTwoFactor.cshtml" />
+    <Content Include="Views\Home\SuccessfulStories.cshtml" />
     <None Include="Views\Pets\PostForAdoption.cshtml" />
     <Content Include="Web.config" />
     <Content Include="Web.Debug.config">
