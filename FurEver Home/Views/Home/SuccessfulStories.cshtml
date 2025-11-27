@@ -344,7 +344,7 @@
         }
 
         .adoption-cta li:before {
-            content: "❤️";
+            content: "";
             position: absolute;
             left: 0;
             font-size: 1.3em;
@@ -389,10 +389,12 @@
 </head>
 <body>
 
+   
+
     @* ========== NAVBAR ========== *@
     <nav class="navbar">
         <div class="nav-container">
-            <a href="@Url.Action("Index", "Home")" class="logo">
+            <a href="@Url.Action("Index", "Pets")" class="logo">
                 <img src="~/Content/Images/circle_furever.png" alt="FurEver Home">
                 <span class="logo-text">FurEver Home</span>
             </a>
@@ -405,32 +407,30 @@
         </div>
     </nav>
 
+
+
+
     @* ========== HERO SECTION ========== *@
-    <section class="hero">
-        <h1>Adoption Success Stories</h1>
-        <p>Real rescues, real transformations, real forever homes. These heartwarming stories from Metro Manila show the incredible impact of pet adoption and rescue work across the Philippines.</p>
-        <div class="hero-meta">
-            <div class="hero-meta-item">
-                <i class="fas fa-calendar"></i>
-                <span>Updated January 2025</span>
-            </div>
-            <div class="hero-meta-item">
-                <i class="fas fa-heart"></i>
-                <span>3 Inspiring Stories</span>
-            </div>
-            <div class="hero-meta-item">
-                <i class="fas fa-map-marker-alt"></i>
-                <span>Metro Manila, Philippines</span>
-            </div>
+<section class="hero">
+    <h1>Adoption Success Stories</h1>
+    <p>"Real rescues, real transformations, real forever homes. These heartwarming stories from Metro Manila show the incredible impact of pet adoption and rescue work across the Philippines."</p>
+    <p>- FurEverHome Team</p>
+    <div class="hero-meta">
+        <div class="hero-meta-item">
+      
+        <div class="hero-meta-item">
+            <i class="fas fa-map-marker-alt"></i>
+            <span>Metro Manila, Philippines</span>
         </div>
-    </section>
+    </div>
+</section>
 
     @* ========== BLOG CONTAINER ========== *@
     <div class="blog-container">
 
         @* Blog Post 1 - CARA Welfare Philippines *@
         <article class="blog-post">
-            <img src="https://www.wheninmanila.com/wp-content/uploads/2017/03/CARA-Welfare-PH-Animal-Rescue-1.jpg"
+            <img src="~/Content/Images/image1.jpg"
                  alt="CARA Welfare Philippines rescue dog"
                  class="blog-featured-image">
 
@@ -482,14 +482,14 @@
                 <div class="photo-credit">
                     <i class="fas fa-camera"></i>
                     <strong>Photo courtesy:</strong> CARA Welfare Philippines via
-                    <a href="https://www.wheninmanila.com/these-8-inspiring-pet-rescues-in-metro-manila-will-restore-your-faith-in-humanity/" target="_blank">WhenInManila.com</a>
+                    <a href="https://www.caraphil.org/" target="_blank">CaraPhil.org</a>
                 </div>
             </div>
         </article>
 
         @* Blog Post 2 - PAWS *@
         <article class="blog-post">
-            <img src="https://www.wheninmanila.com/wp-content/uploads/2017/03/PAWS-Animal-Rescue-PH-1-1024x683.jpg"
+            <img src="~/Content/Images/image2.jpg"
                  alt="PAWS Animal Rehabilitation Center"
                  class="blog-featured-image">
 
@@ -541,14 +541,14 @@
                 <div class="photo-credit">
                     <i class="fas fa-camera"></i>
                     <strong>Photo courtesy:</strong> PAWS via
-                    <a href="https://www.wheninmanila.com/these-8-inspiring-pet-rescues-in-metro-manila-will-restore-your-faith-in-humanity/" target="_blank">WhenInManila.com</a>
+                    <a href="https://paws.org.ph/" target="_blank">Paws.org.ph</a>
                 </div>
             </div>
         </article>
 
         @* Blog Post 3 - Island Rescue Organization *@
         <article class="blog-post">
-            <img src="https://www.wheninmanila.com/wp-content/uploads/2017/03/Island-Rescue-Organization-1-1024x683.jpg"
+            <img src="~/Content/Images/image3.jpg"
                  alt="Island Rescue Organization"
                  class="blog-featured-image">
 
@@ -600,7 +600,7 @@
                 <div class="photo-credit">
                     <i class="fas fa-camera"></i>
                     <strong>Photo courtesy:</strong> Island Rescue Organization via
-                    <a href="https://www.wheninmanila.com/these-8-inspiring-pet-rescues-in-metro-manila-will-restore-your-faith-in-humanity/" target="_blank">WhenInManila.com</a>
+                    <a href="https://www.facebook.com/IslandRescueOrganization/" target="_blank">https://www.facebook.com/IslandRescueOrganization/</a>
                 </div>
             </div>
         </article>
@@ -622,7 +622,7 @@
                 </ul>
 
                 <p style="margin-top: 25px; font-weight: 600; font-size: 1.15em; color: #2E8BC0;">
-                    Your decision to adopt doesn't just change one life—it creates a ripple effect of compassion that transforms communities. Be the reason a rescued pet gets to experience love, safety, and a forever home.
+                    Your decision to adopt doesn't just change one life. It creates a ripple effect of compassion that transforms communities. Be the reason a rescued pet gets to experience love, safety, and a forever home.
                 </p>
             </div>
         </div>
@@ -632,7 +632,7 @@
     @* ========== FOOTER ========== *@
     <footer class="footer">
         <p>&copy; 2025 FurEver Home. All rights reserved.</p>
-        <p style="margin-top: 10px;">Stories and photos courtesy of rescue organizations featured on WhenInManila.com for educational and inspirational purposes.</p>
+        <p style="margin-top: 10px;">Stories and photos courtesy of rescue organizations featured on CaraPhil, Paws and Island Rescue for educational and inspirational purposes.</p>
     </footer>
 
 </body>
