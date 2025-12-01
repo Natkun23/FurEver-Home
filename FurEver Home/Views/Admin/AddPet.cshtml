@@ -684,7 +684,24 @@
                     <label>Days in Center</label>
                     @Html.TextBoxFor(m => m.DaysInCenter, new { type = "number", min = "0", placeholder = "0", Value = "0" })
                 </div>
+                <div class="form-group full-width">
+                    <label style="justify-content: flex-start !important; text-align: left !important;">
+                        <i class="fas fa-map-marker-alt"></i> Location *
+                    </label>
+                    @Html.TextBoxFor(m => m.Location, new
+                    {
+                        placeholder = "e.g., Quezon City, Metro Manila",
+                        required = "required",
+                        maxlength = "255"
+                    })
+                    @Html.ValidationMessageFor(m => m.Location, "", new { @class = "field-validation-error" })
+                    <small style="color: #64748b; display: block; margin-top: 8px;">
+                        <i class="fas fa-info-circle"></i> Specify where the pet is currently located
+                    </small>
+                </div>
+
             </div>
+
 
             <div class="form-group full-width">
                 <label>Description *</label>
@@ -724,15 +741,96 @@
             </div>
 
             <div class="form-group full-width">
-                <label>Pet Image *</label>
-                <div class="file-upload" onclick="document.getElementById('petImage').click()">
-                    <div class="file-upload-icon"><i class="fas fa-cloud-upload-alt"></i></div>
-                    <div>Click to upload pet image</div>
-                    <small style="color: #64748b;">PNG, JPG (Max 5MB)</small>
-                    <input type="file" id="petImage" name="PetImage" accept="image/*" required>
-                    <div id="fileName" style="margin-top: 12px; color: #3FA9F5; font-weight: 600;"></div>
+                <label>Pet Images (Up to 3) *</label>
+
+                <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 15px;">
+
+                    <!-- Image 1 (Required) -->
+                    <div class="image-upload-slot">
+                        <div class="upload-label">Photo 1 <span style="color: #ef4444;">*</span></div>
+                        <div class="file-upload-box" onclick="document.getElementById('petImage1').click()">
+                            <div id="preview1" class="image-preview-box">
+                                <i class="fas fa-camera" style="font-size: 2em; color: #3FA9F5;"></i>
+                                <div style="margin-top: 10px; font-size: 0.9em;">Click to upload</div>
+                            </div>
+                            <input type="file" id="petImage1" name="PetImage" accept="image/*" required style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- Image 2 (Optional) -->
+                    <div class="image-upload-slot">
+                        <div class="upload-label">Photo 2</div>
+                        <div class="file-upload-box" onclick="document.getElementById('petImage2').click()">
+                            <div id="preview2" class="image-preview-box">
+                                <i class="fas fa-camera" style="font-size: 2em; color: #94a3b8;"></i>
+                                <div style="margin-top: 10px; font-size: 0.9em; color: #94a3b8;">Optional</div>
+                            </div>
+                            <input type="file" id="petImage2" name="PetImages" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
+                    <!-- Image 3 (Optional) -->
+                    <div class="image-upload-slot">
+                        <div class="upload-label">Photo 3</div>
+                        <div class="file-upload-box" onclick="document.getElementById('petImage3').click()">
+                            <div id="preview3" class="image-preview-box">
+                                <i class="fas fa-camera" style="font-size: 2em; color: #94a3b8;"></i>
+                                <div style="margin-top: 10px; font-size: 0.9em; color: #94a3b8;">Optional</div>
+                            </div>
+                            <input type="file" id="petImage3" name="PetImages" accept="image/*" style="display: none;">
+                        </div>
+                    </div>
+
                 </div>
+
+                <small style="color: #64748b; display: block; margin-top: 12px;">
+                    <i class="fas fa-info-circle"></i> First image is required. Add up to 2 more images (PNG, JPG - Max 5MB each)
+                </small>
             </div>
+
+            <style>
+                .image-upload-slot {
+                    text-align: center;
+                }
+
+                .upload-label {
+                    font-weight: 600;
+                    color: #334155;
+                    margin-bottom: 8px;
+                    font-size: 0.9em;
+                }
+
+                .file-upload-box {
+                    border: 2px dashed #cbd5e1;
+                    border-radius: 12px;
+                    padding: 20px;
+                    cursor: pointer;
+                    transition: all 0.3s;
+                    background: #f8fafc;
+                    min-height: 180px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                }
+
+                    .file-upload-box:hover {
+                        border-color: #3FA9F5;
+                        background: #eff6ff;
+                    }
+
+                .image-preview-box {
+                    width: 100%;
+                    text-align: center;
+                }
+
+                    .image-preview-box img {
+                        width: 100%;
+                        height: 150px;
+                        object-fit: cover;
+                        border-radius: 8px;
+                    }
+            </style>
+
 
             <div class="action-buttons">
 
@@ -792,12 +890,25 @@
             }
         });
 
-        document.getElementById('petImage').addEventListener('change', function (e) {
-            var fileName = e.target.files[0]?.name;
-            if (fileName) {
-                document.getElementById('fileName').textContent = '✓ ' + fileName;
-            }
-        });
+        // Multi-image preview handler
+        function setupImagePreview(inputId, previewId) {
+            document.getElementById(inputId).addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        document.getElementById(previewId).innerHTML =
+                            `<img src="${event.target.result}" style="width: 100%; height: 150px; object-fit: cover; border-radius: 8px;">`;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Setup all 3 image previews
+        setupImagePreview('petImage1', 'preview1');
+        setupImagePreview('petImage2', 'preview2');
+        setupImagePreview('petImage3', 'preview3');
     </script>
 </body>
 </html>

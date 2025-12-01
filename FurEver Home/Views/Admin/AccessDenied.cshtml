@@ -1,0 +1,78 @@
+
+@{
+    ViewBag.Title = "Access Denied";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <title>Access denied</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Arial;
+            background: #f8fafc;
+            color: #334155;
+            padding: 40px;
+        }
+
+        .card {
+            max-width: 800px;
+            margin: 40px auto;
+            background: white;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 8px 30px rgba(46,139,192,0.08);
+        }
+
+        .badge {
+            background: #ffd93d;
+            color: #0b4f66;
+            padding: 6px 10px;
+            border-radius: 8px;
+            font-weight: 700;
+        }
+
+        ul {
+            margin: 0;
+            padding-left: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>Access denied</h1>
+        <p>You do not have the required permissions to access this area or perform this action.</p>
+
+        @if (!string.IsNullOrEmpty((string)ViewBag.Feature))
+        {
+        <p><strong>Feature:</strong> @ViewBag.Feature</p>
+        }
+
+        <p><strong>Required role(s):</strong> <span class="badge">@((string)ViewBag.RequiredRoles ?? "Administrative role")</span></p>
+
+        <p><strong>Your current role(s):</strong></p>
+        @{
+            var roles = ViewBag.UserRoles as List<string>;
+            if (roles == null || !roles.Any())
+            {
+            <p><em>You have no assigned admin roles.</em></p>;
+            }
+            else
+            {
+            <ul>
+                @foreach (var r in roles)
+                    {
+                <li>@r</li>
+}
+            </ul>
+            }
+        }
+
+        <p style="margin-top:20px">If you believe this is an error, contact a Super Admin to request role changes.</p>
+
+        <p><a href="@Url.Action("Dashboard","Admin")">Back to Admin Dashboard</a>
+    </div>
+</body>
+</html>

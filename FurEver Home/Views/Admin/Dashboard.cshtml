@@ -5,8 +5,6 @@
 
 @using FurEver_Home.Models
 
-
-
 @functions {
     public string GetTimeAgo(DateTime timestamp)
     {
@@ -26,6 +24,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
@@ -43,7 +44,7 @@
             min-height: 100vh;
         }
 
-        /* Sidebar - CONSISTENT DESIGN */
+        /* Sidebar */
         .sidebar {
             width: 280px;
             background: linear-gradient(180deg, #2E8BC0 0%, #1a5a7d 100%);
@@ -126,7 +127,7 @@
             text-align: center;
         }
 
-        /* Main Content - CONSISTENT SPACING */
+        /* Main Content */
         .main-content {
             margin-left: 280px;
             flex: 1;
@@ -157,7 +158,16 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            padding: 10px 15px;
+            border-radius: 12px;
         }
+
+            .user-info:hover {
+                background: rgba(63, 169, 245, 0.1);
+                transform: translateX(-5px);
+            }
 
         .user-avatar {
             width: 45px;
@@ -175,7 +185,6 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.1);
         }
 
-        /* When user-avatar is an img tag */
         img.user-avatar {
             background: none;
             font-size: inherit;
@@ -489,7 +498,7 @@
         }
 
         /* Responsive */
-        @@media (max-width: 480px) {
+        @@media (max-width: 768px) {
             .sidebar {
                 width: 0;
                 transform: translateX(-100%);
@@ -501,6 +510,12 @@
 
             .stats-grid {
                 grid-template-columns: 1fr;
+            }
+
+            .top-bar {
+                flex-direction: column;
+                gap: 15px;
+                align-items: flex-start;
             }
         }
     </style>
@@ -572,6 +587,8 @@
 
     <!-- Main Content -->
     <div class="main-content">
+
+
         <!-- Top Bar -->
         <div class="top-bar">
             <div style="display: flex; flex-direction: column; gap: 5px;">
@@ -581,60 +598,71 @@
                     <span id="currentDateTime"></span>
                 </div>
             </div>
-            <div class="user-info">
-                @if (Session["UserId"] != null)
-                {
-                    var db = new FurEver_Home.Models.FurEverHomeContext();
-                    var userId = (int)Session["UserId"];
-                    var admin = db.Users.Find(userId);
 
-                    if (admin != null && !string.IsNullOrEmpty(admin.ProfilePictureUrl))
+            <div style="display: flex; align-items: center; gap: 15px;">
+                @if (ViewBag.IsSuperAdmin == true)
+                {
+                    <a href="@Url.Action("ManageAdmins", "Admin")" class="btn-primary" style="padding: 10px 20px; font-size: 0.9em;">
+                        <i class="fas fa-user-shield"></i> Manage Admins
+                    </a>
+                }
+
+
+                <!-- User Profile Section -->
+                <div class="user-info" onclick="window.location.href='@Url.Action("AdminProfile", "Admin")'">
+                    @if (Session["UserId"] != null)
                     {
-                        <img src="@admin.ProfilePictureUrl" alt="Profile" class="user-avatar" style="object-fit: cover;">
+                        var db = new FurEver_Home.Models.FurEverHomeContext();
+                        var userId = (int)Session["UserId"];
+                        var admin = db.Users.Find(userId);
+                        if (admin != null && !string.IsNullOrEmpty(admin.ProfilePictureUrl))
+                        {
+                            <img src="@admin.ProfilePictureUrl" alt="Profile" class="user-avatar">
+                        }
+                        else
+                        {
+                            <div class="user-avatar">
+                                @if (Session["UserName"] != null)
+                                {
+                                    @Session["UserName"].ToString().Substring(0, 1).ToUpper()
+                                }
+                                else
+                                {
+                                    <text>A</text>
+                                }
+                            </div>
+                        }
                     }
                     else
                     {
-                        <div class="user-avatar">
+                        <div class="user-avatar">A</div>
+                    }
+                    <div class="user-details">
+                        <div class="user-name">
                             @if (Session["UserName"] != null)
                             {
-                                @Session["UserName"].ToString().Substring(0, 1).ToUpper()
+                                @Session["UserName"]
                             }
                             else
                             {
-                                <text>A</text>
+                                <text>Admin User</text>
                             }
                         </div>
-                    }
-                }
-                else
-                {
-                    <div class="user-avatar">A</div>
-                }
-
-                <div class="user-details">
-                    <div class="user-name">
-                        @if (Session["UserName"] != null)
-                        {
-                            @Session["UserName"]
-                        }
-                        else
-                        {
-                            <text>Admin User</text>
-                        }
-                    </div>
-                    <div class="user-role">
-                        @if (Session["UserRole"] != null)
-                        {
-                            @Session["UserRole"]
-                        }
-                        else
-                        {
-                            <text>Administrator</text>
-                        }
+                        <div class="user-role">
+                            @if (Session["UserRole"] != null)
+                            {
+                                @Session["UserRole"]
+                            }
+                            else
+                            {
+                                <text>Administrator</text>
+                            }
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
+        <!-- ✅ FIXED: Closing div moved to correct position -->
         <!-- Alerts -->
         @if (ViewBag.PendingVerifications > 0)
         {
@@ -787,65 +815,719 @@
                 </div>
             }
         </div>
-    </div>
 
-    <script>
-        // Prevent back button after logout
-        window.history.forward();
-        function noBack() {
-            window.history.forward();
+        
+
+        <script>
+(function() {
+    'use strict';
+
+    // Update current date and time
+    function updateDateTime() {
+        const now = new Date();
+        const options = { 
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric', 
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        };
+        const dateTimeString = now.toLocaleDateString('en-US', options);
+        const dateTimeElement = document.getElementById('currentDateTime');
+        if (dateTimeElement) {
+            dateTimeElement.textContent = dateTimeString;
         }
-    </script>
+    }
 
-    <script>
-        // Method 2: Prevent back button after logout
-        if (window.history && window.history.pushState) {
-            window.history.pushState(null, null, window.location.href);
+    // Initialize date/time on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            updateDateTime();
+            setInterval(updateDateTime, 1000); // Update every second
+        });
+    } else {
+        updateDateTime();
+        setInterval(updateDateTime, 1000); // Update every second
+    }
 
-            window.addEventListener('popstate', function() {
-                // Push state again to prevent back
-                window.history.pushState(null, null, window.location.href);
+    let navigationLocked = true; // Start locked
+    let lockTimeout = null;
+    let isRedirecting = false;
+    let backButtonAttempts = 0;
+    const MAX_ATTEMPTS_PER_SECOND = 10;
+    let attemptTimestamp = Date.now();
+    let safeOrigin = window.location.origin;
+    let lockingEnabled = true;
+    
+    // Session token for validation
+    const sessionToken = '@Session["UserId"]' || null;
 
-                // Verify session is still valid by making a quick check
-                fetch('@Url.Action("CheckSession", "Account")', {
-                    method: 'GET',
-                    cache: 'no-cache'
-                }).then(function(response) {
-                    if (!response.ok) {
-                        // Session expired, redirect to login
-                        window.location.href = '@Url.Action("Login", "Account")';
-                    }
-                }).catch(function() {
-                    // On error, redirect to login
-                    window.location.href = '@Url.Action("Login", "Account")';
-                });
+    // Immediately lock navigation on page load
+    function lockNavigation() {
+        if (!lockingEnabled) return;
+        
+        navigationLocked = true;
+
+        // Push MANY states to make it VERY hard to bypass
+        for (let i = 0; i < 10; i++) {
+            window.history.pushState(
+                { 
+                    locked: true, 
+                    timestamp: Date.now(),
+                    token: sessionToken,
+                    layerIndex: i,
+                    origin: safeOrigin
+                },
+                '',
+                window.location.href
+            );
+        }
+    }
+
+    // Aggressive back button handler with spam detection
+    function handlePopState(event) {
+        if (!navigationLocked || isRedirecting) return;
+
+        // Spam detection - if user clicks back multiple times rapidly
+        const now = Date.now();
+        if (now - attemptTimestamp < 1000) {
+            backButtonAttempts++;
+            if (backButtonAttempts > MAX_ATTEMPTS_PER_SECOND) {
+                console.warn('⚠️ Excessive back button attempts detected!');
+                // Don't even allow re-locking on spam
+                attemptTimestamp = now;
+                backButtonAttempts = 0;
+            }
+        } else {
+            backButtonAttempts = 1;
+            attemptTimestamp = now;
+        }
+
+        // Validate state
+        if (event.state && !event.state.locked) {
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        }
+
+        // ALWAYS push forward immediately
+        pushForward();
+
+        // Try to move forward in the history stack (help against very-rapid clicks)
+        try {
+            window.history.go(1);
+        } catch (e) {
+            // ignore
+        }
+
+        // Clear any existing timeout
+        if (lockTimeout) {
+            clearTimeout(lockTimeout);
+        }
+
+        // Re-lock after minimal delay
+        lockTimeout = setTimeout(function() {
+            lockNavigation();
+        }, 5);
+
+        // Absolute prevention
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+            event.stopImmediatePropagation();
+        }
+
+        return false;
+    }
+
+    // Helper to push forward in history
+    function pushForward() {
+        window.history.pushState(
+            { 
+                locked: true, 
+                timestamp: Date.now(),
+                token: sessionToken,
+                origin: safeOrigin,
+                action: 'forward'
+            },
+            '',
+            window.location.href
+        );
+    }
+
+    // Initialize on page load
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            lockNavigation();
+        });
+    } else {
+        lockNavigation();
+    }
+
+    // Primary popstate listener with maximum priority
+    window.addEventListener('popstate', handlePopState, true);
+
+    // Secondary popstate listener as backup
+    window.addEventListener('popstate', function(event) {
+        if (navigationLocked && !isRedirecting) {
+            pushForward();
+
+            // Try to move forward immediately as an extra attempt to prevent leaving
+            try { window.history.go(1); } catch (e) {}
+
+            lockNavigation();
+            event.preventDefault();
+        }
+    }, { capture: true, passive: false });
+
+    // Prevent hashchange navigation
+    window.addEventListener('hashchange', function(e) {
+        if (navigationLocked && !isRedirecting) {
+            e.preventDefault();
+            pushForward();
+
+            // Try to move forward immediately
+            try { window.history.go(1); } catch (err) {}
+
+            lockNavigation();
+            return false;
+        }
+    }, { capture: true, passive: false });
+
+    // Prevent keyboard shortcuts for back navigation
+    document.addEventListener('keydown', function(e) {
+        if (!navigationLocked || isRedirecting) return;
+
+        // Alt + Left Arrow (back)
+        if (e.altKey && (e.keyCode === 37 || e.key === 'ArrowLeft')) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            pushForward();
+
+            try { window.history.go(1); } catch (err) {}
+
+            lockNavigation();
+            return false;
+        }
+
+        // Backspace (except in inputs)
+        if ((e.keyCode === 8 || e.key === 'Backspace') && e.target.tagName !== 'INPUT' && e.target.tagName !== 'TEXTAREA' && !e.target.isContentEditable) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            pushForward();
+
+            try { window.history.go(1); } catch (err) {}
+
+            lockNavigation();
+            return false;
+        }
+
+        // Cmd/Ctrl + [ (back on Mac/Windows)
+        if ((e.ctrlKey || e.metaKey) && (e.keyCode === 219 || e.key === '[')) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            pushForward();
+
+            try { window.history.go(1); } catch (err) {}
+
+            lockNavigation();
+            return false;
+        }
+    }, { capture: true, passive: false });
+
+    // Prevent mouse back button (middle mouse / side buttons)
+    document.addEventListener('mousedown', function(e) {
+        if ((e.button === 3 || e.button === 4) && navigationLocked && !isRedirecting) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            pushForward();
+
+            try { window.history.go(1); } catch (err) {}
+
+            return false;
+        }
+    }, { capture: true, passive: false });
+
+    // Handle page visibility changes
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && navigationLocked && !isRedirecting) {
+            // Re-lock when page becomes visible
+            lockNavigation();
+            console.log('🔒 Navigation re-locked (page visibility)');
+        }
+    });
+
+    // Handle page show/hide from cache
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted && navigationLocked && !isRedirecting) {
+            lockNavigation();
+            console.log('🔒 Navigation re-locked (page show)');
+        }
+    });
+
+    window.addEventListener('pagehide', function(event) {
+        if (event.persisted && !isRedirecting) {
+            lockingEnabled = false;
+        }
+    });
+
+    // Prevent focus on back button area via tabbing
+    let lastFocusedElement = null;
+    document.addEventListener('focusin', function(e) {
+        if (navigationLocked && !isRedirecting) {
+            lastFocusedElement = e.target;
+        }
+    });
+
+    // Allow navigation for specific actions (logout)
+    function allowNavigation() {
+        navigationLocked = false;
+        isRedirecting = true;
+        lockingEnabled = false;
+    }
+
+    // Intercept logout links
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('a, button');
+        if (target && navigationLocked && !isRedirecting) {
+            const href = target.getAttribute('href') || '';
+            const onclick = target.getAttribute('onclick') || '';
+            const dataAction = target.getAttribute('data-action') || '';
+
+            // Allow logout
+            if (href.toLowerCase().includes('logout') ||
+                onclick.toLowerCase().includes('logout') ||
+                dataAction.toLowerCase().includes('logout')) {
+                allowNavigation();
+            }
+        }
+    }, { capture: true });
+
+    // Override and protect history methods
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+
+    history.pushState = function(state, title, url) {
+        // Only allow authorized pushState
+        if (!navigationLocked || (state && state.locked)) {
+            return originalPushState.apply(history, arguments);
+        }
+        // Block unauthorized attempts
+        console.warn('⚠️ Blocked unauthorized pushState');
+        return null;
+    };
+
+    history.replaceState = function(state, title, url) {
+        // Only allow authorized replaceState
+        if (!navigationLocked || (state && state.locked)) {
+            return originalReplaceState.apply(history, arguments);
+        }
+        // Block unauthorized attempts
+        console.warn('⚠️ Blocked unauthorized replaceState');
+        return null;
+    };
+
+    // Session validation check
+    @if (Session["UserId"] != null) {
+        <text>
+        function validateSession() {
+            if (isRedirecting) return;
+
+            fetch('@Url.Action("CheckSession", "Account")', {
+                method: 'GET',
+                cache: 'no-cache',
+                headers: {
+                    'Cache-Control': 'no-cache, no-store, must-revalidate',
+                    'Pragma': 'no-cache'
+                }
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    // Session expired - redirect to login
+                    allowNavigation();
+                    window.location.replace('@Url.Action("Login", "Account")');
+                }
+            })
+            .catch(function() {
+                // Retry on next interval
             });
         }
+
+        // Check session immediately
+        validateSession();
+
+        // Check session every 15 seconds (more frequent)
+        const sessionCheckInterval = setInterval(function() {
+            validateSession();
+        }, 15000);
+        </text>
+    }
+
+    // Periodic re-lock every 30 seconds for extra security
+    setInterval(function() {
+        if (navigationLocked && !isRedirecting) {
+            lockNavigation();
+        }
+    }, 30000);
+
+    // Catch unhandled navigation attempts
+    window.addEventListener('beforeunload', function(e) {
+        // Don't prevent, just track
+        if (navigationLocked && !isRedirecting && !lockingEnabled) {
+            isRedirecting = true;
+        }
+    });
+
+    // Final fallback - message channel for iframe security
+    if (window.opener) {
+        window.opener = null; // Prevent window.opener manipulation
+    }
+
+    // Log initial state
+    console.log('🔒 Dashboard: Back button protection ACTIVE');
+    console.log('🔐 Navigation locked: ' + navigationLocked);
+    console.log('📌 History stack size: 10+ layers');
+
+})();
+
     </script>
 
-    <script>
-        // Real-time clock
-        function updateDateTime() {
-            const now = new Date();
-            const options = {
-                weekday: 'long',
-                year: 'numeric',
-                month: 'long',
-                day: 'numeric',
-                hour: '2-digit',
-                minute: '2-digit',
-                second: '2-digit',
-                hour12: true
-            };
+    <!-- Logout Confirmation Modal - Professional Design -->
+<style>
+    /* Modal Overlay */
+    #logoutConfirmModal {
+        display: none;
+        position: fixed;
+        z-index: 20000;
+        left: 0;
+        top: 0;
+        width: 100%;
+        height: 100%;
+        background: rgba(0, 0, 0, 0.5);
+        backdrop-filter: blur(4px);
+        align-items: center;
+        justify-content: center;
+        animation: fadeIn 0.3s ease-out;
+    }
 
-            const dateTimeString = now.toLocaleDateString('en-US', options);
-            document.getElementById('currentDateTime').textContent = dateTimeString;
+    #logoutConfirmModal.show {
+        animation: fadeIn 0.3s ease-out;
+    }
+
+    @@keyframes fadeIn {
+        from {
+            opacity: 0;
+        }
+        to {
+            opacity: 1;
+        }
+    }
+
+    @@keyframes slideUp {
+        from {
+            opacity: 0;
+            transform: translateY(30px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+
+    /* Modal Container */
+    #logoutConfirmModal .modal-inner {
+        background: white;
+        border-radius: 16px;
+        max-width: 480px;
+        width: 90%;
+        box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+    }
+
+    /* Modal Header - Warning Theme */
+    #logoutConfirmModal .modal-header {
+        background: linear-gradient(135deg, #FFB74D 0%, #FF9800 100%);
+        padding: 32px 28px;
+        text-align: center;
+        position: relative;
+        overflow: hidden;
+    }
+
+    #logoutConfirmModal .modal-header::before {
+        content: '';
+        position: absolute;
+        top: -50%;
+        right: -10%;
+        width: 200px;
+        height: 200px;
+        background: rgba(255, 255, 255, 0.1);
+        border-radius: 50%;
+    }
+
+    /* Modal Icon */
+    #logoutConfirmModal .modal-icon {
+        font-size: 3.5em;
+        color: white;
+        margin-bottom: 16px;
+        display: inline-block;
+        animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+    }
+
+    @@keyframes bounce {
+        0% {
+            transform: scale(0);
+        }
+        50% {
+            transform: scale(1.1);
+        }
+        100% {
+            transform: scale(1);
+        }
+    }
+
+    /* Modal Title */
+    #logoutConfirmModal .modal-title {
+        font-size: 1.5em;
+        font-weight: 700;
+        color: white;
+        margin: 0;
+        text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+        position: relative;
+        z-index: 1;
+    }
+
+    /* Modal Body */
+    #logoutConfirmModal .modal-body {
+        padding: 28px 28px;
+    }
+
+    #logoutConfirmModal .modal-message {
+        font-size: 0.95em;
+        color: #555;
+        line-height: 1.6;
+        margin: 0 0 8px 0;
+        text-align: center;
+    }
+
+    #logoutConfirmModal .modal-submessage {
+        font-size: 0.85em;
+        color: #999;
+        text-align: center;
+        margin: 0;
+    }
+
+    /* Modal Footer - Actions */
+    #logoutConfirmModal .modal-footer {
+        padding: 20px 28px 28px;
+        display: flex;
+        gap: 12px;
+        justify-content: center;
+    }
+
+    /* Buttons */
+    #logoutConfirmModal .btn {
+        padding: 12px 28px;
+        border: none;
+        border-radius: 10px;
+        font-weight: 700;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        font-size: 0.95em;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 8px;
+        min-width: 140px;
+    }
+
+    #logoutConfirmModal .btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+    }
+
+    #logoutConfirmModal .btn:active {
+        transform: translateY(0);
+    }
+
+    /* Cancel Button */
+    #logoutConfirmModal .btn-cancel {
+        background: #f0f2f5;
+        color: #333;
+        border: 2px solid #e2e8f0;
+    }
+
+    #logoutConfirmModal .btn-cancel:hover {
+        background: #e8eaed;
+        border-color: #cbd5e1;
+    }
+
+    /* Logout Button */
+    #logoutConfirmModal .btn-logout {
+        background: linear-gradient(135deg, #FF6B6B 0%, #EE5A52 100%);
+        color: white;
+        flex: 1;
+        max-width: 200px;
+    }
+
+    #logoutConfirmModal .btn-logout:hover {
+        background: linear-gradient(135deg, #FF5252 0%, #E64A42 100%);
+        box-shadow: 0 12px 24px rgba(255, 107, 107, 0.3);
+    }
+
+    /* Icon inside buttons */
+    #logoutConfirmModal .btn i {
+        font-size: 1.1em;
+    }
+
+    /* Responsive */
+    @@media (max-width: 480px) {
+        #logoutConfirmModal .modal-inner {
+            margin: 20px;
         }
 
-        // Update immediately and then every second
-        updateDateTime();
-        setInterval(updateDateTime, 1000);
-    </script>
+        #logoutConfirmModal .modal-header {
+            padding: 24px 20px;
+        }
 
-</body>
-</html>
+        #logoutConfirmModal .modal-body {
+            padding: 20px;
+        }
+
+        #logoutConfirmModal .modal-footer {
+            padding: 16px 20px 20px;
+            flex-direction: column;
+        }
+
+        #logoutConfirmModal .btn {
+            min-width: 100%;
+        }
+
+        #logoutConfirmModal .btn-logout {
+            max-width: 100%;
+        }
+    }
+</style>
+
+<div id="logoutConfirmModal" aria-hidden="true">
+    <div class="modal-inner" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmTitle">
+        <!-- Header with Icon -->
+        <div class="modal-header">
+            <div class="modal-icon">
+                <i class="fas fa-sign-out-alt"></i>
+            </div>
+            <h2 id="logoutConfirmTitle" class="modal-title">Confirm Logout</h2>
+        </div>
+
+        <!-- Body with Message -->
+        <div class="modal-body">
+            <p class="modal-message">
+                <strong>Are you sure you want to logout?</strong>
+            </p>
+            <p class="modal-submessage">
+                You'll need to log in again to access the admin panel.
+            </p>
+        </div>
+
+        <!-- Footer with Actions -->
+        <div class="modal-footer">
+            <button type="button" id="logoutCancelBtn" class="btn btn-cancel">
+                <i class="fas fa-times"></i> Cancel
+            </button>
+            <button type="button" id="logoutConfirmBtn" class="btn btn-logout">
+                <i class="fas fa-sign-out-alt"></i> Logout
+            </button>
+        </div>
+    </div>
+</div>
+
+<script>
+(function(){
+    'use strict';
+    const modal = document.getElementById('logoutConfirmModal');
+    const btnCancel = document.getElementById('logoutCancelBtn');
+    const btnConfirm = document.getElementById('logoutConfirmBtn');
+
+    function showLogoutModal(href) {
+        modal.style.display = 'flex';
+        modal.setAttribute('data-logout-href', href);
+        modal.classList.add('show');
+        // Set focus to cancel button for accessibility
+        setTimeout(() => {
+            btnCancel.focus();
+        }, 100);
+    }
+
+    function hideLogoutModal() {
+        modal.classList.remove('show');
+        setTimeout(() => {
+            modal.style.display = 'none';
+            modal.removeAttribute('data-logout-href');
+        }, 300);
+    }
+
+    // Intercept clicks on logout anchors
+    document.addEventListener('click', function(e){
+        const a = e.target.closest('a');
+        if (!a) return;
+        const href = a.getAttribute('href') || '';
+        if (/logout/i.test(href)) {
+            e.preventDefault();
+            showLogoutModal(href);
+        }
+    }, true);
+
+    // Cancel button
+    btnCancel.addEventListener('click', function(){
+        hideLogoutModal();
+    });
+
+    // Confirm logout button
+    btnConfirm.addEventListener('click', function(){
+        const href = modal.getAttribute('data-logout-href');
+        if (!href) return;
+
+        // Disable button during logout to prevent double-clicks
+        btnConfirm.disabled = true;
+        btnConfirm.style.opacity = '0.6';
+        btnConfirm.style.cursor = 'not-allowed';
+
+        // Create a temporary anchor with data-action=logout so existing handlers allow navigation
+        const temp = document.createElement('a');
+        temp.href = href;
+        temp.setAttribute('data-action', 'logout');
+        temp.style.display = 'none';
+        document.body.appendChild(temp);
+
+        // Dispatch a click to trigger existing capture-phase handlers that call allowNavigation()
+        temp.click();
+
+        // As a fallback, force navigation after a short delay
+        setTimeout(function(){
+            if (document.location.href !== href) {
+                window.location.href = href;
+            }
+        }, 300);
+    });
+
+    // Close modal on Escape key
+    document.addEventListener('keydown', function(e){
+        if (e.key === 'Escape' && modal.style.display === 'flex') {
+            hideLogoutModal();
+        }
+    });
+
+    // Close modal when clicking outside (on backdrop)
+    modal.addEventListener('click', function(e){
+        if (e.target === modal) {
+            hideLogoutModal();
+        }
+    });
+})();
+</script>

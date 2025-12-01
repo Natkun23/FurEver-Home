@@ -508,6 +508,26 @@
             }
         }
 
+        /* Enhanced App Icon for Profile Pictures */
+        .app-icon img {
+            border: 3px solid #e0f2fe;
+            box-shadow: 0 4px 12px rgba(63, 169, 245, 0.15);
+            transition: all 0.3s;
+        }
+
+        .application-card:hover .app-icon img {
+            transform: scale(1.05);
+            box-shadow: 0 6px 20px rgba(63, 169, 245, 0.25);
+        }
+
+        .app-icon > div {
+            transition: all 0.3s;
+        }
+
+        .application-card:hover .app-icon > div {
+            transform: scale(1.05);
+        }
+
         /* Animated Checkmark */
         .success-checkmark-wrapper {
             margin-bottom: 25px;
@@ -812,9 +832,41 @@
                          data-client="@app.User.FullName.ToLower()"
                          data-pet="@app.Pet.Name.ToLower()"
                          data-status="@app.Status.ToLower()">
-                        <div class="app-icon">
-                            <i class="fas fa-file-alt"></i>
+
+                        <div style="display: flex; gap: -20px; align-items: center; position: relative; width: fit-content;">
+                            <!-- User Profile (Larger, Rectangular) -->
+                            <div style="width: 80px; height: 80px; border-radius: 15px; overflow: hidden; border: 3px solid #3FA9F5; box-shadow: 0 4px 12px rgba(63, 169, 245, 0.15); position: relative; z-index: 1;">
+                                @if (!string.IsNullOrEmpty(app.User.ProfilePictureUrl))
+                                {
+                                    <img src="@app.User.ProfilePictureUrl"
+                                         alt="@app.User.FullName"
+                                         style="width: 100%; height: 100%; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%); font-size: 2em; color: #3FA9F5; font-weight: 700;">
+                                        @(app.User.FullName.Length > 0 ? app.User.FullName.Substring(0, 1).ToUpper() : "U")
+                                    </div>
+                                }
+                            </div>
+
+                            <!-- Pet Image (Smaller, Circular, Overlapping) -->
+                            <div style="width: 52px; height: 52px; border-radius: 50%; overflow: hidden; border: 3px solid #10b981; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.15); position: relative; z-index: 2; margin-left: -40px; margin-top: 70px; background: white;">
+                                @if (!string.IsNullOrEmpty(app.Pet.ImageUrl))
+                                {
+                                    <img src="@app.Pet.ImageUrl"
+                                         alt="@app.Pet.Name"
+                                         style="width: 100%; height: 100%; object-fit: cover;">
+                                }
+                                else
+                                {
+                                    <div style="width: 100%; height: 100%; display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); font-size: 1.2em; color: #10b981; font-weight: 700;">
+                                        <i class="fas fa-paw"></i>
+                                    </div>
+                                }
+                            </div>
                         </div>
+
                         <div class="app-content">
                             <h3>@app.User.FullName wants to adopt @app.Pet.Name</h3>
                             <div class="app-details">

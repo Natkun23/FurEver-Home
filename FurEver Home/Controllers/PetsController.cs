@@ -457,10 +457,10 @@ namespace FurEver_Home.Controllers
             return View();
         }
 
-        // POST: Pets/PostForAdoption - UPDATED TO HANDLE CUSTOM QUESTIONS
+        // POST: Pets/PostForAdoption - UPDATED TO HANDLE MULTIPLE IMAGES + CUSTOM QUESTIONS
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult PostForAdoption(Pet model, HttpPostedFileBase PetImage, string[] Questions, string[] QuestionTypes)
+        public ActionResult PostForAdoption(Pet model, HttpPostedFileBase PetImage, HttpPostedFileBase PetImage2, HttpPostedFileBase PetImage3, string[] Questions, string[] QuestionTypes)
         {
             if (Session["UserId"] == null)
             {
@@ -479,7 +479,7 @@ namespace FurEver_Home.Controllers
 
             if (ModelState.IsValid)
             {
-                // Handle pet image upload
+                // ⭐ Handle MAIN pet image upload (Photo 1)
                 if (PetImage != null && PetImage.ContentLength > 0)
                 {
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
@@ -500,23 +500,56 @@ namespace FurEver_Home.Controllers
                     }
                 }
 
+                // ⭐ Handle Photo 2
+                if (PetImage2 != null && PetImage2.ContentLength > 0)
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                    var extension = Path.GetExtension(PetImage2.FileName).ToLower();
+
+                    if (allowedExtensions.Contains(extension))
+                    {
+                        var uploadsDir = Server.MapPath("~/Content/Uploads/Pets");
+                        var fileName = Guid.NewGuid().ToString() + extension;
+                        var filePath = Path.Combine(uploadsDir, fileName);
+                        PetImage2.SaveAs(filePath);
+                        model.ImageUrl2 = "/Content/Uploads/Pets/" + fileName;
+                    }
+                }
+
+                // ⭐ Handle Photo 3
+                if (PetImage3 != null && PetImage3.ContentLength > 0)
+                {
+                    var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
+                    var extension = Path.GetExtension(PetImage3.FileName).ToLower();
+
+                    if (allowedExtensions.Contains(extension))
+                    {
+                        var uploadsDir = Server.MapPath("~/Content/Uploads/Pets");
+                        var fileName = Guid.NewGuid().ToString() + extension;
+                        var filePath = Path.Combine(uploadsDir, fileName);
+                        PetImage3.SaveAs(filePath);
+                        model.ImageUrl3 = "/Content/Uploads/Pets/" + fileName;
+                    }
+                }
+
                 // Set pet properties
                 model.DateAdded = DateTime.Now;
                 model.CreatedAt = DateTime.Now;
                 model.UpdatedAt = DateTime.Now;
                 model.IsAdopted = false;
                 model.CreatedBy = userId;
-                model.OwnerUserId = userId; // ⭐ NEW: Set owner
-                model.PostedByType = "Customer"; // ⭐ NEW
-                model.PostStatus = "Pending"; // ⭐ NEW: Requires admin approval
-                model.RequiresAdminApproval = true; // ⭐ NEW
-                model.AdminVerified = false; // ⭐ NEW
+                model.OwnerUserId = userId;
+                model.PostedByType = "Customer";
+                model.PostStatus = "Pending";
+                model.RequiresAdminApproval = true;
+                model.AdminVerified = false;
                 model.OrganizationName = null;
+                model.Location = model.Location;
 
                 db.Pets.Add(model);
                 db.SaveChanges();
 
-                // ⭐ NEW: Save custom screening questions
+                // ⭐ Save custom screening questions
                 if (Questions != null && Questions.Length > 0)
                 {
                     for (int i = 0; i < Questions.Length; i++)
@@ -539,7 +572,7 @@ namespace FurEver_Home.Controllers
                 }
 
                 TempData["Success"] = $"Pet '{model.Name}' has been submitted for admin review! You'll be notified once it's approved.";
-                return RedirectToAction("CustomerDashboard", "MyPets"); // ⭐ CHANGED FROM "Dashboard"
+                return RedirectToAction("CustomerDashboard", "MyPets");
             }
 
             ViewBag.PetTypes = db.PetTypes.ToList();

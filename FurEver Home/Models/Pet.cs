@@ -66,12 +66,24 @@ namespace FurEver_Home.Models
         [Column("why_adopt_me")]
         public string WhyAdoptMe { get; set; }
 
+        [Column("location")]
+        [StringLength(255)]
+        public string Location { get; set; }  // e.g., "Quezon City, Metro Manila"
+
         [Column("is_adopted")]
         public bool IsAdopted { get; set; } = false;
 
         [Column("image_url")]
         [StringLength(500)]
         public string ImageUrl { get; set; }
+
+        [Column("image_url2")]
+        [StringLength(500)]
+        public string ImageUrl2 { get; set; }
+
+        [Column("image_url3")]
+        [StringLength(500)]
+        public string ImageUrl3 { get; set; }
 
         [Column("date_added")]
         public DateTime DateAdded { get; set; } = DateTime.Now;
@@ -91,7 +103,10 @@ namespace FurEver_Home.Models
         // ⭐ C2C Adoption Properties (MERGED - NO DUPLICATES)
         [Column("posted_by_type")]
         [StringLength(50)]
+
         public string PostedByType { get; set; } // "Admin", "Customer", "Organization"
+
+
 
         [Column("organization_name")]
         [StringLength(255)]
@@ -115,6 +130,25 @@ namespace FurEver_Home.Models
 
         [Column("admin_reviewed_date")]
         public DateTime? AdminReviewedDate { get; set; }
+
+        //Rejection Reason
+        [Column("rejection_reason")]
+        [StringLength(500)]
+        public string RejectionReason { get; set; }
+
+        // ⭐ NEW: Soft Delete Properties (for Customer Deleted Posts)
+        [Column("is_deleted")]
+        public bool IsDeleted { get; set; } = false;
+
+        [Column("deleted_by")]
+        public int? DeletedBy { get; set; }
+
+        [Column("deleted_at")]
+        public DateTime? DeletedAt { get; set; }
+
+        [Column("deletion_reason")]
+        [StringLength(500)]
+        public string DeletionReason { get; set; }
 
         // ========== COMPUTED PROPERTIES (NotMapped) ==========
         [NotMapped]
@@ -186,5 +220,9 @@ namespace FurEver_Home.Models
 
         [ForeignKey("AdminReviewedBy")]
         public virtual User AdminReviewer { get; set; }
+
+        [ForeignKey("DeletedBy")]
+        public virtual User DeletedByUser { get; set; }
+
     }
 }

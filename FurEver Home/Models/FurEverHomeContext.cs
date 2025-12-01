@@ -19,6 +19,9 @@ namespace FurEver_Home.Models
         public DbSet<PetScreeningQuestion> PetScreeningQuestions { get; set; }
         public DbSet<PetScreeningAnswer> PetScreeningAnswers { get; set; }
 
+        public DbSet<Role> Roles { get; set; }
+        public DbSet<UserRoles> UserRoles { get; set; }
+
         // ⭐ NEW: Add Breeds DbSet
         public DbSet<Breed> Breeds { get; set; }
 

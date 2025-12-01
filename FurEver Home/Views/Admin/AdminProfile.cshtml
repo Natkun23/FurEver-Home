@@ -1,0 +1,1143 @@
+@model FurEver_Home.Models.User
+@{
+    ViewBag.Title = "Admin Profile - FurEver Home";
+    Layout = null;
+    var currentUserId = (int)ViewBag.CurrentUserId;
+    var isSuperAdmin = (bool)ViewBag.IsSuperAdmin;
+    var isViewingOwnProfile = (bool)ViewBag.IsViewingOwnProfile;
+    var targetUser = ViewBag.TargetUser as FurEver_Home.Models.User;
+    var targetUserRoles = ViewBag.TargetUserRoles as List<string>;
+    var adminUsers = ViewBag.AdminUsers as List<FurEver_Home.Models.User>;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <link rel="stylesheet" href="~/Content/Styles/Profile.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
+    <style>
+        /* Profile Page Stylesheet */
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', 'Segoe UI', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            padding-top: 80px;
+        }
+
+        /* ==================== TOP NAVIGATION BAR ==================== */
+        .top-nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 20px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .btn-nav {
+            padding: 12px 24px;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            text-decoration: none;
+            font-size: 0.95em;
+        }
+
+        .btn-back-nav {
+            background: #e2e8f0;
+            color: #334155;
+            border: 2px solid #cbd5e1;
+        }
+
+            .btn-back-nav:hover {
+                background: #cbd5e1;
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            }
+
+        .btn-home-nav {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border: none;
+        }
+
+            .btn-home-nav:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(63, 169, 245, 0.4);
+            }
+
+        .nav-logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            font-size: 1.2em;
+            font-weight: 700;
+            color: #2E8BC0;
+        }
+
+            .nav-logo img {
+                width: 40px;
+                height: 40px;
+                border-radius: 50%;
+            }
+
+        /* ==================== CODE DIGIT INPUTS ==================== */
+        .code-digit {
+            width: 55px !important;
+            height: 65px !important;
+            text-align: center;
+            font-size: 1.8em;
+            font-weight: 700;
+            border: 2px solid #e2e8f0 !important;
+            border-radius: 12px !important;
+            background: #f8fafc !important;
+            color: #1e293b;
+            transition: all 0.3s;
+            outline: none;
+            padding: 0 !important;
+        }
+
+            .code-digit:focus {
+                border-color: #10b981 !important;
+                background: white !important;
+                box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.15) !important;
+                transform: scale(1.05);
+            }
+
+            .code-digit.filled {
+                border-color: #10b981 !important;
+                background: #d1fae5 !important;
+                color: #065f46;
+            }
+
+            .code-digit::placeholder {
+                color: #cbd5e1;
+                font-weight: 400;
+            }
+
+        .code-digit-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 12px;
+            margin: 0 auto 25px;
+            max-width: 450px;
+        }
+
+        /* ==================== PROFILE CARD ==================== */
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .profile-header {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            padding: 40px;
+            text-align: center;
+            color: white;
+        }
+
+        .profile-avatar {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 5px solid white;
+            margin: 0 auto 20px;
+            object-fit: cover;
+            background: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 3em;
+            font-weight: 700;
+            color: #3FA9F5;
+        }
+
+        .profile-name {
+            font-size: 2em;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+
+        .profile-email {
+            opacity: 0.9;
+        }
+
+        .profile-body {
+            padding: 40px;
+        }
+
+        /* ==================== ROLE BADGES ==================== */
+        .role-badges {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 15px;
+            flex-wrap: wrap;
+        }
+
+        .role-badge {
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+            .role-badge.super-admin {
+                background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+                color: #78350f;
+            }
+
+            .role-badge.moderator {
+                background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%);
+                color: white;
+            }
+
+            .role-badge.support {
+                background: linear-gradient(135deg, #60a5fa 0%, #3b82f6 100%);
+                color: white;
+            }
+
+        /* ==================== FORM ELEMENTS ==================== */
+        .form-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 25px;
+            margin-bottom: 25px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group.full-width {
+                grid-column: 1 / -1;
+            }
+
+            .form-group label {
+                display: block;
+                color: #334155;
+                margin-bottom: 8px;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+            .form-group input,
+            .form-group textarea,
+            .form-group select {
+                width: 100%;
+                padding: 14px 16px;
+                border: 2px solid #e2e8f0;
+                border-radius: 12px;
+                font-size: 15px;
+                transition: all 0.3s;
+                outline: none;
+                background: #f8fafc;
+            }
+
+                .form-group input:focus,
+                .form-group textarea:focus,
+                .form-group select:focus {
+                    border-color: #3FA9F5;
+                    background: white;
+                    box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+                }
+
+                .form-group input:disabled,
+                .form-group textarea:disabled,
+                .form-group select:disabled {
+                    background: #e2e8f0;
+                    cursor: not-allowed;
+                    color: #64748b;
+                }
+
+        /* ==================== BUTTONS ==================== */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+        }
+
+        .btn-save {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+        }
+
+            .btn-save:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(63, 169, 245, 0.4);
+            }
+
+            .btn-save:disabled {
+                background: #94a3b8;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+        .btn-back {
+            background: #e2e8f0;
+            color: #334155;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        /* ==================== ALERTS ==================== */
+        .alert {
+            padding: 15px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .alert-success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #a7f3d0;
+        }
+
+        .alert-warning {
+            background: #fef3c7;
+            color: #92400e;
+            border: 1px solid #fde68a;
+        }
+
+        .alert-info {
+            background: #dbeafe;
+            color: #1e40af;
+            border: 1px solid #bfdbfe;
+        }
+
+        /* ==================== MODALS ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+            .modal.show {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 700px;
+            width: 95%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            padding: 25px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .modal-header h2 {
+                font-size: 1.5em;
+                margin: 0;
+            }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: transform 0.2s;
+        }
+
+            .close-btn:hover {
+                transform: scale(1.1);
+            }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+        }
+
+        /* ==================== 2FA SECTION ==================== */
+        .tfa-section {
+            margin-top: 50px;
+            padding-top: 40px;
+            border-top: 2px solid #e2e8f0;
+        }
+
+            .tfa-section h2 {
+                font-size: 1.5em;
+                color: #1e293b;
+                margin-bottom: 10px;
+            }
+
+        .tfa-disabled, .tfa-enabled {
+            padding: 30px;
+            border-radius: 16px;
+            border: 2px solid;
+        }
+
+        .tfa-disabled {
+            background: #f8fafc;
+            border-color: #e2e8f0;
+        }
+
+        .tfa-enabled {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border-color: #10b981;
+        }
+
+        .tfa-icon-wrapper {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .tfa-disabled .tfa-icon-wrapper {
+            background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+        }
+
+        .tfa-enabled .tfa-icon-wrapper {
+            background: white;
+        }
+
+        /* ==================== ANIMATIONS ==================== */
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        /* ==================== MOBILE RESPONSIVE ==================== */
+        @@media (max-width: 768px) {
+            .top-nav-bar {
+                flex-direction: column;
+                gap: 10px;
+                padding: 12px 15px;
+            }
+
+            .nav-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .nav-logo {
+                font-size: 1em;
+            }
+
+            .btn-nav {
+                padding: 10px 18px;
+                font-size: 0.85em;
+            }
+
+            .code-digit {
+                width: 45px !important;
+                height: 55px !important;
+                font-size: 1.5em;
+            }
+
+            body {
+                padding-top: 100px;
+                padding: 20px;
+                padding-top: 100px;
+            }
+
+            .form-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .profile-name {
+                font-size: 1.5em;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .role-badges {
+                flex-direction: column;
+                align-items: center;
+            }
+        }
+
+        /* ==================== ADMIN USER MANAGEMENT ==================== */
+        .user-selector {
+            background: #f8fafc;
+            padding: 20px;
+            border-radius: 12px;
+            margin-bottom: 30px;
+            border: 2px solid #e2e8f0;
+        }
+
+            .user-selector label {
+                display: block;
+                color: #1e293b;
+                font-weight: 600;
+                margin-bottom: 10px;
+            }
+
+            .user-selector select {
+                width: 100%;
+                padding: 14px;
+                border: 2px solid #cbd5e1;
+                border-radius: 10px;
+                font-size: 15px;
+                background: white;
+                cursor: pointer;
+            }
+
+        .readonly-notice {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            color: #92400e;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+    </style>
+    <!-- ==================== TOP NAVIGATION BAR ==================== -->
+    <div class="top-nav-bar">
+        <div class="nav-left">
+            <a href="@Url.Action("Dashboard", "Admin")" class="btn-nav btn-back-nav">
+                <i class="fas fa-arrow-left"></i> Back to Dashboard
+            </a>
+        </div>
+        <div class="nav-logo">
+            <img src="~/Content/Images/circle_furever.png" alt="Logo">
+            <span>FurEver Home</span>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <div class="profile-avatar">@targetUser.FullName.Substring(0, 1).ToUpper()</div>
+                <div class="profile-name">@targetUser.FullName</div>
+                <div class="profile-email"><i class="fas fa-envelope"></i> @targetUser.Email</div>
+
+                @if (targetUserRoles != null && targetUserRoles.Any())
+                {
+                <div class="role-badges">
+                    @foreach (var role in targetUserRoles)
+                        {
+                            if (role == "Super Admin")
+                            {
+                    <span class="role-badge super-admin">
+                        <i class="fas fa-crown"></i> Super Admin
+                    </span>
+                            }
+                            else if (role == "Moderator")
+                            {
+                    <span class="role-badge moderator">
+                        <i class="fas fa-shield-halved"></i> Moderator
+                    </span>
+                            }
+                            else if (role == "Support")
+                            {
+                    <span class="role-badge support">
+                        <i class="fas fa-headset"></i> Support
+                    </span>
+                            }
+                        }
+                </div>
+                }
+            </div>
+
+            <div class="profile-body">
+                @if (TempData["Success"] != null)
+                {
+                    <div class="alert alert-success">
+                        <i class="fas fa-check-circle"></i>
+                        <span>@TempData["Success"]</span>
+                    </div>
+                }
+
+                @if (TempData["Error"] != null)
+                {
+                    <div class="alert alert-warning">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span>@TempData["Error"]</span>
+                    </div>
+                }
+
+                <!-- ==================== SUPER ADMIN USER SELECTOR ==================== -->
+                @if (isSuperAdmin)
+                {
+                    <div class="user-selector">
+                        <label>
+                            <i class="fas fa-users-gear"></i> Manage Admin Profile
+                        </label>
+                        <select id="adminUserSelector" onchange="changeAdminProfile(this.value)">
+                            <option value="@currentUserId" @(targetUser.UserId == currentUserId ? "selected" : "")>
+                                My Profile (@Model.Email)
+                            </option>
+                            @if (adminUsers != null)
+                            {
+                                foreach (dynamic admin in adminUsers)
+                                {
+                                    if (admin.UserId != currentUserId)
+                                    {
+                                        <option value="@admin.UserId" @(targetUser.UserId == admin.UserId ? "selected" : "")>
+                                            @admin.FullName (@admin.Email) - @admin.PrimaryRole
+                                        </option>
+                                    }
+                                }
+                            }
+                        </select>
+                    </div>
+                }
+                <!-- ==================== READ-ONLY NOTICE FOR NON-SUPER ADMINS ==================== -->
+                @if (!isSuperAdmin && !isViewingOwnProfile)
+                {
+                    <div class="readonly-notice">
+                        <i class="fas fa-info-circle"></i>
+                        <span>You are viewing another admin's profile in read-only mode.</span>
+                    </div>
+                }
+
+                @if (!isViewingOwnProfile && !isSuperAdmin)
+                {
+                    <div class="readonly-notice">
+                        <i class="fas fa-lock"></i>
+                        <span>You can only edit your own profile. Viewing mode only.</span>
+                    </div>
+                }
+
+                @using (Html.BeginForm("UpdateProfile", "Admin", FormMethod.Post, new { id = "profileForm" }))
+                {
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="targetUserId" value="@targetUser.UserId" />
+
+                    <div class="form-grid">
+                        <div class="form-group">
+                            <label>Full Name</label>
+                            <input type="text"
+                                   name="FullName"
+                                   value="@targetUser.FullName"
+                                   placeholder="Full name"
+                                   @((!isSuperAdmin && !isViewingOwnProfile) ? "disabled" : "")
+                                   required />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Email (Cannot be changed)</label>
+                            <input type="email" value="@targetUser.Email" disabled />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Phone Number</label>
+                            <input type="text"
+                                   name="PhoneNumber"
+                                   value="@targetUser.PhoneNumber"
+                                   placeholder="Phone number"
+                                   @((!isSuperAdmin && !isViewingOwnProfile) ? "disabled" : "") />
+                        </div>
+
+                        <div class="form-group">
+                            <label>Age</label>
+                            <input type="number"
+                                   name="Age"
+                                   value="@targetUser.Age"
+                                   placeholder="Age"
+                                   @((!isSuperAdmin && !isViewingOwnProfile) ? "disabled" : "") />
+                        </div>
+                    </div>
+
+                    <div class="form-group full-width">
+                        <label>Address</label>
+                        <textarea name="Address"
+                                  placeholder="Complete address"
+                                  rows="3"
+                                  @((!isSuperAdmin && !isViewingOwnProfile) ? "disabled" : "")>@targetUser.Address</textarea>
+                    </div>
+
+                    if (isSuperAdmin || isViewingOwnProfile)
+                    {
+                        <div class="action-buttons">
+                            <button type="submit" class="btn btn-save">
+                                <i class="fas fa-save"></i> Save Changes
+                            </button>
+                        </div>
+                    }
+                    else
+                    {
+                        <div class="alert alert-info">
+                            <i class="fas fa-eye"></i>
+                            <span>You are in view-only mode. Only Super Admins can edit other admin profiles.</span>
+                        </div>
+                    }
+                }
+
+                <!-- ==================== TWO-FACTOR AUTHENTICATION SECTION ==================== -->
+                <div class="tfa-section">
+                    <h2>
+                        <i class="fas fa-shield-halved" style="color: #10b981;"></i> Two-Factor Authentication
+                    </h2>
+                    <p style="color: #64748b; margin-bottom: 30px;">
+                        Add an extra layer of security using an authenticator app.
+                    </p>
+
+                    @if (!targetUser.TwoFactorEnabled)
+                    {
+                        <!-- 2FA Disabled -->
+                        <div class="tfa-disabled">
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                                <div class="tfa-icon-wrapper">
+                                    <i class="fas fa-shield-halved" style="font-size: 1.8em; color: #94a3b8;"></i>
+                                </div>
+                                <div>
+                                    <h3 style="color: #1e293b; font-size: 1.1em; margin-bottom: 4px;">2FA Not Enabled</h3>
+                                    <p style="color: #64748b; font-size: 0.9em; margin: 0;">Account protected by password only</p>
+                                </div>
+                            </div>
+
+                            @if (isSuperAdmin || isViewingOwnProfile)
+                            {
+                                <button type="button" class="btn" onclick="initiate2FA(@targetUser.UserId)"
+                                        style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; max-width: 300px;">
+                                    <i class="fas fa-shield-halved"></i> Enable 2FA
+                                </button>
+                            }
+                            else
+                            {
+                                <p style="color: #64748b; font-style: italic;">
+                                    <i class="fas fa-lock"></i> Only the user or Super Admin can enable 2FA
+                                </p>
+                            }
+                        </div>
+                    }
+                    else
+                    {
+                        <!-- 2FA Enabled -->
+                        <div class="tfa-enabled">
+                            <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                                <div class="tfa-icon-wrapper">
+                                    <i class="fas fa-shield-halved" style="font-size: 1.8em; color: #10b981;"></i>
+                                </div>
+                                <div>
+                                    <h3 style="color: #065f46; font-size: 1.1em; margin-bottom: 4px;">
+                                        <i class="fas fa-check-circle"></i> 2FA Enabled
+                                    </h3>
+                                    <p style="color: #047857; font-size: 0.9em; margin: 0;">Account protected with 2FA</p>
+                                </div>
+                            </div>
+
+                            @if (isSuperAdmin || isViewingOwnProfile)
+                            {
+                                <button type="button" class="btn" onclick="disable2FA(@targetUser.UserId)"
+                                        style="background: #ef4444; color: white; max-width: 300px;">
+                                    <i class="fas fa-shield-xmark"></i> Disable 2FA
+                                </button>
+                            }
+                            else
+                            {
+                                <p style="color: #065f46; font-style: italic;">
+                                    <i class="fas fa-check-circle"></i> Two-Factor Authentication is active
+                                </p>
+                            }
+                        </div>
+                    }
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== 2FA SETUP MODAL ==================== -->
+    <div id="twoFaModal" class="modal">
+        <div class="modal-content" style="max-width: 550px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%);">
+                <h2><i class="fas fa-shield-halved"></i> Set Up Two-Factor Authentication</h2>
+                <button type="button" class="close-btn" onclick="closeTwoFaModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <!-- Step 1: QR Code -->
+                <div id="step1">
+                    <h3 style="color: #1e293b; margin-bottom: 15px; text-align: center;">
+                        <span style="display: inline-block; width: 30px; height: 30px; background: #10b981; color: white; border-radius: 50%; line-height: 30px; margin-right: 8px;">1</span>
+                        Scan QR Code
+                    </h3>
+                    <p style="color: #64748b; margin-bottom: 25px; text-align: center;">
+                        Open your authenticator app and scan this QR code
+                    </p>
+
+                    <div style="background: white; padding: 20px; border-radius: 12px; margin-bottom: 20px; text-align: center; border: 2px solid #e2e8f0;">
+                        <img id="qrCodeImage" src="" alt="QR Code" style="width: 250px; height: 250px;">
+                    </div>
+
+                    <div style="background: #f8fafc; padding: 16px; border-radius: 10px; margin-bottom: 25px; border: 1px solid #e2e8f0; text-align: center;">
+                        <p style="color: #475569; font-size: 0.9em; margin-bottom: 8px; font-weight: 600;">Can't scan? Enter this key manually:</p>
+                        <code id="secretKey" style="background: white; padding: 10px 15px; border-radius: 6px; font-size: 1em; color: #10b981; border: 1px solid #e2e8f0; display: inline-block; letter-spacing: 2px;"></code>
+                    </div>
+
+                    <button type="button" class="btn" onclick="showStep2()" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; width: 100%;">
+                        <i class="fas fa-arrow-right"></i> Next: Verify Code
+                    </button>
+                </div>
+
+                <!-- Step 2: Verification -->
+                <div id="step2" style="display: none;">
+                    <h3 style="color: #1e293b; margin-bottom: 15px; text-align: center;">
+                        <span style="display: inline-block; width: 30px; height: 30px; background: #10b981; color: white; border-radius: 50%; line-height: 30px; margin-right: 8px;">2</span>
+                        Verify Code
+                    </h3>
+                    <p style="color: #64748b; margin-bottom: 25px; text-align: center;">
+                        Enter the 6-digit code from your authenticator app
+                    </p>
+
+                    <div class="code-digit-container">
+                        <input type="text" class="code-digit" id="verify1" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                        <input type="text" class="code-digit" id="verify2" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                        <input type="text" class="code-digit" id="verify3" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                        <input type="text" class="code-digit" id="verify4" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                        <input type="text" class="code-digit" id="verify5" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                        <input type="text" class="code-digit" id="verify6" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+                    </div>
+
+                    <div id="verifyError" style="display: none; background: #fef2f2; padding: 12px; border-radius: 8px; margin-bottom: 20px; color: #991b1b; border: 1px solid #fecaca; text-align: center;">
+                        <i class="fas fa-exclamation-circle"></i> <span id="verifyErrorText"></span>
+                    </div>
+
+                    <div style="display: flex; gap: 12px;">
+                        <button type="button" class="btn" onclick="showStep1()" style="background: #e5e7eb; color: #1c1e21; flex: 1;">
+                            <i class="fas fa-arrow-left"></i> Back
+                        </button>
+                        <button type="button" class="btn" onclick="confirm2FA()" id="confirmBtn" style="background: linear-gradient(135deg, #10b981 0%, #059669 100%); color: white; flex: 2;">
+                            <i class="fas fa-check"></i> Enable 2FA
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DISABLE 2FA MODAL ==================== -->
+    <div id="disableTwoFaModal" class="modal">
+        <div class="modal-content" style="max-width: 480px;">
+            <div class="modal-header" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);">
+                <h2><i class="fas fa-shield-xmark"></i> Disable Two-Factor Authentication</h2>
+                <button type="button" class="close-btn" onclick="closeDisableTwoFaModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="modal-body">
+                <div style="background: #fef2f2; padding: 20px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #fecaca;">
+                    <div style="display: flex; align-items: flex-start; gap: 15px;">
+                        <i class="fas fa-exclamation-triangle" style="color: #ef4444; font-size: 1.5em; margin-top: 2px;"></i>
+                        <div>
+                            <h4 style="color: #991b1b; margin-bottom: 8px;">Warning</h4>
+                            <p style="color: #991b1b; font-size: 0.9em; margin: 0;">
+                                Disabling 2FA will make this account less secure.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label style="font-weight: 600; color: #1e293b;">
+                        Enter your password to confirm:
+                    </label>
+                    <input type="password" id="disablePassword" placeholder="Your password" style="width: 100%; padding: 14px; border: 2px solid #e2e8f0; border-radius: 10px;">
+                </div>
+
+                <div id="disableError" style="display: none; background: #fef2f2; padding: 12px; border-radius: 8px; margin-top: 15px; color: #991b1b; border: 1px solid #fecaca; text-align: center;">
+                    <i class="fas fa-exclamation-circle"></i> <span id="disableErrorText"></span>
+                </div>
+
+                <div style="display: flex; gap: 12px; margin-top: 25px;">
+                    <button type="button" class="btn" onclick="closeDisableTwoFaModal()" style="background: #e5e7eb; color: #1c1e21; flex: 1;">
+                        Cancel
+                    </button>
+                    <button type="button" class="btn" onclick="confirmDisable2FA()" id="disableBtn" style="background: #ef4444; color: white; flex: 1;">
+                        <i class="fas fa-shield-xmark"></i> Disable 2FA
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+    var currentTargetUserId = @targetUser.UserId;
+
+    function changeAdminProfile(userId) {
+        window.location.href = '@Url.Action("Profile", "Admin")?userId=' + userId;
+    }
+
+    // ==================== 2FA FUNCTIONS ====================
+    function initiate2FA(userId) {
+        $.ajax({
+            url: '@Url.Action("EnableTwoFactorForAdmin", "Admin")',
+            type: 'POST',
+            data: { targetUserId: userId },
+            success: function(response) {
+                if (response.success) {
+                    $('#qrCodeImage').attr('src', '@Url.Action("GetQRCodeForAdmin", "Admin")?targetUserId=' + userId + '&' + new Date().getTime());
+                    $('#secretKey').text(response.secret);
+                    $('#twoFaModal').css('display', 'flex').addClass('show');
+                    currentTargetUserId = userId;
+                    setupVerificationInputs();
+                } else {
+                    alert('Failed to generate 2FA setup: ' + response.message);
+                }
+            },
+            error: function() {
+                alert('An error occurred. Please try again.');
+            }
+        });
+    }
+
+    function setupVerificationInputs() {
+        const verifyInputs = document.querySelectorAll('#step2 .code-digit');
+        verifyInputs.forEach((input, index) => {
+            input.value = '';
+            input.classList.remove('filled');
+            input.addEventListener('input', function() {
+                this.value = this.value.replace(/[^0-9]/g, '');
+                if (this.value.length === 1) {
+                    this.classList.add('filled');
+                    if (index < verifyInputs.length - 1) {
+                        verifyInputs[index + 1].focus();
+                    }
+                } else {
+                    this.classList.remove('filled');
+                }
+            });
+            input.addEventListener('keydown', function(e) {
+                if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                    verifyInputs[index - 1].focus();
+                }
+            });
+        });
+        verifyInputs[0].focus();
+    }
+
+    function showStep2() {
+        $('#step1').hide();
+        $('#step2').show();
+        $('#verify1').focus();
+    }
+
+    function showStep1() {
+        $('#step2').hide();
+        $('#step1').show();
+        $('#verifyError').hide();
+    }
+
+    function confirm2FA() {
+        const code = $('#verify1').val() + $('#verify2').val() + $('#verify3').val() +
+                     $('#verify4').val() + $('#verify5').val() + $('#verify6').val();
+
+        if (code.length !== 6) {
+            $('#verifyErrorText').text('Please enter all 6 digits');
+            $('#verifyError').show();
+            return;
+        }
+
+        $('#confirmBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Verifying...');
+
+        $.ajax({
+            url: '@Url.Action("ConfirmTwoFactorForAdmin", "Admin")',
+            type: 'POST',
+            data: { code: code, targetUserId: currentTargetUserId },
+            success: function(response) {
+                if (response.success) {
+                    closeTwoFaModal();
+                    location.reload();
+                } else {
+                    $('#verifyErrorText').text(response.message);
+                    $('#verifyError').show();
+                    $('#confirmBtn').prop('disabled', false).html('<i class="fas fa-check"></i> Enable 2FA');
+                }
+            },
+            error: function() {
+                $('#verifyErrorText').text('An error occurred. Please try again.');
+                $('#verifyError').show();
+                $('#confirmBtn').prop('disabled', false).html('<i class="fas fa-check"></i> Enable 2FA');
+            }
+        });
+    }
+
+    function closeTwoFaModal() {
+        $('#twoFaModal').removeClass('show').css('display', 'none');
+        $('#step1').show();
+        $('#step2').hide();
+        $('#verifyError').hide();
+        $('#verify1, #verify2, #verify3, #verify4, #verify5, #verify6').val('').removeClass('filled');
+    }
+
+    function disable2FA(userId) {
+        currentTargetUserId = userId;
+        $('#disableTwoFaModal').css('display', 'flex').addClass('show');
+        $('#disablePassword').val('').focus();
+        $('#disableError').hide();
+    }
+
+    function closeDisableTwoFaModal() {
+        $('#disableTwoFaModal').removeClass('show').css('display', 'none');
+        $('#disablePassword').val('');
+        $('#disableError').hide();
+    }
+
+    function confirmDisable2FA() {
+        const password = $('#disablePassword').val();
+
+        if (!password) {
+            $('#disableErrorText').text('Please enter your password');
+            $('#disableError').show();
+            return;
+        }
+
+        $('#disableBtn').prop('disabled', true).html('<i class="fas fa-spinner fa-spin"></i> Processing...');
+
+        $.ajax({
+            url: '@Url.Action("DisableTwoFactorForAdmin", "Admin")',
+            type: 'POST',
+            data: { password: password, targetUserId: currentTargetUserId },
+            success: function(response) {
+                if (response.success) {
+                    closeDisableTwoFaModal();
+                    location.reload();
+                } else {
+                    $('#disableErrorText').text(response.message);
+                    $('#disableError').show();
+                    $('#disableBtn').prop('disabled', false).html('<i class="fas fa-shield-xmark"></i> Disable 2FA');
+                }
+            },
+            error: function() {
+                $('#disableErrorText').text('An error occurred. Please try again.');
+                $('#disableError').show();
+                $('#disableBtn').prop('disabled', false).html('<i class="fas fa-shield-xmark"></i> Disable 2FA');
+            }
+        });
+    }
+
+    // Close modals on background click
+    $('#twoFaModal, #disableTwoFaModal').on('click', function(e) {
+        if (e.target === this) {
+            closeTwoFaModal();
+            closeDisableTwoFaModal();
+        }
+    });
+
+    // Close modals on ESC key
+    $(document).on('keydown', function(e) {
+        if (e.key === 'Escape') {
+            closeTwoFaModal();
+            closeDisableTwoFaModal();
+        }
+    });
+    </script>
+</body>
+</html>

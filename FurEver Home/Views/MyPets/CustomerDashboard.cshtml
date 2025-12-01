@@ -588,6 +588,61 @@
                 box-shadow: 0 8px 20px rgba(220, 38, 38, 0.3);
             }
 
+        .btn-edit {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+        }
+
+            .btn-edit:hover {
+                background: linear-gradient(135deg, #2E8BC0 0%, #1e5f8f 100%);
+                transform: translateY(-2px);
+                box-shadow: 0 4px 12px rgba(63, 169, 245, 0.3);
+                color: white;
+            }
+
+            .btn-edit:disabled,
+            .btn-edit[style*="pointer-events: none"] {
+                background: #cbd5e1;
+                color: #94a3b8;
+                cursor: not-allowed;
+                opacity: 0.6;
+            }
+
+        /* Update pet-actions to use grid layout for better button spacing */
+        .pet-actions {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin-top: 15px;
+        }
+
+            /* When there are 3 buttons (Applications + Edit + Delete) */
+            .pet-actions:has(.btn-applications) {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+        /* Make adopted badge span full width */
+        .adopted-badge {
+            grid-column: 1 / -1 !important;
+        }
+
+
+
+        /* Radio Button Styles for Delete Modal */
+        input[type="radio"]:checked + strong {
+            color: #3FA9F5;
+        }
+
+        label:has(input[type="radio"]):hover {
+            border-color: #3FA9F5 !important;
+            background: #E8F4FC !important;
+        }
+
+        label:has(input[type="radio"]:checked) {
+            border-color: #3FA9F5 !important;
+            background: #E8F4FC !important;
+        }
+
         @@keyframes fadeIn {
             from {
                 opacity: 0;
@@ -637,6 +692,7 @@
                 <a href="@Url.Action("PostForAdoption", "Pets")"><i class="fas fa-plus-circle"></i> Post Pet</a>
                 <a href="@Url.Action("MyApplications", "Pets")"><i class="fas fa-file-alt"></i> My Applications</a>
                 <a href="@Url.Action("CustomerDashboard", "MyPets")" style="background: #E8F4FC; color: #3FA9F5;"><i class="fas fa-dashboard"></i> Dashboard</a>
+                <a href="@Url.Action("CustomerDeletedPosts", "MyPets")"><i class="fas fa-trash-alt"></i> Deleted Posts</a>
             </div>
         </div>
     </nav>
@@ -729,11 +785,20 @@
                 @foreach (var pet in Model)
                 {
                     <div class="pet-card" style="position: relative;">
-                        <a href="@Url.Action("Details", "Pets", new { id = pet.PetId, returnUrl = Url.Action("CustomerDashboard", "MyPets") })"
-                           style="display: block; text-decoration: none;">
+                        @if (pet.PostStatus == "Rejected")
+                        {
                             <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/320x220?text=" + pet.Name : pet.ImageUrl)"
-                                 alt="@pet.Name" class="pet-image" style="cursor: pointer;">
-                        </a>
+                                 alt="@pet.Name" class="pet-image" style="cursor: pointer;"
+                                 onclick="showRejectionModal('@pet.PetId', '@pet.Name', '@(pet.RejectionReason ?? "No reason provided")')">
+                        }
+                        else
+                        {
+                            <a href="@Url.Action("Details", "Pets", new { id = pet.PetId, returnUrl = Url.Action("CustomerDashboard", "MyPets") })"
+                               style="display: block; text-decoration: none;">
+                                <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/320x220?text=" + pet.Name : pet.ImageUrl)"
+                                     alt="@pet.Name" class="pet-image" style="cursor: pointer;">
+                            </a>
+                        }
 
                         <div class="pet-status status-@pet.PostStatus.ToLower()">
                             @pet.PostStatus
@@ -745,19 +810,24 @@
                                 var petAppCount = applications != null ? applications.Count(a => a.PetId == pet.PetId && a.Status == "Pending") : 0;
                             }
 
-                            <a href="@Url.Action("Details", "Pets", new { id = pet.PetId, returnUrl = Url.Action("CustomerDashboard", "MyPets") })"
-                               style="text-decoration: none;">
-
-                                <div class="pet-name" style="cursor: pointer; transition: color 0.3s;">
+                            @if (pet.PostStatus == "Rejected")
+                            {
+                                <div class="pet-name" style="cursor: pointer; transition: color 0.3s;"
+                                     onclick="showRejectionModal('@pet.PetId', '@pet.Name', '@(pet.RejectionReason ?? "No reason provided")')">
                                     @pet.Name
-
-                                    @if (petAppCount > 0)
-                                    {
-                                        <span class="app-badge">@petAppCount</span>
-                                    }
                                 </div>
-                            </a>
-
+                            }
+                            else
+                            {
+                                <a href="@Url.Action("Details", "Pets", new { id = pet.PetId, returnUrl = Url.Action("CustomerDashboard", "MyPets") })"
+                                   style="text-decoration: none;">
+                                    <div class="pet-name" style="cursor: pointer; transition: color 0.3s;">
+                                        @pet.Name
+                                        @if (petAppCount > 0)
+                                        {<span class="app-badge">@petAppCount</span>}
+                                    </div>
+                                </a>
+                            }
                             <div class="pet-details">
                                 <i class="fas fa-paw"></i> @pet.Breed • @pet.AgeDisplay • @pet.Gender
                             </div>
@@ -778,6 +848,9 @@
                                 </div>
                             }
 
+                            <!-- Find the pet-actions div in CustomerDashboard.cshtml (around line 650) -->
+                            <!-- REPLACE the existing pet-actions section with this: -->
+
                             <div class="pet-actions">
                                 @if (pet.PostStatus == "Approved")
                                 {
@@ -794,12 +867,19 @@
 
                                 @if (pet.IsAdopted)
                                 {
-                                    <div class="adopted-badge">
+                                    <div class="adopted-badge" style="grid-column: 1 / -1;">
                                         <i class="fas fa-check-circle"></i> Pet Already Adopted!
                                     </div>
                                 }
                                 else
                                 {
+                                    <!-- ⭐ NEW: Edit Button -->
+                                    <a href="@Url.Action("CustomerEditPet", "MyPets", new { id = pet.PetId })"
+                                       class="btn btn-edit"
+                                       @(pet.PostStatus == "Pending" || pet.PostStatus == "Rejected" ? "" : pet.HasActiveApplications ? "style='pointer-events: none; opacity: 0.5;'" : "")>
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+
                                     <button type="button"
                                             class="btn btn-delete"
                                             data-pet-id="@pet.PetId"
@@ -807,11 +887,25 @@
                                             data-pet-image="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/80" : pet.ImageUrl)"
                                             data-pet-breed="@pet.Breed"
                                             data-pet-age="@pet.AgeDisplay"
-                                            @(pet.HasActiveApplications ? "disabled" : "")>
+                                            @(pet.HasActiveApplications ? "disabled" : "")
+                                            onclick="openDeleteModal(@pet.PetId, '@pet.Name', '@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/80" : pet.ImageUrl)', '@pet.Breed', '@pet.AgeDisplay')">
                                         <i class="fas fa-trash"></i> Delete
                                     </button>
                                 }
                             </div>
+
+                            @if (pet.HasActiveApplications && !pet.IsAdopted && pet.PostStatus == "Approved")
+                            {
+                                <div style="font-size: 0.75em; color: #f97316; margin-top: 8px; text-align: center;">
+                                    <i class="fas fa-info-circle"></i> Cannot edit/delete - has active applications
+                                </div>
+                            }
+                            else if (!pet.IsAdopted && (pet.PostStatus == "Pending" || pet.PostStatus == "Rejected"))
+                            {
+                                <div style="font-size: 0.75em; color: #3FA9F5; margin-top: 8px; text-align: center;">
+                                    <i class="fas fa-check-circle"></i> Can edit while pending approval
+                                </div>
+                            }
 
                             @if (pet.HasActiveApplications && !pet.IsAdopted)
                             {
@@ -905,12 +999,13 @@
 
 
     <!-- Delete Confirmation Modal -->
+    <!-- Delete Confirmation Modal with Reasons -->
     <div id="deleteModal" class="delete-modal">
         <div class="delete-modal-content">
             <div class="delete-modal-header">
                 <h2>
                     <i class="fas fa-exclamation-triangle"></i>
-                    Delete Pet
+                    Delete Pet Post
                 </h2>
             </div>
 
@@ -925,14 +1020,58 @@
 
                 <div class="delete-warning">
                     <p>
-                        <i class="fas fa-exclamation-circle"></i>
-                        <strong>Warning:</strong> This action cannot be undone. Are you sure you want to permanently delete this pet?
+                        <i class="fas fa-info-circle"></i>
+                        <strong>Please select a reason for deleting this post:</strong>
                     </p>
                 </div>
 
                 <form id="deleteForm" method="POST" action="@Url.Action("DeletePet", "MyPets")">
                     @Html.AntiForgeryToken()
                     <input type="hidden" id="deletePetId" name="id" value="" />
+
+                    <!-- Deletion Reason Options -->
+                    <div style="margin: 20px 0;">
+                        <label style="display: block; margin-bottom: 15px; cursor: pointer; padding: 12px; background: #f8fafc; border-radius: 8px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="deletionReason" value="Change of mind - I don't want to post my pet for adoption anymore" required style="margin-right: 10px;">
+                            <strong>A.</strong> Change of mind (I don't want to post my pet for adoption anymore)
+                        </label>
+
+                        <label style="display: block; margin-bottom: 15px; cursor: pointer; padding: 12px; background: #f8fafc; border-radius: 8px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="deletionReason" value="Pet was adopted through another channel" required style="margin-right: 10px;">
+                            <strong>B.</strong> Pet was adopted through another channel
+                        </label>
+
+                        <label style="display: block; margin-bottom: 15px; cursor: pointer; padding: 12px; background: #f8fafc; border-radius: 8px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="deletionReason" value="Pet is no longer available (returned to owner, moved away, etc.)" required style="margin-right: 10px;">
+                            <strong>C.</strong> Pet is no longer available (returned to owner, moved away, etc.)
+                        </label>
+
+                        <label style="display: block; margin-bottom: 15px; cursor: pointer; padding: 12px; background: #f8fafc; border-radius: 8px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="deletionReason" value="Incorrect information was posted" required style="margin-right: 10px;">
+                            <strong>D.</strong> Incorrect information was posted
+                        </label>
+
+                        <label style="display: block; margin-bottom: 15px; cursor: pointer; padding: 12px; background: #f8fafc; border-radius: 8px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="deletionReason" value="Personal/family circumstances changed" required style="margin-right: 10px;">
+                            <strong>E.</strong> Personal/family circumstances changed
+                        </label>
+
+                        <label style="display: block; margin-bottom: 15px; cursor: pointer; padding: 12px; background: #f8fafc; border-radius: 8px; border: 2px solid transparent; transition: all 0.3s;">
+                            <input type="radio" name="deletionReason" value="Others" required style="margin-right: 10px;" onclick="document.getElementById('otherReasonBox').style.display='block';">
+                            <strong>F.</strong> Others (please specify below)
+                        </label>
+
+                        <!-- Other Reason Textbox (hidden by default) -->
+                        <div id="otherReasonBox" style="display: none; margin-top: 15px;">
+                            <label style="display: block; margin-bottom: 8px; color: #2E8BC0; font-weight: 600;">
+                                <i class="fas fa-pencil-alt"></i> Please specify your reason:
+                            </label>
+                            <textarea name="otherReason"
+                                      rows="3"
+                                      placeholder="Type your reason here..."
+                                      style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 8px; font-family: inherit; resize: vertical;"></textarea>
+                        </div>
+                    </div>
                 </form>
             </div>
 
@@ -941,11 +1080,58 @@
                     <i class="fas fa-times"></i> Cancel
                 </button>
                 <button type="button" class="delete-modal-btn delete-modal-btn-delete" onclick="confirmDelete()">
-                    <i class="fas fa-trash"></i> Yes, Delete
+                    <i class="fas fa-trash"></i> Yes, Delete Post
                 </button>
             </div>
         </div>
     </div>
+
+
+    <!-- Rejection Reason Modal -->
+    <div id="rejectionModal" class="delete-modal">
+        <div class="delete-modal-content">
+            <div class="delete-modal-header" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); border-bottom: 3px solid #dc2626;">
+                <h2 style="color: #991b1b;">
+                    <i class="fas fa-times-circle"></i>
+                    Post Rejected
+                </h2>
+            </div>
+
+            <div class="delete-modal-body">
+                <div class="delete-pet-info">
+                    <div class="delete-pet-details" style="text-align: center; width: 100%;">
+                        <h3 id="rejectionPetName" style="margin-bottom: 15px;"></h3>
+                        <div style="background: #FFF9E6; padding: 15px; border-radius: 10px; border-left: 4px solid #dc2626;">
+                            <p style="color: #991b1b; font-weight: 600; margin-bottom: 8px;">
+                                <i class="fas fa-exclamation-triangle"></i> Reason for Rejection:
+                            </p>
+                            <p id="rejectionReasonText" style="color: #64748b; line-height: 1.6;"></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="delete-modal-footer">
+                <button type="button" class="delete-modal-btn delete-modal-btn-cancel" onclick="closeRejectionModal()" style="width: 100%;">
+                    <i class="fas fa-check"></i> Okay
+                </button>
+            </div>
+        </div>
+    </div>
+
+    //Rejection Script
+    <script>// Rejection Modal Functions
+        function showRejectionModal(petId, petName, rejectionReason) {
+            document.getElementById('rejectionPetName').textContent = petName;
+            document.getElementById('rejectionReasonText').textContent = rejectionReason;
+            document.getElementById('rejectionModal').classList.add('show');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeRejectionModal() {
+            document.getElementById('rejectionModal').classList.remove('show');
+            document.body.style.overflow = '';
+        }</script>
 
     <script>
         // Delete Modal Functions
@@ -964,17 +1150,40 @@
         }
 
         function confirmDelete() {
-            document.getElementById('deleteForm').submit();
+            const form = document.getElementById('deleteForm');
+            const selectedReason = document.querySelector('input[name="deletionReason"]:checked');
+
+            if (!selectedReason) {
+                alert('Please select a reason for deletion.');
+                return;
+            }
+
+            // If "Others" selected, check if text is provided
+            if (selectedReason.value === 'Others') {
+                const otherReason = document.querySelector('textarea[name="otherReason"]').value.trim();
+                if (!otherReason) {
+                    alert('Please specify your reason in the text box.');
+                    return;
+                }
+            }
+
+            form.submit();
         }
 
         // Close modal when clicking outside
         document.addEventListener('DOMContentLoaded', function () {
             var deleteModal = document.getElementById('deleteModal');
+            var rejectionModal = document.getElementById('rejectionModal');
+
             if (deleteModal) {
                 deleteModal.addEventListener('click', function (e) {
-                    if (e.target === this) {
-                        closeDeleteModal();
-                    }
+                    if (e.target === this) closeDeleteModal();
+                });
+            }
+
+            if (rejectionModal) {
+                rejectionModal.addEventListener('click', function (e) {
+                    if (e.target === this) closeRejectionModal();
                 });
             }
 
@@ -982,12 +1191,13 @@
             document.addEventListener('keydown', function (e) {
                 if (e.key === 'Escape') {
                     closeDeleteModal();
+                    closeRejectionModal();
                 }
             });
         });
 
 
-       
+
     </script>
 
     <script>

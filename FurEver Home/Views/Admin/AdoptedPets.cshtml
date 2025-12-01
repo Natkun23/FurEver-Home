@@ -215,6 +215,184 @@
             font-size: 1.1em;
         }
 
+        /* Search and Filter Bar */
+        .search-filter-bar {
+            background: white;
+            padding: 25px 30px;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+        }
+
+        .filter-row {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+            flex-wrap: wrap;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+            .search-box input {
+                width: 100%;
+                padding: 12px 45px 12px 15px;
+                border: 2px solid #e2e8f0;
+                border-radius: 10px;
+                font-size: 1em;
+                transition: all 0.3s;
+            }
+
+                .search-box input:focus {
+                    outline: none;
+                    border-color: #2E8BC0;
+                    box-shadow: 0 0 0 3px rgba(46, 139, 192, 0.1);
+                }
+
+        .search-icon {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            pointer-events: none;
+        }
+
+        .filter-group {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+        }
+
+        .filter-label {
+            color: #64748b;
+            font-weight: 600;
+            font-size: 0.95em;
+        }
+
+        .filter-select {
+            padding: 12px 35px 12px 15px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 1em;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2364748b' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 12px center;
+        }
+
+            .filter-select:focus {
+                outline: none;
+                border-color: #2E8BC0;
+                box-shadow: 0 0 0 3px rgba(46, 139, 192, 0.1);
+            }
+
+        .clear-filters-btn {
+            padding: 12px 20px;
+            background: #f1f5f9;
+            color: #64748b;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+            .clear-filters-btn:hover {
+                background: #e2e8f0;
+                color: #475569;
+            }
+
+        /* Pagination Styles */
+        .pagination-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            gap: 15px;
+            margin-top: 40px;
+            padding: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+        }
+
+        .pagination-info {
+            color: #64748b;
+            font-weight: 500;
+        }
+
+        .pagination-buttons {
+            display: flex;
+            gap: 8px;
+        }
+
+        .page-btn {
+            padding: 10px 16px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            color: #64748b;
+            border-radius: 8px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+            .page-btn:hover {
+                border-color: #2E8BC0;
+                color: #2E8BC0;
+                transform: translateY(-2px);
+            }
+
+            .page-btn.active {
+                background: linear-gradient(135deg, #2E8BC0 0%, #3FA9F5 100%);
+                color: white;
+                border-color: #2E8BC0;
+            }
+
+            .page-btn:disabled {
+                opacity: 0.4;
+                cursor: not-allowed;
+                transform: none;
+            }
+
+                .page-btn:disabled:hover {
+                    border-color: #e2e8f0;
+                    color: #64748b;
+                    transform: none;
+                }
+
+        .results-summary {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            padding: 15px 25px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            border-left: 4px solid #2E8BC0;
+        }
+
+            .results-summary i {
+                font-size: 1.3em;
+                color: #2E8BC0;
+            }
+
+            .results-summary span {
+                color: #0c4a6e;
+                font-weight: 600;
+            }
+
         @@media (max-width: 1024px) {
             .sidebar { width: 0; transform: translateX(-100%); }
             .main-content { margin-left: 0; }
@@ -291,6 +469,77 @@
                     </div>
                 </div>
             </div>
+
+            <!-- Search and Filter Bar -->
+            <!-- Search and Filter Bar -->
+            <div class="search-filter-bar">
+                <form method="get" action="@Url.Action("AdoptedPets", "Admin")" id="filterForm">
+                    <div class="filter-row">
+                        <!-- Search Box -->
+                        <div class="search-box">
+                            <input type="text"
+                                   name="search"
+                                   placeholder="Search by pet name or breed..."
+                                   value="@ViewBag.CurrentSearch"
+                                   id="searchInput">
+                            <i class="fas fa-search search-icon"></i>
+                        </div>
+                        <!-- Location Search Box -->
+                        <div class="search-box">
+                            <input type="text"
+                                   name="searchLocation"
+                                   placeholder="Search by location..."
+                                   value="@ViewBag.CurrentLocationSearch"
+                                   id="locationInput">
+                            <i class="fas fa-map-marker-alt search-icon"></i>
+                        </div>
+                        <!-- Year Filter -->
+                        <div class="filter-group">
+                            <span class="filter-label">
+                                <i class="fas fa-calendar-alt"></i> Year:
+                            </span>
+                            <select name="filterYear" class="filter-select" id="yearFilter">
+                                <option value="">All Years</option>
+                                @foreach (var year in ViewBag.AvailableYears)
+                                {
+                                    <option value="@year" @(ViewBag.SelectedYear == year ? "selected" : "")>@year</option>
+                                }
+                            </select>
+                        </div>
+
+                        <!-- Month Filter -->
+                        <div class="filter-group">
+                            <span class="filter-label">
+                                <i class="fas fa-calendar"></i> Month:
+                            </span>
+                            <select name="filterMonth" class="filter-select" id="monthFilter" @(ViewBag.SelectedYear == null ? "disabled" : "")>
+                                <option value="">All Months</option>
+                                <option value="1" @(ViewBag.SelectedMonth == 1 ? "selected" : "")>January</option>
+                                <option value="2" @(ViewBag.SelectedMonth == 2 ? "selected" : "")>February</option>
+                                <option value="3" @(ViewBag.SelectedMonth == 3 ? "selected" : "")>March</option>
+                                <option value="4" @(ViewBag.SelectedMonth == 4 ? "selected" : "")>April</option>
+                                <option value="5" @(ViewBag.SelectedMonth == 5 ? "selected" : "")>May</option>
+                                <option value="6" @(ViewBag.SelectedMonth == 6 ? "selected" : "")>June</option>
+                                <option value="7" @(ViewBag.SelectedMonth == 7 ? "selected" : "")>July</option>
+                                <option value="8" @(ViewBag.SelectedMonth == 8 ? "selected" : "")>August</option>
+                                <option value="9" @(ViewBag.SelectedMonth == 9 ? "selected" : "")>September</option>
+                                <option value="10" @(ViewBag.SelectedMonth == 10 ? "selected" : "")>October</option>
+                                <option value="11" @(ViewBag.SelectedMonth == 11 ? "selected" : "")>November</option>
+                                <option value="12" @(ViewBag.SelectedMonth == 12 ? "selected" : "")>December</option>
+                            </select>
+                        </div>
+
+                        <!-- Clear Filters Button -->
+                        @if (!string.IsNullOrEmpty(ViewBag.CurrentSearch) || ViewBag.SelectedYear != null || ViewBag.SelectedMonth != null)
+                        {
+                            <a href="@Url.Action("AdoptedPets", "Admin")" class="clear-filters-btn">
+                                <i class="fas fa-times"></i> Clear Filters
+                            </a>
+                        }
+                    </div>
+                </form>
+            </div>
+
         }
 
         @if (Model.Count == 0)
@@ -340,6 +589,13 @@
                                     <i class="fas fa-heart detail-icon"></i>
                                     <span class="detail-text">Adopted on @pet.UpdatedAt.ToString("MMMM dd, yyyy")</span>
                                 </div>
+                                @if (!string.IsNullOrEmpty(pet.Location))
+                                {
+                                    <div class="detail-row">
+                                        <i class="fas fa-map-marker-alt detail-icon"></i>
+                                        <span class="detail-text">Located in @pet.Location</span>
+                                    </div>
+                                }
                             </div>
 
                             @if (application != null && application.User != null)
@@ -381,6 +637,89 @@
                 }
             </div>
         }
+        @if (ViewBag.TotalPages > 1)
+        {
+            <div class="pagination-container">
+                <div class="pagination-info">
+                    Page @ViewBag.CurrentPage of @ViewBag.TotalPages
+                </div>
+                <div class="pagination-buttons">
+                    @if (ViewBag.CurrentPage > 1)
+                    {
+                        <a href="@Url.Action("AdoptedPets", "Admin", new { page = ViewBag.CurrentPage - 1, search = ViewBag.CurrentSearch, filterYear = ViewBag.SelectedYear, filterMonth = ViewBag.SelectedMonth })"
+                           class="page-btn">
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="page-btn" disabled>
+                            <i class="fas fa-chevron-left"></i> Previous
+                        </button>
+                    }
+
+                    @for (int i = 1; i <= ViewBag.TotalPages; i++)
+                    {
+                        <a href="@Url.Action("AdoptedPets", "Admin", new { page = i, search = ViewBag.CurrentSearch, filterYear = ViewBag.SelectedYear, filterMonth = ViewBag.SelectedMonth })"
+                           class="page-btn @(i == ViewBag.CurrentPage ? "active" : "")">
+                            @i
+                        </a>
+                    }
+
+                    @if (ViewBag.CurrentPage < ViewBag.TotalPages)
+                    {
+                        <a href="@Url.Action("AdoptedPets", "Admin", new { page = ViewBag.CurrentPage + 1, search = ViewBag.CurrentSearch, filterYear = ViewBag.SelectedYear, filterMonth = ViewBag.SelectedMonth })"
+                           class="page-btn">
+                            Next <i class="fas fa-chevron-right"></i>
+                        </a>
+                    }
+                    else
+                    {
+                        <button class="page-btn" disabled>
+                            Next <i class="fas fa-chevron-right"></i>
+                        </button>
+                    }
+                </div>
+            </div>
+        }
     </div>
 </body>
+
+<script>
+    // Auto-submit form when year filter changes
+    document.getElementById('yearFilter').addEventListener('change', function () {
+        var monthFilter = document.getElementById('monthFilter');
+        if (this.value === '') {
+            // If "All Years" is selected, disable and clear month filter
+            monthFilter.disabled = true;
+            monthFilter.value = '';
+        } else {
+            // Enable month filter when a year is selected
+            monthFilter.disabled = false;
+        }
+        document.getElementById('filterForm').submit();
+    });
+
+    // Auto-submit form when month filter changes
+    document.getElementById('monthFilter').addEventListener('change', function () {
+        document.getElementById('filterForm').submit();
+    });
+
+    // Submit on Enter key in search box
+    document.getElementById('searchInput').addEventListener('keypress', function (e) {
+        if (e.key === 'Enter') {
+            e.preventDefault();
+            document.getElementById('filterForm').submit();
+        }
+    });
+
+    // Optional: Auto-search on typing (with debounce)
+    let searchTimeout;
+    document.getElementById('searchInput').addEventListener('input', function () {
+        clearTimeout(searchTimeout);
+        searchTimeout = setTimeout(function () {
+            document.getElementById('filterForm').submit();
+        }, 500);
+    });
+</script>
 </html>

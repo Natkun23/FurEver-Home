@@ -524,6 +524,57 @@ body {
                 transform: translateY(-1px);
             }
 
+
+
+            /* Shine effect for button */
+@@keyframes shine {
+    0% { left: -100%; }
+    100% { left: 100%; }
+}
+
+/* Modal fade-in animation */
+.rejection-modal {
+    animation: modalFadeIn 0.3s ease-out;
+}
+
+@@keyframes modalFadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    animation: modalSlideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+@@keyframes modalSlideUp {
+    from {
+        transform: translateY(50px) scale(0.9);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0) scale(1);
+        opacity: 1;
+    }
+}
+
+/* Smooth transitions for buttons */
+.btn {
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.15);
+}
+
+.btn:active {
+    transform: translateY(0);
+}
+
 /* Responsive */
 @@media (max-width: 768px) {
     .info-grid {
@@ -568,34 +619,38 @@ body {
                     </div>
                 }
 
-                <div class="info-grid">
-                    <div class="info-item">
-                        <label>Applicant Name</label>
-                        <div class="value">@Model.User.FullName</div>
-                    </div>
-                    <div class="info-item">
-                        <label>Email</label>
-                        <div class="value">@Model.User.Email</div>
-                    </div>
-                    <div class="info-item">
-                        <label>Phone Number</label>
-                        <div class="value">@Model.PhoneNumber</div>
-                    </div>
-                    <div class="info-item">
-                        <label>Housing Type</label>
-                        <div class="value">@Model.HousingType</div>
-                    </div>
-                    <div class="info-item">
-                        <label>Has Other Pets</label>
-                        <div class="value">@Model.HasPets</div>
-                    </div>
-                    <div class="info-item">
-                        <label>Application Status</label>
-                        <div class="value">
-                            <span class="status-badge status-@Model.Status.ToLower()">@Model.Status</span>
-                        </div>
+            <div class="info-grid">
+                <div class="info-item">
+                    <label>Applicant Name</label>
+                    <div class="value">@Model.User.FullName</div>
+                </div>
+                <div class="info-item">
+                    <label>Email</label>
+                    <div class="value">@Model.User.Email</div>
+                </div>
+                <div class="info-item">
+                    <label>Phone Number</label>
+                    <div class="value">@Model.PhoneNumber</div>
+                </div>
+                <div class="info-item">
+                    <label>Housing Type</label>
+                    <div class="value">@Model.HousingType</div>
+                </div>
+                <div class="info-item">
+                    <label>Has Other Pets</label>
+                    <div class="value">@Model.HasPets</div>
+                </div>
+                <div class="info-item">
+                    <label>Application Status</label>
+                    <div class="value">
+                        <span class="status-badge status-@Model.Status.ToLower()">@Model.Status</span>
                     </div>
                 </div>
+                <div class="info-item">
+                    <label>Pet Location</label>
+                    <div class="value">@(string.IsNullOrEmpty(Model.Pet.Location) ? "Not specified" : Model.Pet.Location)</div>
+                </div>
+            </div>
 
                 <div class="section-title">Address</div>
                 <div class="message-box">@Model.Address</div>
@@ -720,39 +775,119 @@ body {
                         }
                     </div>
                 }
-
                 @if (Model.IsReadyForPickup && Model.ClaimedDate == null)
                 {
-                    <div class="pickup-box success-box">
-                        <h3 style="color: #065f46;"><i class="fas fa-info-circle"></i> Pickup Details Set</h3>
-                        <p style="color: #065f46; margin-bottom: 15px;">
-                            <strong>Location:</strong> @Model.PickupLocation<br>
-                            <strong>Date:</strong> @Model.PickupDate?.ToString("MMMM dd, yyyy hh:mm tt")<br>
-                            @if (!string.IsNullOrEmpty(Model.PickupNotes))
-                            {
-                                <strong>Notes:</strong> @Model.PickupNotes
-                            }
-                        </p>
+                    <div class="pickup-box success-box" style="position: relative; overflow: hidden;">
+                        <!-- Decorative background pattern -->
+                        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
+                        <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; z-index: 0;"></div>
 
-                        @using (Html.BeginForm("ConfirmTurnover", "Admin", FormMethod.Post))
-                        {
-                            @Html.AntiForgeryToken()
-                            <input type="hidden" name="id" value="@Model.ApplicationId" />
-                            <button type="submit" class="btn btn-turnover" style="width: 100%;" onclick="return confirm('Confirm that @Model.Pet.Name has been turned over to @Model.User.FullName?')">
-                                <i class="fas fa-handshake"></i> Confirm Turnover - Pet Claimed!
+                        <div style="position: relative; z-index: 1;">
+                            <h3 style="color: #065f46; font-weight: 700; font-size: 1.5em; margin-bottom: 25px; display: flex; align-items: center; gap: 12px;">
+                                <span style="width: 45px; height: 45px; background: white; border-radius: 50%; display: flex; align-items: center; justify-content: center; box-shadow: 0 4px 12px rgba(16, 185, 129, 0.2);">
+                                    <i class="fas fa-check-circle" style="color: #10b981; font-size: 1.3em;"></i>
+                                </span>
+                                Pickup Details Set
+                            </h3>
+
+                            <div style="background: white; padding: 25px; border-radius: 12px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #f0fdf4;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-map-marker-alt" style="color: #059669; font-size: 1.2em;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="color: #94a3b8; font-size: 0.8em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Location</div>
+                                            <div style="color: #065f46; font-size: 1.15em; font-weight: 700; margin-top: 4px;">
+                                                @Model.PickupLocation
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #f0fdf4;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-calendar-alt" style="color: #2563eb; font-size: 1.2em;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="color: #94a3b8; font-size: 0.8em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Pickup Date & Time</div>
+                                            <div style="color: #065f46; font-size: 1.15em; font-weight: 700; margin-top: 4px;">
+                                                @(Model.PickupDate.HasValue ? Model.PickupDate.Value.ToString("MMMM dd, yyyy 'at' hh:mm tt") : "Not set")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                @if (!string.IsNullOrEmpty(Model.PickupNotes))
+                                {
+                                    <div>
+                                        <div style="display: flex; align-items: center; gap: 12px;">
+                                            <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                                <i class="fas fa-sticky-note" style="color: #d97706; font-size: 1.2em;"></i>
+                                            </div>
+                                            <div style="flex: 1;">
+                                                <div style="color: #94a3b8; font-size: 0.8em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px;">Additional Notes</div>
+                                                <div style="color: #065f46; font-size: 1em; line-height: 1.6; background: #f0fdf4; padding: 12px; border-radius: 8px; border-left: 3px solid #10b981;">
+                                                    @Model.PickupNotes
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                }
+                            </div>
+
+                            <button type="button" class="btn btn-turnover" style="width: 100%; position: relative; overflow: hidden;" onclick="showTurnoverModal()">
+                                <span style="position: relative; z-index: 1;">
+                                    <i class="fas fa-handshake"></i> Confirm Turnover - Pet Claimed!
+                                </span>
+                                <span style="position: absolute; top: 0; left: -100%; width: 100%; height: 100%; background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent); animation: shine 2s infinite;"></span>
                             </button>
-                        }
+                        </div>
                     </div>
                 }
 
                 @if (Model.ClaimedDate != null)
                 {
-                    <div class="pickup-box completed-box">Pickup Date
-                        <h3 style="color: #1e40af;"><i class="fas fa-check-circle"></i> Adoption Completed!</h3>
-                        <p style="color: #1e40af;">
-                            <strong>Pet Claimed On:</strong> @Model.ClaimedDate?.ToString("MMMM dd, yyyy hh:mm tt")<br>
-                            @Model.Pet.Name has been successfully adopted by @Model.User.FullName! 🎉
-                        </p>
+                    <div class="pickup-box completed-box" style="position: relative; overflow: hidden;">
+                        <!-- Decorative background pattern -->
+                        <div style="position: absolute; top: -50px; right: -50px; width: 200px; height: 200px; background: rgba(255,255,255,0.15); border-radius: 50%; z-index: 0;"></div>
+                        <div style="position: absolute; bottom: -30px; left: -30px; width: 150px; height: 150px; background: rgba(255,255,255,0.15); border-radius: 50%; z-index: 0;"></div>
+
+                        <div style="position: relative; z-index: 1;">
+                            <div style="text-align: center; margin-bottom: 25px;">
+                                <div style="width: 80px; height: 80px; background: white; border-radius: 50%; margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 25px rgba(59, 130, 246, 0.3); animation: pulse 2s infinite;">
+                                    <i class="fas fa-check-circle" style="font-size: 3em; color: #3b82f6;"></i>
+                                </div>
+                                <h3 style="color: #1e40af; font-size: 2em; margin-bottom: 10px; font-weight: 700;">
+                                     Adoption Completed! 
+                                </h3>
+                            </div>
+
+                            <div style="background: white; padding: 25px; border-radius: 12px; box-shadow: 0 2px 8px rgba(0,0,0,0.05);">
+                                <div style="margin-bottom: 20px; padding-bottom: 20px; border-bottom: 2px solid #dbeafe;">
+                                    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 10px;">
+                                        <div style="width: 40px; height: 40px; background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%); border-radius: 10px; display: flex; align-items: center; justify-content: center;">
+                                            <i class="fas fa-calendar-check" style="color: #2563eb; font-size: 1.2em;"></i>
+                                        </div>
+                                        <div>
+                                            <div style="color: #94a3b8; font-size: 0.8em; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px;">Pet Claimed On</div>
+                                            <div style="color: #1e40af; font-size: 1.15em; font-weight: 700; margin-top: 4px;">
+                                                @(Model.ClaimedDate.HasValue ? Model.ClaimedDate.Value.ToString("MMMM dd, yyyy 'at' hh:mm tt") : "Not recorded")
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div style="background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%); padding: 20px; border-radius: 10px; border-left: 4px solid #3b82f6; text-align: center;">
+                                    <p style="color: #1e40af; font-size: 1.15em; line-height: 1.7; margin: 0;">
+                                        <strong style="color: #2E8BC0; font-size: 1.2em;">@Model.Pet.Name</strong> has been successfully adopted by<br>
+                                        <strong style="color: #10b981; font-size: 1.2em;">@Model.User.FullName</strong>
+                                    </p>
+                                    
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 }
 
@@ -783,6 +918,72 @@ body {
             </div>
         </div>
     </div>
+
+    <!-- Turnover Confirmation Modal -->
+    <div id="turnoverModal" class="rejection-modal" style="display: none;">
+        <div class="modal-content" style="max-width: 550px;">
+            <div style="text-align: center; margin-bottom: 25px;">
+                <div style="width: 90px; height: 90px; border-radius: 50%; background: linear-gradient(135deg, #d1fae5 0%, #10b981 100%); margin: 0 auto 20px; display: flex; align-items: center; justify-content: center; box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3); animation: pulse 2s infinite;">
+                    <i class="fas fa-handshake" style="font-size: 3em; color: white;"></i>
+                </div>
+                <h3 style="color: #10b981; font-size: 2em; margin-bottom: 15px; font-weight: 700;">
+                    Confirm Pet Turnover
+                </h3>
+                <p style="color: #64748b; font-size: 0.95em;">This action marks the adoption as complete</p>
+            </div>
+
+            <div style="background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%); padding: 25px; border-radius: 12px; margin-bottom: 25px; border: 2px solid #e2e8f0;">
+                <p style="color: #475569; font-size: 1.15em; line-height: 1.7; margin-bottom: 20px; text-align: center;">
+                    Confirm that <strong style="color: #2E8BC0; font-size: 1.1em;">@Model.Pet.Name</strong> has been successfully<br>
+                    handed over to <strong style="color: #10b981; font-size: 1.1em;">@Model.User.FullName</strong>
+                </p>
+
+                <div style="background: linear-gradient(135deg, #FFF9E6 0%, #fef3c7 100%); padding: 20px; border-radius: 12px; border-left: 4px solid #FFD93D; box-shadow: 0 2px 8px rgba(217, 119, 6, 0.1);">
+                    <div style="color: #92400e; font-size: 0.95em; line-height: 1.8;">
+                        <div style="font-weight: 700; margin-bottom: 12px; font-size: 1.05em;">
+                            <i class="fas fa-info-circle"></i> This action will:
+                        </div>
+                        <div style="padding-left: 10px;">
+                            ✓ Mark <strong>@Model.Pet.Name</strong> as officially adopted<br>
+                            ✓ Record the claim date and time<br>
+                            ✓ Move to "Adopted Pets" section<br>
+                            <span style="color: #dc2626; font-weight: 700;">⚠ Cannot be undone</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            @using (Html.BeginForm("ConfirmTurnover", "Admin", FormMethod.Post, new { id = "turnoverForm" }))
+            {
+                @Html.AntiForgeryToken()
+                <input type="hidden" name="id" value="@Model.ApplicationId" />
+
+                <div class="modal-buttons" style="gap: 15px;">
+                    <button type="button" class="btn btn-back" onclick="hideTurnoverModal()" style="flex: 1; padding: 14px;">
+                        <i class="fas fa-times"></i> Cancel
+                    </button>
+                    <button type="submit" class="btn btn-turnover" style="flex: 2; padding: 14px; font-size: 1.05em;">
+                        <i class="fas fa-check-circle"></i> Yes, Confirm Turnover
+                    </button>
+                </div>
+            }
+        </div>
+    </div>
+
+
+    <style>
+        @@keyframes pulse {
+    0%, 100% {
+        transform: scale(1);
+        box-shadow: 0 8px 25px rgba(16, 185, 129, 0.3);
+    }
+    50% {
+        transform: scale(1.05);
+        box-shadow: 0 12px 35px rgba(16, 185, 129, 0.4);
+    }
+}
+
+    </style>
 
     <!-- Rejection Modal -->
     <div id="rejectModal" class="rejection-modal">
@@ -889,6 +1090,16 @@ body {
                 }
             });
         });
+
+
+
+        function showTurnoverModal() {
+            document.getElementById('turnoverModal').style.display = 'flex';
+        }
+
+        function hideTurnoverModal() {
+            document.getElementById('turnoverModal').style.display = 'none';
+        }
     </script>
 </body>
 </html>

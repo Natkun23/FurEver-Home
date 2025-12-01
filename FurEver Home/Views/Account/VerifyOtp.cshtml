@@ -10,6 +10,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
@@ -41,15 +44,15 @@
             overflow: hidden;
         }
 
-        .otp-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #3FA9F5 0%, #FFD93D 100%);
-        }
+            .otp-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #3FA9F5 0%, #FFD93D 100%);
+            }
 
         .icon-circle {
             width: 100px;
@@ -64,8 +67,13 @@
         }
 
         @@keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .icon-circle i {
@@ -98,15 +106,15 @@
             border: 2px solid #bfdbfe;
         }
 
-        .email-display i {
-            color: #3FA9F5;
-            margin-right: 8px;
-        }
+            .email-display i {
+                color: #3FA9F5;
+                margin-right: 8px;
+            }
 
-        .email-display strong {
-            color: #1e40af;
-            font-size: 16px;
-        }
+            .email-display strong {
+                color: #1e40af;
+                font-size: 16px;
+            }
 
         .otp-input-wrapper {
             display: flex;
@@ -129,16 +137,16 @@
             color: #2E8BC0;
         }
 
-        .otp-digit:focus {
-            border-color: #3FA9F5;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
-        }
+            .otp-digit:focus {
+                border-color: #3FA9F5;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+            }
 
-        .otp-digit.filled {
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            border-color: #3FA9F5;
-        }
+            .otp-digit.filled {
+                background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+                border-color: #3FA9F5;
+            }
 
         .hidden-input {
             position: absolute;
@@ -155,10 +163,10 @@
             border: 2px solid #fde68a;
         }
 
-        .timer-box i {
-            color: #F6C90E;
-            margin-right: 8px;
-        }
+            .timer-box i {
+                color: #F6C90E;
+                margin-right: 8px;
+            }
 
         .timer-text {
             color: #92400e;
@@ -187,16 +195,16 @@
             margin-top: 24px;
         }
 
-        .btn-verify:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(63, 169, 245, 0.4);
-        }
+            .btn-verify:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(63, 169, 245, 0.4);
+            }
 
-        .btn-verify:disabled {
-            background: #cbd5e1;
-            cursor: not-allowed;
-            transform: none;
-        }
+            .btn-verify:disabled {
+                background: #cbd5e1;
+                cursor: not-allowed;
+                transform: none;
+            }
 
         .resend-section {
             text-align: center;
@@ -223,36 +231,36 @@
             font-size: 14px;
         }
 
-        .btn-resend:hover:not(:disabled) {
-            background: #3FA9F5;
-            color: white;
-        }
+            .btn-resend:hover:not(:disabled) {
+                background: #3FA9F5;
+                color: white;
+            }
 
-        .btn-resend:disabled {
-            opacity: 0.5;
-            cursor: not-allowed;
-            border-color: #cbd5e1;
-            color: #94a3b8;
-        }
+            .btn-resend:disabled {
+                opacity: 0.5;
+                cursor: not-allowed;
+                border-color: #cbd5e1;
+                color: #94a3b8;
+            }
 
         .back-login {
             text-align: center;
             margin-top: 20px;
         }
 
-        .back-login a {
-            color: #64748b;
-            text-decoration: none;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s;
-        }
+            .back-login a {
+                color: #64748b;
+                text-decoration: none;
+                font-size: 14px;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: color 0.3s;
+            }
 
-        .back-login a:hover {
-            color: #3FA9F5;
-        }
+                .back-login a:hover {
+                    color: #3FA9F5;
+                }
 
         .alert {
             padding: 14px 16px;
@@ -270,6 +278,7 @@
                 transform: translateY(-10px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -299,10 +308,10 @@
             border: 1px solid #e2e8f0;
         }
 
-        .security-note i {
-            color: #3FA9F5;
-            margin-right: 6px;
-        }
+            .security-note i {
+                color: #3FA9F5;
+                margin-right: 6px;
+            }
 
         /* Modal Styles */
         .modal-overlay {
@@ -334,9 +343,9 @@
             animation: fadeIn 0.5s ease;
         }
 
-        .signin-overlay.active {
-            display: flex;
-        }
+            .signin-overlay.active {
+                display: flex;
+            }
 
         .signin-content {
             text-align: center;
@@ -354,8 +363,13 @@
         }
 
         @@keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
         .signin-icon {
@@ -371,8 +385,13 @@
         }
 
         @@keyframes scaleUpDown {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .signin-icon i {
@@ -398,6 +417,7 @@
                 opacity: 0;
                 transform: translateY(20px);
             }
+
             to {
                 opacity: 1;
                 transform: translateY(0);
@@ -410,9 +430,17 @@
         }
 
         @@keyframes dots {
-            0%, 20% { content: '.'; }
-            40% { content: '..'; }
-            60%, 100% { content: '...'; }
+            0%, 20% {
+                content: '.';
+            }
+
+            40% {
+                content: '..';
+            }
+
+            60%, 100% {
+                content: '...';
+            }
         }
 
         .signin-dots::after {
@@ -425,8 +453,13 @@
         }
 
         @@keyframes fadeIn {
-            from { opacity: 0; }
-            to { opacity: 1; }
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
         }
 
         .modal-content {
@@ -446,6 +479,7 @@
                 transform: scale(0.9);
                 opacity: 0;
             }
+
             to {
                 transform: scale(1);
                 opacity: 1;
@@ -463,10 +497,10 @@
             margin: 0 auto 24px;
         }
 
-        .modal-icon i {
-            font-size: 40px;
-            color: #10b981;
-        }
+            .modal-icon i {
+                font-size: 40px;
+                color: #10b981;
+            }
 
         .modal-title {
             font-size: 24px;
@@ -494,10 +528,10 @@
             transition: all 0.3s;
         }
 
-        .modal-close-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
-        }
+            .modal-close-btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+            }
 
         @@media (max-width: 480px) {
             .otp-container {
@@ -619,206 +653,353 @@
             <strong>Security Tip:</strong> Never share your OTP code with anyone, including FurEver Home staff.
         </div>
     </div>
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation@1.19.5/dist/jquery.validate.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/jquery-validation-unobtrusive@3.2.12/dist/jquery.validate.unobtrusive.min.js"></script>
 
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    <script src="~/Scripts/jquery.validate.min.js"></script>
-    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-    <script>
-        // OTP Input Handler
-        const otpInputs = document.querySelectorAll('.otp-digit');
-        const hiddenInput = document.getElementById('otpCodeInput');
-        const verifyBtn = document.getElementById('verifyBtn');
 
-        // Focus first input on load
-        otpInputs[0].focus();
+    <script type="text/javascript">
+(function() {
+    'use strict';
 
-        otpInputs.forEach((input, index) => {
-            input.addEventListener('input', function (e) {
-                // Only allow numbers
-                this.value = this.value.replace(/[^0-9]/g, '');
+    let isCheckingSession = false;
+    let redirecting = false;
 
-                if (this.value.length === 1) {
-                    this.classList.add('filled');
-                    // Move to next input
-                    if (index < otpInputs.length - 1) {
-                        otpInputs[index + 1].focus();
-                    }
-                } else {
-                    this.classList.remove('filled');
-                }
+    // Check session immediately and synchronously
+    function checkSessionSync() {
+        if (isCheckingSession || redirecting) return;
 
-                // Update hidden input
-                updateOtpValue();
-            });
+        isCheckingSession = true;
 
-            input.addEventListener('keydown', function (e) {
-                // Handle backspace
-                if (e.key === 'Backspace' && this.value === '' && index > 0) {
-                    otpInputs[index - 1].focus();
-                    otpInputs[index - 1].value = '';
-                    otpInputs[index - 1].classList.remove('filled');
-                    updateOtpValue();
-                }
+        fetch('@Url.Action("CheckSession", "Account")', {
+            method: 'GET',
+            cache: 'no-cache',
+            headers: {
+                'Cache-Control': 'no-cache',
+                'Pragma': 'no-cache'
+            }
+        }).then(response => {
+            if (response.ok && !redirecting) {
+                // Already logged in - redirect immediately
+                redirecting = true;
+                const userRole = '@(Session["UserRole"] ?? "")';
 
-                // Handle arrow keys
-                if (e.key === 'ArrowLeft' && index > 0) {
-                    otpInputs[index - 1].focus();
-                }
-                if (e.key === 'ArrowRight' && index < otpInputs.length - 1) {
+                // ✅ UPDATED: Check if NOT a client
+                const redirectUrl = (userRole !== 'Client')
+                    ? '@Url.Action("Dashboard", "Admin")'
+                    : '@Url.Action("Index", "Pets")';
+
+                window.location.replace(redirectUrl);
+            } else {
+                isCheckingSession = false;
+            }
+        }).catch(() => {
+            isCheckingSession = false;
+        });
+    }
+
+    // Check on page load
+    checkSessionSync();
+
+    // Aggressive back button prevention
+    let historyLocked = false;
+
+    function lockHistory() {
+        if (redirecting) return;
+
+        historyLocked = true;
+
+        // Push multiple dummy states
+        for (let i = 0; i < 5; i++) {
+            window.history.pushState(
+                { page: 'verify-otp', index: i, locked: true },
+                '',
+                window.location.href
+            );
+        }
+    }
+
+    // Lock immediately
+    lockHistory();
+
+    // Handle ALL popstate events
+    window.addEventListener('popstate', function(event) {
+        if (redirecting) return;
+
+        // Immediately push forward
+        window.history.pushState(
+            { page: 'verify-otp', locked: true },
+            '',
+            window.location.href
+        );
+
+        // Re-lock
+        setTimeout(lockHistory, 10);
+
+        // Check session on back attempt
+        if (!isCheckingSession) {
+            checkSessionSync();
+        }
+
+        // Prevent default
+        if (event) {
+            event.preventDefault();
+            event.stopPropagation();
+        }
+
+        return false;
+    }, true);
+
+    // Prevent keyboard back navigation
+    document.addEventListener('keydown', function(e) {
+        if (redirecting) return;
+
+        // Alt + Left Arrow
+        if (e.altKey && (e.keyCode === 37 || e.key === 'ArrowLeft')) {
+            e.preventDefault();
+            e.stopImmediatePropagation();
+            return false;
+        }
+
+        // Backspace (except in inputs)
+        if (e.keyCode === 8 || e.key === 'Backspace') {
+            const element = e.target;
+            const isInput = element.tagName === 'INPUT' ||
+                          element.tagName === 'TEXTAREA' ||
+                          element.isContentEditable;
+
+            if (!isInput) {
+                e.preventDefault();
+                e.stopImmediatePropagation();
+                return false;
+            }
+        }
+    }, true);
+
+    // Handle page visibility
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && !redirecting) {
+            checkSessionSync();
+            lockHistory();
+        }
+    });
+
+    // Handle page show from cache
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted && !redirecting) {
+            checkSessionSync();
+            lockHistory();
+        }
+    });
+
+    // Periodic session check every 5 seconds (more frequent for OTP page)
+    setInterval(function() {
+        if (!redirecting) {
+            checkSessionSync();
+        }
+    }, 5000);
+
+    console.log('🔒 VerifyOTP: Back button disabled');
+
+        })();
+    </script>
+
+    <script type="text/javascript">
+    // OTP Input Handler
+    const otpInputs = document.querySelectorAll('.otp-digit');
+    const hiddenInput = document.getElementById('otpCodeInput');
+    const verifyBtn = document.getElementById('verifyBtn');
+
+    // Focus first input on load
+    otpInputs[0].focus();
+
+    otpInputs.forEach((input, index) => {
+        input.addEventListener('input', function (e) {
+            // Only allow numbers
+            this.value = this.value.replace(/[^0-9]/g, '');
+
+            if (this.value.length === 1) {
+                this.classList.add('filled');
+                // Move to next input
+                if (index < otpInputs.length - 1) {
                     otpInputs[index + 1].focus();
                 }
-            });
+            } else {
+                this.classList.remove('filled');
+            }
 
-            // Handle paste
-            input.addEventListener('paste', function (e) {
-                e.preventDefault();
-                const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
-
-                if (pastedData.length === 6) {
-                    otpInputs.forEach((inp, idx) => {
-                        inp.value = pastedData[idx] || '';
-                        if (inp.value) inp.classList.add('filled');
-                    });
-                    otpInputs[5].focus();
-                    updateOtpValue();
-                }
-            });
+            // Update hidden input
+            updateOtpValue();
         });
 
-        function updateOtpValue() {
-            const otpValue = Array.from(otpInputs).map(input => input.value).join('');
-            hiddenInput.value = otpValue;
-
-            // Enable/disable verify button
-            if (otpValue.length === 6) {
-                verifyBtn.disabled = false;
-            } else {
-                verifyBtn.disabled = true;
+        input.addEventListener('keydown', function (e) {
+            // Handle backspace
+            if (e.key === 'Backspace' && this.value === '' && index > 0) {
+                otpInputs[index - 1].focus();
+                otpInputs[index - 1].value = '';
+                otpInputs[index - 1].classList.remove('filled');
+                updateOtpValue();
             }
+
+            // Handle arrow keys
+            if (e.key === 'ArrowLeft' && index > 0) {
+                otpInputs[index - 1].focus();
+            }
+            if (e.key === 'ArrowRight' && index < otpInputs.length - 1) {
+                otpInputs[index + 1].focus();
+            }
+        });
+
+        // Handle paste
+        input.addEventListener('paste', function (e) {
+            e.preventDefault();
+            const pastedData = e.clipboardData.getData('text').replace(/[^0-9]/g, '');
+
+            if (pastedData.length === 6) {
+                otpInputs.forEach((inp, idx) => {
+                    inp.value = pastedData[idx] || '';
+                    if (inp.value) inp.classList.add('filled');
+                });
+                otpInputs[5].focus();
+                updateOtpValue();
+            }
+        });
+    });
+
+    function updateOtpValue() {
+        const otpValue = Array.from(otpInputs).map(input => input.value).join('');
+        hiddenInput.value = otpValue;
+
+        // Enable/disable verify button
+        if (otpValue.length === 6) {
+            verifyBtn.disabled = false;
+        } else {
+            verifyBtn.disabled = true;
+        }
+    }
+
+    // Countdown Timer
+    let timeLeft = 300; // 5 minutes in seconds
+    const timerElement = document.getElementById('timer');
+    const resendBtn = document.getElementById('resendBtn');
+
+    const countdown = setInterval(function () {
+        timeLeft--;
+
+        const minutes = Math.floor(timeLeft / 60);
+        const seconds = timeLeft % 60;
+        timerElement.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+
+        if (timeLeft <= 0) {
+            clearInterval(countdown);
+            timerElement.textContent = 'EXPIRED';
+            timerElement.style.color = '#ef4444';
+            verifyBtn.disabled = true;
+            verifyBtn.innerHTML = '<i class="fas fa-clock"></i> OTP Expired';
+            resendBtn.disabled = false;
         }
 
-        // Countdown Timer
-        let timeLeft = 300; // 5 minutes in seconds
-        const timerElement = document.getElementById('timer');
-        const resendBtn = document.getElementById('resendBtn');
+        // Change color when time is running out
+        if (timeLeft <= 60) {
+            timerElement.style.color = '#ef4444';
+        } else if (timeLeft <= 120) {
+            timerElement.style.color = '#f59e0b';
+        }
+    }, 1000);
 
-        const countdown = setInterval(function () {
-            timeLeft--;
+    // Auto-submit when OTP is complete
+    document.getElementById('otpForm').addEventListener('submit', function(e) {
+        if (hiddenInput.value.length !== 6) {
+            e.preventDefault();
+            alert('Please enter all 6 digits of the OTP code.');
+            return;
+        }
 
-            const minutes = Math.floor(timeLeft / 60);
-            const seconds = timeLeft % 60;
-            timerElement.textContent = minutes + ':' + (seconds < 10 ? '0' : '') + seconds;
+        // Show signing in animation
+        e.preventDefault();
+        showSignInAnimation();
 
-            if (timeLeft <= 0) {
-                clearInterval(countdown);
-                timerElement.textContent = 'EXPIRED';
-                timerElement.style.color = '#ef4444';
-                verifyBtn.disabled = true;
-                verifyBtn.innerHTML = '<i class="fas fa-clock"></i> OTP Expired';
-                resendBtn.disabled = false;
+        // Get username from ViewBag
+        const username = '@Html.Raw(userName)';
+        document.getElementById('userName').textContent = username;
+
+        // Submit form after 3 seconds
+        setTimeout(function() {
+            e.target.submit();
+        }, 3000);
+    });
+
+    // Show Sign In Animation
+    function showSignInAnimation() {
+        document.getElementById('signinOverlay').classList.add('active');
+    }
+
+    // Modal Functions
+    function closeModal() {
+        document.getElementById('successModal').classList.remove('active');
+    }
+
+    function showModal() {
+        document.getElementById('successModal').classList.add('active');
+    }
+
+    // Click outside modal to close
+    document.getElementById('successModal').addEventListener('click', function(e) {
+        if (e.target === this) {
+            closeModal();
+        }
+    });
+
+    // Resend OTP Handler with 60-second cooldown
+    let resendCooldown = 0;
+    let resendInterval = null;
+
+    function handleResendOtp(event) {
+        event.preventDefault();
+
+        if (resendCooldown > 0) {
+            return; // Still in cooldown
+        }
+
+        // Submit the form via AJAX or regular form submit
+        const form = document.getElementById('resendForm');
+        const formData = new FormData(form);
+
+        fetch(form.action, {
+            method: 'POST',
+            body: formData
+        })
+        .then(response => {
+            if (response.ok) {
+                // Show success modal
+                showModal();
+
+                // Start 60-second cooldown
+                startResendCooldown();
             }
+            return response;
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            alert('Failed to resend OTP. Please try again.');
+        });
+    }
 
-            // Change color when time is running out
-            if (timeLeft <= 60) {
-                timerElement.style.color = '#ef4444';
-            } else if (timeLeft <= 120) {
-                timerElement.style.color = '#f59e0b';
+    function startResendCooldown() {
+        resendCooldown = 60;
+        resendBtn.disabled = true;
+
+        resendInterval = setInterval(function() {
+            resendCooldown--;
+            document.getElementById('resendBtnText').textContent = `Resend OTP (${resendCooldown}s)`;
+
+            if (resendCooldown <= 0) {
+                clearInterval(resendInterval);
+                resendBtn.disabled = false;
+                document.getElementById('resendBtnText').textContent = 'Resend OTP';
             }
         }, 1000);
-
-        // Auto-submit when OTP is complete
-        document.getElementById('otpForm').addEventListener('submit', function(e) {
-            if (hiddenInput.value.length !== 6) {
-                e.preventDefault();
-                alert('Please enter all 6 digits of the OTP code.');
-                return;
-            }
-
-            // Show signing in animation
-            e.preventDefault();
-            showSignInAnimation();
-
-            // Get username from ViewBag
-            const username = '@Html.Raw(userName)';
-            document.getElementById('userName').textContent = username;
-
-            // Submit form after 3 seconds
-            setTimeout(function() {
-                e.target.submit();
-            }, 3000);
-        });
-
-        // Show Sign In Animation
-        function showSignInAnimation() {
-            document.getElementById('signinOverlay').classList.add('active');
-        }
-
-        // Modal Functions
-        function closeModal() {
-            document.getElementById('successModal').classList.remove('active');
-        }
-
-        function showModal() {
-            document.getElementById('successModal').classList.add('active');
-        }
-
-        // Click outside modal to close
-        document.getElementById('successModal').addEventListener('click', function(e) {
-            if (e.target === this) {
-                closeModal();
-            }
-        });
-
-        // Resend OTP Handler with 60-second cooldown
-        let resendCooldown = 0;
-        let resendInterval = null;
-
-        function handleResendOtp(event) {
-            event.preventDefault();
-
-            if (resendCooldown > 0) {
-                return; // Still in cooldown
-            }
-
-            // Submit the form via AJAX or regular form submit
-            const form = document.getElementById('resendForm');
-            const formData = new FormData(form);
-
-            fetch(form.action, {
-                method: 'POST',
-                body: formData
-            })
-            .then(response => {
-                if (response.ok) {
-                    // Show success modal
-                    showModal();
-
-                    // Start 60-second cooldown
-                    startResendCooldown();
-                }
-                return response;
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                alert('Failed to resend OTP. Please try again.');
-            });
-        }
-
-        function startResendCooldown() {
-            resendCooldown = 60;
-            resendBtn.disabled = true;
-
-            resendInterval = setInterval(function() {
-                resendCooldown--;
-                document.getElementById('resendBtnText').textContent = `Resend OTP (${resendCooldown}s)`;
-
-                if (resendCooldown <= 0) {
-                    clearInterval(resendInterval);
-                    resendBtn.disabled = false;
-                    document.getElementById('resendBtnText').textContent = 'Resend OTP';
-                }
-            }, 1000);
-        }
+    }
     </script>
 
 

@@ -388,11 +388,273 @@
             color: #155724;
         }
 
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 9999;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(4px);
+            animation: fadeIn 0.3s;
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            width: 90%;
+            max-width: 450px;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s;
+        }
+
+        @@keyframes slideUp {
+            from {
+                transform: translateY(50px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-header {
+            padding: 30px 30px 20px;
+            text-align: center;
+        }
+
+        .modal-header i {
+            font-size: 3.5em;
+            color: #ef4444;
+            margin-bottom: 15px;
+            display: block;
+        }
+
+        .modal-header h2 {
+            color: #1a202c;
+            font-size: 1.5em;
+            margin: 0;
+        }
+
+        .modal-body {
+            padding: 0 30px 30px;
+            text-align: center;
+        }
+
+        .modal-body p {
+            color: #475569;
+            font-size: 1em;
+            line-height: 1.6;
+            margin: 0;
+        }
+
+        .modal-body strong {
+            color: #2E8BC0;
+            font-weight: 700;
+        }
+
+        .modal-footer {
+            padding: 20px 30px 30px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-cancel {
+            flex: 1;
+            padding: 12px 24px;
+            border: 2px solid #e2e8f0;
+            background: white;
+            border-radius: 10px;
+            font-weight: 600;
+            color: #64748b;
+            cursor: pointer;
+            transition: all 0.3s;
+            font-size: 0.95em;
+        }
+
+        .btn-cancel:hover {
+            border-color: #cbd5e1;
+            background: #f8fafc;
+        }
+
+        .btn-confirm-delete {
+            flex: 1;
+            padding: 12px 24px;
+            border: none;
+            background: #ef4444;
+            color: white;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 0.95em;
+        }
+
+        .btn-confirm-delete:hover {
+            background: #dc2626;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+
+        /* Section Dividers with Collapsible Headers */
+        .section-divider {
+            background: white;
+            padding: 20px 30px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-left: 5px solid #3FA9F5;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            cursor: pointer;
+            user-select: none;
+        }
+
+            .section-header:hover {
+                opacity: 0.8;
+            }
+
+        .section-title {
+            font-size: 1.5em;
+            color: #2E8BC0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .section-count {
+            font-size: 0.7em;
+            color: #64748b;
+            font-weight: 600;
+            background: #f1f5f9;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+
+        .section-subtitle {
+            color: #64748b;
+            font-size: 0.9em;
+            margin-top: 8px;
+        }
+
+        .section-toggle-btn {
+            background: #f1f5f9;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: #3FA9F5;
+            font-size: 1.2em;
+        }
+
+            .section-toggle-btn:hover {
+                background: #e2e8f0;
+                transform: scale(1.1);
+            }
+
+            .section-toggle-btn i {
+                transition: transform 0.3s;
+            }
+
+            .section-toggle-btn.collapsed i {
+                transform: rotate(-90deg);
+            }
+
+        .section-content {
+            max-height: 5000px;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, opacity 0.3s ease-out;
+            opacity: 1;
+            margin-top: 20px;
+
+        }
+
+            .section-content.collapsed {
+                max-height: 0;
+                opacity: 0;
+                margin-top: 0;
+            }
+
+        /* Client Posts Section - Yellow accent */
+        .section-divider.client-section {
+            border-left-color: #FFD93D;
+        }
+
+            .section-divider.client-section .section-title {
+                color: #F6C90E;
+            }
+
+            .section-divider.client-section .section-toggle-btn {
+                color: #F6C90E;
+            }
+
+        /* Client Post Badge */
+        .client-post-badge {
+            position: absolute;
+            top: 15px;
+            left: 15px;
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            color: #2E8BC0;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 0.8em;
+            font-weight: 700;
+            z-index: 10;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            box-shadow: 0 4px 12px rgba(255, 217, 61, 0.4);
+            z-index: 10;
+        }
+
+        /* Client Post Card Styling */
+        .pet-card.client-post-card {
+            border: 2px solid #FFD93D;
+        }
+
+            .pet-card.client-post-card:hover {
+                box-shadow: 0 10px 30px rgba(255, 217, 61, 0.3);
+            }
+
+
+
         /* Responsive */
         @@media (max-width: 1024px) {
             .sidebar {
                 width: 0;
                 transform: translateX(-100%);
+                z-index: 1000;
             }
             .main-content {
                 margin-left: 0;
@@ -448,7 +710,7 @@
             <a href="@Url.Action("AdoptedPets", "Admin")" class="menu-item">
                 <i class="fas fa-heart menu-icon"></i>
                 <span class="menu-text">Adopted Pets</span>
-                
+
             </a>
             <hr style="margin: 20px; border: none; border-top: 1px solid rgba(255,255,255,0.2);">
             <a href="@Url.Action("Logout", "Account")" class="menu-item">
@@ -461,9 +723,23 @@
     <div class="main-content">
         <div class="top-bar">
             <div class="page-title">Manage Pets (Available)</div>
-            <a href="@Url.Action("AddPet", "Admin")" class="btn-add">
-                <i class="fas fa-plus-circle"></i> Add New Pet
-            </a>
+            <div style="display: flex; gap: 12px;">
+                <a href="@Url.Action("CustomerDeletedPosts", "Admin")" class="btn-add" style="background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); color: #dc2626;">
+                    <i class="fas fa-trash-alt"></i> Customer Deleted Posts
+                </a>
+                @if (ViewBag.CanModify)
+                {
+                    <a href="@Url.Action("AddPet", "Admin")" class="btn-add">
+                        <i class="fas fa-plus-circle"></i> Add New Pet
+                    </a>
+                }
+                else
+                {
+                    <span style="color: #94a3b8; font-style: italic;">
+                        <i class="fas fa-eye"></i> View Only Access
+                    </span>
+                }
+            </div>
         </div>
 
         @if (TempData["Success"] != null)
@@ -497,8 +773,7 @@
                 <select class="sort-select" id="sortSelect">
                     <option value="newest">Newest First</option>
                     <option value="oldest">Oldest First</option>
-                    <option value="name-asc">Name A-Z</option>
-                    <option value="name-desc">Name Z-A</option>
+                    <option value="customer-posts">Customer Posts</option>
                 </select>
 
                 <div class="results-count">
@@ -507,49 +782,175 @@
             </div>
         </div>
 
-        <div class="pets-grid" id="petsGrid">
-            @foreach (var pet in Model.Where(p => !p.IsAdopted))
-            {
-                // Calculate days in center dynamically or use stored value
-                int daysInCenter = pet.DaysInCenter > 0
-                    ? pet.DaysInCenter
-                    : (int)(DateTime.Now - pet.DateAdded).TotalDays;
+        
+        <!-- ========== ORGANIZATION/ADMIN POSTS SECTION ========== -->
+        <div class="section-divider">
+            <div class="section-header" onclick="toggleSection('orgSection')">
+                <div class="section-title">
+                    <i class="fas fa-building"></i>
+                    Organization & Admin Posts
+                    <span class="section-count" id="orgCount">(0)</span>
+                </div>
+                <button class="section-toggle-btn" id="orgToggleBtn">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="section-subtitle">
+                Pets posted by FurEver Home Admin or partner organizations
+            </div>
+        </div>
 
-                <div class="pet-card" data-pet-name="@pet.Name.ToLower()" data-pet-type="@pet.Type" data-days="@daysInCenter">
-                    <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/320x220?text=" + pet.Name : pet.ImageUrl)" alt="@pet.Name" class="pet-image">
-                    <div class="pet-content">
-                        <div class="pet-header">
-                            <div class="pet-name">@pet.Name</div>
-                            <div class="pet-status status-@(pet.IsAdopted ? "adopted" : "available")">
-                                @(pet.IsAdopted ? "Adopted" : "Available")
+        <div class="section-content" id="orgSection">
+            <div class="pets-grid" id="orgPetsGrid">
+                @foreach (var pet in Model.Where(p => !p.IsAdopted && (p.PostedByType == "Admin" || p.PostedByType == "Organization")))
+                {
+                    int daysInCenter = pet.DaysInCenter > 0
+                        ? pet.DaysInCenter
+                        : (int)(DateTime.Now - pet.DateAdded).TotalDays;
+
+                    <div class="pet-card" data-pet-name="@pet.Name.ToLower()" data-pet-type="@pet.Type" data-days="@daysInCenter" data-posted-by="org">
+                        <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/320x220?text=" + pet.Name : pet.ImageUrl)" alt="@pet.Name" class="pet-image">
+                        <div class="pet-content">
+                            <div class="pet-header">
+                                <div class="pet-name">@pet.Name</div>
+                                <div class="pet-status status-available">Available</div>
+                            </div>
+                            <div class="pet-details">
+                                <i class="fas fa-paw"></i> @pet.Breed • @pet.AgeDisplay • @pet.Gender
+                            </div>
+                            <div class="pet-details">
+                                <i class="fas fa-calendar"></i> Added @daysInCenter days ago
+                            </div>
+                            @if (!string.IsNullOrEmpty(pet.OrganizationName))
+                            {
+                                <div class="pet-details" style="color: #3FA9F5;">
+                                    <i class="fas fa-building"></i> @pet.OrganizationName
+                                </div>
+                            }
+                            <div class="pet-actions">
+                                <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="btn-sm btn-view">
+                                    <i class="fas fa-eye"></i> View
+                                </a>
+
+                                @if (ViewBag.CanModify)
+                                {
+                                    <a href="@Url.Action("EditPet", "Admin", new { id = pet.PetId })" class="btn-sm btn-edit">
+                                        <i class="fas fa-edit"></i> Edit
+                                    </a>
+                                    <form action="@Url.Action("DeletePet", "Admin")" method="post" style="display: inline;">
+                                        @Html.AntiForgeryToken()
+                                        <input type="hidden" name="id" value="@pet.PetId" />
+                                        <button type="button" class="btn-sm btn-delete" onclick="openDeleteModal(@pet.PetId, '@pet.Name')">
+                                            <i class="fas fa-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                }
+                                else
+                                {
+                                    <span style="grid-column: 2 / 4; text-align: center; color: #94a3b8; font-size: 0.85em; padding: 8px;">
+                                        <i class="fas fa-lock"></i> View Only
+                                    </span>
+                                }
                             </div>
                         </div>
-                        <div class="pet-details">
-                            <i class="fas fa-paw"></i> @pet.Breed • @pet.AgeDisplay • @pet.Gender
-                        </div>
-                        <div class="pet-details">
-                            <i class="fas fa-calendar"></i> Added @daysInCenter days ago
-                        </div>
-                        <div class="pet-actions">
-                            <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="btn-sm btn-view">
-                                <i class="fas fa-eye"></i> View
-                            </a>
-                            <a href="@Url.Action("EditPet", "Admin", new { id = pet.PetId })" class="btn-sm btn-edit">
-                                <i class="fas fa-edit"></i> Edit
-                            </a>
-                            @using (Html.BeginForm("DeletePet", "Admin", FormMethod.Post, new { style = "display: inline;" }))
-                            {
-                                @Html.AntiForgeryToken()
-                                <input type="hidden" name="id" value="@pet.PetId" />
-                                <button type="submit" class="btn-sm btn-delete" onclick="return confirm('Are you sure you want to delete @pet.Name?')">
-                                    <i class="fas fa-trash"></i> Delete
-                                </button>
-                            }
-                        </div>
                     </div>
+                }
+            </div>
+
+            @if (!Model.Any(p => !p.IsAdopted && (p.PostedByType == "Admin" || p.PostedByType == "Organization")))
+            {
+                <div style="background: white; border-radius: 15px; padding: 40px; text-align: center;">
+                    <i class="fas fa-building" style="font-size: 3em; color: #cbd5e1; margin-bottom: 15px;"></i>
+                    <p style="color: #94a3b8;">No organization or admin posts available</p>
                 </div>
             }
         </div>
+
+        <!-- ========== CLIENT POSTS SECTION ========== -->
+        <div class="section-divider client-section" style="margin-top: 50px;">
+            <div class="section-header" onclick="toggleSection('clientSection')">
+                <div class="section-title">
+                    <i class="fas fa-users"></i>
+                    Client Posts
+                    <span class="section-count" id="clientCount">(0)</span>
+                </div>
+                <button class="section-toggle-btn" id="clientToggleBtn">
+                    <i class="fas fa-chevron-down"></i>
+                </button>
+            </div>
+            <div class="section-subtitle">
+                Pets posted by verified clients - View Only (Cannot Edit or Delete)
+            </div>
+        </div>
+
+        <div class="section-content" id="clientSection">
+            <div class="pets-grid" id="clientPetsGrid">
+                @foreach (var pet in Model.Where(p => !p.IsAdopted && p.PostedByType == "Customer" && p.OwnerUserId.HasValue))
+                {
+                    int daysInCenter = pet.DaysInCenter > 0
+                        ? pet.DaysInCenter
+                        : (int)(DateTime.Now - pet.DateAdded).TotalDays;
+
+                    <div class="pet-card client-post-card" data-pet-name="@pet.Name.ToLower()" data-pet-type="@pet.Type" data-days="@daysInCenter" data-posted-by="client">
+                        <!-- Client Badge -->
+                        <div class="client-post-badge">
+                            <i class="fas fa-user"></i>
+                            Client Post
+                        </div>
+
+                        <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/320x220?text=" + pet.Name : pet.ImageUrl)" alt="@pet.Name" class="pet-image">
+                        <div class="pet-content">
+                            <div class="pet-header">
+                                <div class="pet-name">@pet.Name</div>
+                                <div class="pet-status status-available">Available</div>
+                            </div>
+                            <div class="pet-details">
+                                <i class="fas fa-paw"></i> @pet.Breed • @pet.AgeDisplay • @pet.Gender
+                            </div>
+                            <div class="pet-details">
+                                <i class="fas fa-calendar"></i> Added @daysInCenter days ago
+                            </div>
+                            @if (pet.Creator != null)
+                            {
+                                <div class="pet-details" style="color: #F6C90E;">
+                                    <i class="fas fa-user"></i> Posted by @pet.Creator.FullName
+                                </div>
+                            }
+                            <div class="pet-actions">
+                                <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="btn-sm btn-view" style="grid-column: 1 / -1;">
+                                    <i class="fas fa-eye"></i> View Details (View Only)
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                }
+            </div>
+
+            @if (!Model.Any(p => !p.IsAdopted && p.PostedByType == "Customer" && p.OwnerUserId.HasValue))
+            {
+                <div style="background: white; border-radius: 15px; padding: 40px; text-align: center;">
+                    <i class="fas fa-users" style="font-size: 3em; color: #cbd5e1; margin-bottom: 15px;"></i>
+                    <p style="color: #94a3b8;">No client posts available</p>
+                </div>
+            }
+        </div>
+
+
+        @if (!Model.Any(p => !p.IsAdopted && (p.PostedByType == "Admin" || p.PostedByType == "Organization")))
+        {
+            <div style="background: white; border-radius: 15px; padding: 40px; text-align: center; margin-bottom: 40px;">
+                <i class="fas fa-building" style="font-size: 3em; color: #cbd5e1; margin-bottom: 15px;"></i>
+                <p style="color: #94a3b8;">No organization or admin posts available</p>
+            </div>
+        }
+
+        @if (!Model.Any(p => !p.IsAdopted && p.PostedByType == "Customer" && p.OwnerUserId.HasValue))
+        {
+            <div style="background: white; border-radius: 15px; padding: 40px; text-align: center;">
+                <i class="fas fa-users" style="font-size: 3em; color: #cbd5e1; margin-bottom: 15px;"></i>
+                <p style="color: #94a3b8;">No client posts available</p>
+            </div>
+        }
 
         @if (!Model.Any(p => !p.IsAdopted))
         {
@@ -560,6 +961,30 @@
             </div>
         }
 
+    </div>
+
+    <!-- Delete Confirmation Modal -->
+    <div id="deleteModal" class="modal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <i class="fas fa-exclamation-triangle"></i>
+                <h2>Confirm Deletion</h2>
+            </div>
+            <div class="modal-body">
+                <p>Are you sure you want to delete <strong id="petNameToDelete"></strong>?</p>
+                <p style="color: #64748b; font-size: 0.9em; margin-top: 10px;">This action cannot be undone.</p>
+            </div>
+            <div class="modal-footer">
+                <button class="btn-cancel" onclick="closeDeleteModal()">Cancel</button>
+                <form id="deleteForm" method="post" action="@Url.Action("DeletePet", "Admin")" style="display: inline;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" name="id" id="petIdToDelete" />
+                    <button type="submit" class="btn-confirm-delete">
+                        <i class="fas fa-trash"></i> Yes, Delete
+                    </button>
+                </form>
+            </div>
+        </div>
     </div>
 
     <script>
@@ -598,8 +1023,12 @@
             });
 
             function applyFilters() {
+                const orgCards = Array.from(document.querySelectorAll('#orgPetsGrid .pet-card'));
+                const clientCards = Array.from(document.querySelectorAll('#clientPetsGrid .pet-card'));
+                const allCards = [...orgCards, ...clientCards];
+
                 // Filter and search
-                let visibleCards = petCards.filter(card => {
+                let visibleCards = allCards.filter(card => {
                     const petName = card.dataset.petName;
                     const petType = card.dataset.petType;
 
@@ -613,30 +1042,30 @@
                 visibleCards.sort((a, b) => {
                     const daysA = parseInt(a.dataset.days);
                     const daysB = parseInt(b.dataset.days);
-                    const nameA = a.dataset.petName;
-                    const nameB = b.dataset.petName;
+                    const postedByA = a.dataset.postedBy;
+                    const postedByB = b.dataset.postedBy;
 
                     switch (currentSort) {
                         case 'newest':
                             return daysA - daysB;
                         case 'oldest':
                             return daysB - daysA;
-                        case 'name-asc':
-                            return nameA.localeCompare(nameB);
-                        case 'name-desc':
-                            return nameB.localeCompare(nameA);
+                        case 'customer-posts':
+                            // Show client posts first
+                            if (postedByA === 'client' && postedByB !== 'client') return -1;
+                            if (postedByA !== 'client' && postedByB === 'client') return 1;
+                            return daysA - daysB;
                         default:
                             return 0;
                     }
                 });
 
                 // Hide all cards first
-                petCards.forEach(card => card.style.display = 'none');
+                allCards.forEach(card => card.style.display = 'none');
 
-                // Show and reorder visible cards
+                // Show filtered cards
                 visibleCards.forEach(card => {
                     card.style.display = 'block';
-                    petsGrid.appendChild(card);
                 });
 
                 // Update count
@@ -646,6 +1075,109 @@
             // Initial count
             applyFilters();
         });
+
+
+        // Toggle Section Collapse/Expand
+        function toggleSection(sectionId) {
+            const section = document.getElementById(sectionId);
+            const btn = document.getElementById(sectionId === 'orgSection' ? 'orgToggleBtn' : 'clientToggleBtn');
+
+            section.classList.toggle('collapsed');
+            btn.classList.toggle('collapsed');
+        }
+
+        // Update section counts
+        function updateSectionCounts() {
+            const orgCards = document.querySelectorAll('#orgPetsGrid .pet-card');
+            const clientCards = document.querySelectorAll('#clientPetsGrid .pet-card');
+
+            let orgVisible = 0;
+            let clientVisible = 0;
+
+            orgCards.forEach(card => {
+                if (card.style.display !== 'none') orgVisible++;
+            });
+
+            clientCards.forEach(card => {
+                if (card.style.display !== 'none') clientVisible++;
+            });
+
+            document.getElementById('orgCount').textContent = `(${orgVisible})`;
+            document.getElementById('clientCount').textContent = `(${clientVisible})`;
+        }
+
+        // Call this in your applyFilters function
+        function applyFilters() {
+            const orgCards = Array.from(document.querySelectorAll('#orgPetsGrid .pet-card'));
+            const clientCards = Array.from(document.querySelectorAll('#clientPetsGrid .pet-card'));
+            const allCards = [...orgCards, ...clientCards];
+
+            // Filter and search
+            let visibleCards = allCards.filter(card => {
+                const petName = card.dataset.petName;
+                const petType = card.dataset.petType;
+
+                const matchesSearch = petName.includes(currentSearch);
+                const matchesFilter = currentFilter === 'all' || petType === currentFilter;
+
+                return matchesSearch && matchesFilter;
+            });
+
+            // Sort
+            visibleCards.sort((a, b) => {
+                const daysA = parseInt(a.dataset.days);
+                const daysB = parseInt(b.dataset.days);
+                const postedByA = a.dataset.postedBy;
+                const postedByB = b.dataset.postedBy;
+
+                switch (currentSort) {
+                    case 'newest':
+                        return daysA - daysB;
+                    case 'oldest':
+                        return daysB - daysA;
+                    case 'customer-posts':
+                        if (postedByA === 'client' && postedByB !== 'client') return -1;
+                        if (postedByA !== 'client' && postedByB === 'client') return 1;
+                        return daysA - daysB;
+                    default:
+                        return 0;
+                }
+            });
+
+            // Hide all cards first
+            allCards.forEach(card => card.style.display = 'none');
+
+            // Show filtered cards
+            visibleCards.forEach(card => {
+                card.style.display = 'block';
+            });
+
+            // Update counts
+            resultCount.textContent = visibleCards.length;
+            updateSectionCounts(); // ⭐ ADD THIS LINE
+        }
+
+        // Initialize counts on page load
+        updateSectionCounts();
+
+        // Delete Modal Functions
+        function openDeleteModal(petId, petName) {
+            document.getElementById('petIdToDelete').value = petId;
+            document.getElementById('petNameToDelete').textContent = petName;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function (event) {
+            const modal = document.getElementById('deleteModal');
+            if (event.target === modal) {
+                closeDeleteModal();
+            }
+        }
     </script>
 </body>
 </html>

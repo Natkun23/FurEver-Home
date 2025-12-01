@@ -3,8 +3,10 @@ using System;
 using System.Collections.Generic;
 using System.Data.Entity;
 using System.Linq;
+using System.Web;
 using System.Web.Mvc;
-
+using System.IO;  // ⭐ ADD THIS - needed for Path.Combine
+using System.Web; // ⭐ ADD THIS - needed for HttpPostedFileBase
 namespace FurEver_Home.Controllers
 {
     public class MyPetsController : BaseController
@@ -27,7 +29,8 @@ namespace FurEver_Home.Controllers
             // Get pets posted by this customer
             var myPostedPets = db.Pets
                 .Include(p => p.PetType)
-                .Where(p => p.OwnerUserId == userId)
+                .Where(p => p.OwnerUserId == userId && !p.IsDeleted) // ⭐ ADD THIS
+
                 .OrderByDescending(p => p.DateAdded)
                 .ToList();
 
@@ -79,6 +82,31 @@ namespace FurEver_Home.Controllers
 
             return View(myPostedPets);
         }
+
+
+
+        // GET: MyPets/CustomerDeletedPosts
+        public ActionResult CustomerDeletedPosts()
+        {
+            if (Session["UserId"] == null)
+            {
+                TempData["Error"] = "Please login to access this page.";
+                return RedirectToAction("Login", "Account");
+            }
+
+            int userId = (int)Session["UserId"];
+
+            // Get only deleted posts by this customer
+            var deletedPets = db.Pets
+                .Include(p => p.PetType)
+                .Where(p => p.OwnerUserId == userId && p.IsDeleted)
+                .OrderByDescending(p => p.DeletedAt)
+                .ToList();
+
+            return View(deletedPets);
+        }
+
+
 
         // ==================== VIEW APPLICATION DETAILS ====================
 
@@ -308,7 +336,7 @@ namespace FurEver_Home.Controllers
         // POST: MyPets/DeletePet/5
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public ActionResult DeletePet(int id)
+        public ActionResult DeletePet(int id, string deletionReason, string otherReason)
         {
             if (Session["UserId"] == null)
             {
@@ -324,69 +352,205 @@ namespace FurEver_Home.Controllers
                 return RedirectToAction("CustomerDashboard");
             }
 
-            // ⭐ FIX: Check if pet is already adopted
+            // Check if pet is already adopted
             if (pet.IsAdopted)
             {
                 TempData["Error"] = $"Cannot delete '{pet.Name}' because it has already been adopted.";
                 return RedirectToAction("CustomerDashboard");
             }
 
-            // ⭐ FIX: Check if pet has active applications (including AwaitingPickup)
+            // Check if pet has active applications
             var hasActiveApplications = db.AdoptionApplications
                 .Any(a => a.PetId == id &&
                          (a.Status == "Pending" || a.Status == "Approved" || a.Status == "AwaitingPickup"));
 
             if (hasActiveApplications)
             {
-                TempData["Error"] = $"Cannot delete '{pet.Name}' because there are active applications. Please wait for applicants to withdraw or complete the adoption process.";
+                TempData["Error"] = $"Cannot delete '{pet.Name}' because there are active applications.";
                 return RedirectToAction("CustomerDashboard");
             }
 
             try
             {
-                // ⭐ FIX: Delete related records in the correct order to avoid foreign key conflicts
+                // ⭐ SOFT DELETE
+                pet.IsDeleted = true;
+                pet.DeletedBy = userId;
+                pet.DeletedAt = DateTime.Now;
+                pet.DeletionReason = deletionReason == "Others" ? otherReason : deletionReason;
+                pet.UpdatedAt = DateTime.Now;
 
-                // 1. Delete screening answers first (if they reference screening questions)
-                var screeningAnswers = db.PetScreeningAnswers
-                    .Where(a => a.Question.PetId == id)
-                    .ToList();
-                if (screeningAnswers.Any())
-                {
-                    db.PetScreeningAnswers.RemoveRange(screeningAnswers);
-                }
-
-                // 2. Delete screening questions
-                var questions = db.PetScreeningQuestions
-                    .Where(q => q.PetId == id)
-                    .ToList();
-                if (questions.Any())
-                {
-                    db.PetScreeningQuestions.RemoveRange(questions);
-                }
-
-                // 3. Delete any rejected/withdrawn applications (safe to delete)
-                var inactiveApplications = db.AdoptionApplications
-                    .Where(a => a.PetId == id &&
-                           (a.Status == "Rejected" || a.Status == "Withdrawn"))
-                    .ToList();
-                if (inactiveApplications.Any())
-                {
-                    db.AdoptionApplications.RemoveRange(inactiveApplications);
-                }
-
-                // 4. Finally delete the pet
-                db.Pets.Remove(pet);
                 db.SaveChanges();
 
                 TempData["Success"] = $"Pet '{pet.Name}' has been deleted successfully.";
             }
             catch (Exception ex)
             {
-                // ⭐ FIX: Better error handling
                 TempData["Error"] = $"Unable to delete '{pet.Name}'. Error: {ex.Message}";
             }
 
             return RedirectToAction("CustomerDashboard");
+        }
+
+        // ==================== EDIT PET (CUSTOMER) ====================
+
+        // GET: MyPets/CustomerEditPet/5
+        [HttpGet]
+        public ActionResult CustomerEditPet(int id)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            int currentUserId = (int)Session["UserId"];
+
+            var pet = db.Pets.Find(id);
+
+            if (pet == null)
+            {
+                TempData["Error"] = "Pet not found.";
+                return RedirectToAction("CustomerDashboard");
+            }
+
+            // Verify ownership
+            if (pet.OwnerUserId != currentUserId)
+            {
+                TempData["Error"] = "You don't have permission to edit this pet.";
+                return RedirectToAction("CustomerDashboard");
+            }
+
+            // Check if pet has active applications (Approved pets with pending applications)
+            if (pet.PostStatus == "Approved")
+            {
+                var hasActiveApplications = db.AdoptionApplications
+                    .Any(a => a.PetId == id && a.Status == "Pending");
+
+                if (hasActiveApplications)
+                {
+                    TempData["Error"] = "Cannot edit pet with active adoption applications.";
+                    return RedirectToAction("CustomerDashboard");
+                }
+            }
+
+            // Check if pet is already adopted
+            if (pet.IsAdopted)
+            {
+                TempData["Error"] = "Cannot edit an adopted pet.";
+                return RedirectToAction("CustomerDashboard");
+            }
+
+            // Load pet types for dropdown
+            ViewBag.PetTypes = db.PetTypes.ToList();
+
+            return View(pet);
+        }
+
+        // POST: MyPets/CustomerEditPet
+        // POST: MyPets/CustomerEditPet
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public ActionResult CustomerEditPet(Pet pet, HttpPostedFileBase PetImage, HttpPostedFileBase PetImage2, HttpPostedFileBase PetImage3)
+        {
+            if (Session["UserId"] == null)
+            {
+                return RedirectToAction("Login", "Account");
+            }
+
+            int currentUserId = (int)Session["UserId"];
+
+            // Get existing pet from database
+            var existingPet = db.Pets.Find(pet.PetId);
+
+            if (existingPet == null)
+            {
+                TempData["Error"] = "Pet not found.";
+                return RedirectToAction("CustomerDashboard");
+            }
+
+            // Verify ownership
+            if (existingPet.OwnerUserId != currentUserId)
+            {
+                TempData["Error"] = "You don't have permission to edit this pet.";
+                return RedirectToAction("CustomerDashboard");
+            }
+
+            // Check if pet has active applications
+            if (existingPet.PostStatus == "Approved")
+            {
+                var hasActiveApplications = db.AdoptionApplications
+                    .Any(a => a.PetId == pet.PetId && a.Status == "Pending");
+
+                if (hasActiveApplications)
+                {
+                    TempData["Error"] = "Cannot edit pet with active adoption applications.";
+                    return RedirectToAction("CustomerDashboard");
+                }
+            }
+
+            try
+            {
+                // Update basic pet information
+                existingPet.Name = pet.Name;
+                existingPet.PetTypeId = pet.PetTypeId;
+                existingPet.Breed = pet.Breed;
+                existingPet.Gender = pet.Gender;
+                existingPet.Size = pet.Size;
+                existingPet.Age = pet.Age;
+                existingPet.AgeUnit = pet.AgeUnit;
+                existingPet.Location = pet.Location;
+                existingPet.DaysInCenter = pet.DaysInCenter;
+                existingPet.Description = pet.Description;
+                existingPet.Traits = pet.Traits;
+                existingPet.Vaccines = pet.Vaccines;
+                existingPet.WhyAdoptMe = pet.WhyAdoptMe;
+                existingPet.IsHealthy = pet.IsHealthy;
+                existingPet.IsNeutered = pet.IsNeutered;
+
+                // ⭐ Handle Photo 1 (Main Photo)
+                if (PetImage != null && PetImage.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(PetImage.FileName);
+                    string extension = Path.GetExtension(PetImage.FileName);
+                    fileName = fileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + extension;
+                    string path = Path.Combine(Server.MapPath("~/Content/Images/Pets/"), fileName);
+                    PetImage.SaveAs(path);
+                    existingPet.ImageUrl = "/Content/Images/Pets/" + fileName;
+                }
+
+                // ⭐ Handle Photo 2
+                if (PetImage2 != null && PetImage2.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(PetImage2.FileName);
+                    string extension = Path.GetExtension(PetImage2.FileName);
+                    fileName = fileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + extension;
+                    string path = Path.Combine(Server.MapPath("~/Content/Images/Pets/"), fileName);
+                    PetImage2.SaveAs(path);
+                    existingPet.ImageUrl2 = "/Content/Images/Pets/" + fileName;
+                }
+
+                // ⭐ Handle Photo 3
+                if (PetImage3 != null && PetImage3.ContentLength > 0)
+                {
+                    string fileName = Path.GetFileNameWithoutExtension(PetImage3.FileName);
+                    string extension = Path.GetExtension(PetImage3.FileName);
+                    fileName = fileName + "_" + DateTime.Now.ToString("yyyyMMddHHmmss") + extension;
+                    string path = Path.Combine(Server.MapPath("~/Content/Images/Pets/"), fileName);
+                    PetImage3.SaveAs(path);
+                    existingPet.ImageUrl3 = "/Content/Images/Pets/" + fileName;
+                }
+
+                db.Entry(existingPet).State = EntityState.Modified;
+                db.SaveChanges();
+
+                TempData["Success"] = $"{pet.Name}'s information has been updated successfully!";
+                return RedirectToAction("CustomerDashboard");
+            }
+            catch (Exception ex)
+            {
+                TempData["Error"] = "An error occurred while updating the pet: " + ex.Message;
+                ViewBag.PetTypes = db.PetTypes.ToList();
+                return View(pet);
+            }
         }
     }
 }

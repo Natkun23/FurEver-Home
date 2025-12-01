@@ -22,8 +22,8 @@
         }
 
         body {
-            font-family: 'Inter', 'Segoe UI', sans-serif;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: #f8fafc;
             min-height: 100vh;
             padding: 40px 20px;
         }
@@ -35,14 +35,15 @@
 
         .application-card {
             background: white;
-            border-radius: 24px;
-            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
             margin-bottom: 30px;
+            border: 1px solid #e2e8f0;
         }
 
         .app-header {
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            background: linear-gradient(135deg, #2E8BC0 0%, #1e5f8f 100%);
             padding: 40px;
             color: white;
             display: flex;
@@ -53,19 +54,26 @@
         .pet-preview {
             width: 120px;
             height: 120px;
-            border-radius: 20px;
+            border-radius: 12px;
             object-fit: cover;
-            border: 5px solid white;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            transition: transform 0.3s;
         }
+
+            .pet-preview:hover {
+                transform: scale(1.05);
+            }
 
         .app-header-text h1 {
             font-size: 2em;
             margin-bottom: 10px;
+            font-weight: 700;
         }
 
         .app-header-text p {
             opacity: 0.9;
-            font-size: 1.1em;
+            font-size: 1.05em;
+            font-weight: 400;
         }
 
         .app-body {
@@ -73,57 +81,76 @@
         }
 
         .section-title {
-            font-size: 1.5em;
-            color: #2E8BC0;
-            font-weight: 700;
+            font-size: 1.35em;
+            color: #1a202c;
+            font-weight: 600;
             margin-bottom: 20px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding-bottom: 15px;
-            border-bottom: 3px solid #E8F4FC;
+            gap: 12px;
+            padding-bottom: 16px;
+            border-bottom: 2px solid #e2e8f0;
         }
 
+            .section-title i {
+                color: #2E8BC0;
+                font-size: 1.3em;
+            }
+
         .section-description {
-            background: #FFF9E6;
-            border-left: 4px solid #FFD93D;
-            padding: 15px 20px;
-            border-radius: 8px;
+            background: #f0f6fb;
+            border-left: 3px solid #2E8BC0;
+            padding: 16px 18px;
+            border-radius: 10px;
             margin-bottom: 25px;
-            color: #92400e;
+            color: #0c4a6e;
             font-size: 0.95em;
+            line-height: 1.6;
         }
 
         .owner-info-banner {
-            background: linear-gradient(135deg, #E8F4FC 0%, #dbeafe 100%);
-            border-left: 4px solid #3FA9F5;
-            padding: 20px;
-            border-radius: 12px;
+            background: #f0f6fb;
+            border-left: 3px solid #2E8BC0;
+            padding: 18px;
+            border-radius: 10px;
             margin-bottom: 25px;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 15px;
+            transition: all 0.3s;
         }
 
+            .owner-info-banner:hover {
+                box-shadow: 0 4px 12px rgba(46, 139, 192, 0.1);
+                border-left-color: #3FA9F5;
+            }
+
         .owner-info-banner i {
-            font-size: 2em;
-            color: #3FA9F5;
+            font-size: 1.8em;
+            color: #2E8BC0;
+            margin-top: 2px;
         }
 
         .owner-info-banner strong {
-            color: #2E8BC0;
-            font-size: 1.1em;
+            color: #1a202c;
+            font-size: 1em;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .owner-info-banner div {
+            flex: 1;
         }
 
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
-            gap: 25px;
-            margin-bottom: 25px;
+            gap: 24px;
+            margin-bottom: 24px;
         }
 
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 18px;
         }
 
         .form-group.full-width {
@@ -132,37 +159,44 @@
 
         .form-group label {
             display: block;
-            color: #334155;
+            color: #1a202c;
             margin-bottom: 8px;
             font-weight: 600;
-            font-size: 14px;
+            font-size: 0.95em;
         }
 
         .form-group .required {
             color: #ef4444;
             margin-left: 3px;
+            font-weight: 700;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 14px 16px;
-            border: 2px solid #e2e8f0;
-            border-radius: 12px;
-            font-size: 15px;
-            transition: all 0.3s;
+            padding: 12px 14px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 14px;
+            transition: all 0.2s;
             outline: none;
-            background: #f8fafc;
+            background: white;
             font-family: inherit;
+        }
+
+        .form-group input:hover,
+        .form-group select:hover,
+        .form-group textarea:hover {
+            border-color: #94a3b8;
         }
 
         .form-group input:focus,
         .form-group select:focus,
         .form-group textarea:focus {
-            border-color: #3FA9F5;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+            border-color: #2E8BC0;
+            background: #f8fafc;
+            box-shadow: 0 0 0 3px rgba(46, 139, 192, 0.1);
         }
 
         .form-group textarea {
@@ -172,7 +206,7 @@
 
         .radio-group {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             margin-top: 10px;
         }
 
@@ -181,62 +215,82 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            padding: 12px 20px;
-            border: 2px solid #e2e8f0;
-            border-radius: 10px;
+            padding: 12px 16px;
+            border: 1.5px solid #cbd5e1;
+            border-radius: 8px;
             cursor: pointer;
-            transition: all 0.3s;
-            background: #f8fafc;
+            transition: all 0.2s;
+            background: white;
         }
 
-        .radio-option:hover {
-            border-color: #3FA9F5;
-            background: #eff6ff;
-        }
+            .radio-option:hover {
+                border-color: #2E8BC0;
+                background: #f8fafc;
+            }
 
         .radio-option input[type="radio"] {
             width: auto;
             margin: 0;
+            cursor: pointer;
         }
 
         .radio-option:has(input[type="radio"]:checked) {
-            border-color: #3FA9F5;
-            background: #eff6ff;
+            border-color: #2E8BC0;
+            background: #f0f6fb;
         }
 
         .radio-option label {
             margin: 0;
             cursor: pointer;
             flex: 1;
+            font-weight: 500;
         }
 
         .info-box {
-            background: #eff6ff;
-            border-left: 4px solid #3FA9F5;
+            background: white;
+            border: 1.5px solid #2E8BC0;
+            border-left: 3px solid #2E8BC0;
             padding: 20px;
             border-radius: 10px;
             margin: 30px 0;
+            transition: all 0.3s;
         }
 
+            .info-box:hover {
+                box-shadow: 0 4px 12px rgba(46, 139, 192, 0.1);
+            }
+
         .info-box h4 {
-            color: #1e40af;
-            margin-bottom: 10px;
+            color: #1a202c;
+            margin-bottom: 12px;
             display: flex;
             align-items: center;
             gap: 10px;
+            font-weight: 600;
         }
+
+            .info-box h4 i {
+                color: #2E8BC0;
+                font-size: 1.2em;
+            }
 
         .info-box ul {
             margin-left: 20px;
-            color: #334155;
+            color: #475569;
             line-height: 1.8;
         }
 
+            .info-box li {
+                margin-bottom: 8px;
+                font-weight: 500;
+            }
+
         .screening-section {
-            background: #f8f9fa;
-            padding: 30px;
-            border-radius: 15px;
+            background: #f8fafc;
+            padding: 28px;
+            border-radius: 12px;
             margin: 30px 0;
+            border: 1px solid #e2e8f0;
         }
 
         .question-number {
@@ -245,7 +299,7 @@
             justify-content: center;
             width: 28px;
             height: 28px;
-            background: #3FA9F5;
+            background: #2E8BC0;
             color: white;
             border-radius: 50%;
             font-weight: 700;
@@ -254,61 +308,254 @@
         }
 
         .field-validation-error {
-            color: #ef4444;
-            font-size: 13px;
+            color: #dc2626;
+            font-size: 12px;
             margin-top: 6px;
             display: block;
+            font-weight: 500;
         }
 
         .step-indicator {
             display: flex;
             justify-content: center;
-            gap: 10px;
+            gap: 12px;
             margin-bottom: 30px;
-            padding: 20px;
+            padding: 18px;
             background: #f8fafc;
-            border-radius: 12px;
+            border-radius: 10px;
+            flex-wrap: wrap;
         }
 
         .step {
             display: flex;
             align-items: center;
             gap: 8px;
-            padding: 10px 20px;
+            padding: 10px 18px;
             background: white;
             border-radius: 8px;
             font-weight: 600;
             color: #64748b;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+            font-size: 0.9em;
+            border: 1px solid #e2e8f0;
+            transition: all 0.2s;
         }
 
         .step.active {
-            background: #3FA9F5;
+            background: #2E8BC0;
             color: white;
+            border-color: #2E8BC0;
         }
 
         .step i {
-            font-size: 1.2em;
+            font-size: 1em;
         }
 
         .warning-banner {
-            background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
-            padding: 18px 20px;
-            border-radius: 12px;
-            border-left: 4px solid #f59e0b;
+            background: #fffbeb;
+            padding: 16px 18px;
+            border-radius: 10px;
+            border-left: 3px solid #d97706;
             margin: 20px 0;
             display: flex;
-            align-items: center;
+            align-items: flex-start;
             gap: 12px;
-            color: #92400e;
+            color: #78350f;
+            border: 1px solid #fef08a;
+            transition: all 0.3s;
         }
+
+            .warning-banner:hover {
+                border-left-color: #ea580c;
+                box-shadow: 0 2px 8px rgba(217, 119, 6, 0.1);
+            }
 
         .warning-banner i {
-            font-size: 1.5em;
+            font-size: 1.3em;
             color: #d97706;
+            margin-top: 2px;
+            flex-shrink: 0;
         }
 
-        /* Agreement Modal - keeping existing styles */
+        .warning-banner strong {
+            color: #7c2d12;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        /* ========== INITIAL NOTE MODAL ========== */
+        #initialNoteModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 10001;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        #initialNoteModal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .initial-note-inner {
+            background: white;
+            border-radius: 16px;
+            max-width: 500px;
+            width: 100%;
+            max-height: 90vh;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+            display: flex;
+            flex-direction: column;
+            margin: auto;
+        }
+
+        .initial-note-header {
+            background: linear-gradient(135deg, #2E8BC0 0%, #1e5f8f 100%);
+            padding: 24px 20px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+            flex-shrink: 0;
+        }
+
+        .initial-note-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .initial-note-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 180px;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .initial-note-icon {
+            font-size: 2.5em;
+            color: white;
+            margin-bottom: 8px;
+            display: inline-block;
+            position: relative;
+            z-index: 1;
+        }
+
+        .initial-note-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            position: relative;
+            z-index: 1;
+            line-height: 1.3;
+        }
+
+        .initial-note-body {
+            padding: 24px 20px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .initial-note-message {
+            font-size: 0.9em;
+            color: #334155;
+            line-height: 1.6;
+            margin-bottom: 16px;
+        }
+
+        .initial-note-highlights {
+            background: #f8fafc;
+            border-left: 3px solid #2E8BC0;
+            padding: 14px 16px;
+            border-radius: 10px;
+            margin: 16px 0;
+            color: #0c4a6e;
+            border: 1px solid #e2e8f0;
+        }
+
+        .initial-note-highlights ul {
+            margin: 0;
+            padding-left: 16px;
+            list-style: none;
+        }
+
+        .initial-note-highlights li {
+            margin: 8px 0;
+            padding-left: 16px;
+            position: relative;
+            font-size: 0.85em;
+            font-weight: 500;
+            color: #1a202c;
+            line-height: 1.4;
+        }
+
+        .initial-note-highlights li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #2E8BC0;
+            font-weight: bold;
+            font-size: 1.1em;
+        }
+
+        .initial-note-footer {
+            padding: 16px 20px;
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-shrink: 0;
+            border-top: 1px solid #e2e8f0;
+        }
+
+        .btn-note-close {
+            padding: 10px 24px;
+            background: #2E8BC0;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            font-size: 0.9em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(46, 139, 192, 0.15);
+            white-space: nowrap;
+        }
+
+        .btn-note-close:hover {
+            background: #1e5f8f;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(46, 139, 192, 0.25);
+        }
+
+        .btn-note-close:active {
+            transform: translateY(0);
+        }
+
+        /* ========== AGREEMENT MODAL ========== */
         .agreement-modal {
             display: none;
             position: fixed;
@@ -316,7 +563,8 @@
             left: 0;
             width: 100%;
             height: 100%;
-            background: rgba(0, 0, 0, 0.7);
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
             z-index: 10000;
             align-items: center;
             justify-content: center;
@@ -325,70 +573,110 @@
 
         .agreement-modal-content {
             background: white;
-            border-radius: 25px;
+            border-radius: 16px;
             max-width: 600px;
             width: 90%;
             max-height: 90vh;
             overflow-y: auto;
-            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15);
             animation: slideUp 0.4s;
         }
 
         .agreement-header {
-            background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
-            padding: 30px;
+            background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);
+            padding: 32px 28px;
             text-align: center;
             color: white;
-            border-radius: 25px 25px 0 0;
+            border-radius: 16px 16px 0 0;
+            position: relative;
+            overflow: hidden;
+            background-attachment: fixed;
+        }
+
+        .agreement-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-size: cover;
+            background-position: center;
+            opacity: 0.15;
+            z-index: 0;
+        }
+
+        .agreement-header::after {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
         }
 
         .agreement-header i {
-            font-size: 4em;
-            margin-bottom: 15px;
+            font-size: 3.5em;
+            margin-bottom: 12px;
             display: block;
-            animation: pulse 2s infinite;
+            position: relative;
+            z-index: 1;
         }
 
         .agreement-header h2 {
             margin: 0;
-            font-size: 1.8em;
+            font-size: 1.6em;
             font-weight: 700;
+            position: relative;
+            z-index: 1;
         }
 
         .agreement-body {
-            padding: 35px;
+            padding: 32px 28px;
         }
 
         .policy-notice {
-            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
-            padding: 20px;
-            border-radius: 15px;
-            border-left: 4px solid #dc2626;
-            margin-bottom: 25px;
+            background: #fee2e2;
+            padding: 18px 20px;
+            border-radius: 10px;
+            border-left: 3px solid #dc2626;
+            margin-bottom: 24px;
+            border: 1px solid #fecaca;
         }
 
         .policy-notice h4 {
-            color: #991b1b;
+            color: #7f1d1d;
             margin-bottom: 12px;
-            font-size: 1.1em;
+            font-size: 1em;
+            font-weight: 600;
+        }
+
+        .policy-notice p {
+            color: #991b1b;
+            margin: 0;
+            font-size: 0.95em;
+            line-height: 1.6;
         }
 
         .policy-list {
             list-style: none;
             padding: 0;
-            margin: 0;
+            margin: 15px 0 0 0;
         }
 
         .policy-list li {
             color: #7f1d1d;
-            padding: 10px 0 10px 35px;
+            padding: 10px 0 10px 28px;
             position: relative;
             line-height: 1.6;
-            font-size: 0.95em;
+            font-size: 0.9em;
+            font-weight: 500;
         }
 
         .policy-list li:before {
-            content: "⚠";
+            content: "•";
             position: absolute;
             left: 0;
             color: #dc2626;
@@ -398,21 +686,22 @@
 
         .policy-list li strong {
             color: #991b1b;
+            font-weight: 700;
         }
 
         .agreement-checkbox-wrapper {
-            background: #f8fafc;
-            padding: 20px;
-            border-radius: 15px;
-            border: 2px solid #e2e8f0;
-            margin: 25px 0;
+            background: white;
+            padding: 18px;
+            border-radius: 10px;
+            border: 1.5px solid #cbd5e1;
+            margin: 24px 0;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
         }
 
         .agreement-checkbox-wrapper:hover {
-            background: #f1f5f9;
-            border-color: #cbd5e1;
+            background: #f8fafc;
+            border-color: #94a3b8;
         }
 
         .agreement-checkbox-wrapper.checked {
@@ -422,32 +711,33 @@
 
         .checkbox-container {
             display: flex;
-            align-items: start;
-            gap: 15px;
+            align-items: flex-start;
+            gap: 14px;
         }
 
         .custom-checkbox {
-            width: 28px;
-            height: 28px;
-            min-width: 28px;
-            border: 3px solid #cbd5e1;
-            border-radius: 8px;
+            width: 24px;
+            height: 24px;
+            min-width: 24px;
+            border: 2px solid #cbd5e1;
+            border-radius: 6px;
             cursor: pointer;
             display: flex;
             align-items: center;
             justify-content: center;
-            transition: all 0.3s;
+            transition: all 0.2s;
             background: white;
+            margin-top: 2px;
         }
 
         .custom-checkbox.checked {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: #10b981;
             border-color: #10b981;
         }
 
         .custom-checkbox i {
             color: white;
-            font-size: 1.2em;
+            font-size: 1em;
             display: none;
         }
 
@@ -457,60 +747,70 @@
 
         .checkbox-label {
             color: #334155;
-            font-size: 1em;
+            font-size: 0.95em;
             line-height: 1.6;
             cursor: pointer;
             user-select: none;
+            font-weight: 500;
         }
 
         .checkbox-label strong {
-            color: #2E8BC0;
-            font-size: 1.05em;
+            color: #1a202c;
+            font-size: 1em;
+            display: block;
+            margin-bottom: 6px;
         }
 
         .agreement-buttons {
             display: flex;
-            gap: 15px;
-            margin-top: 25px;
+            gap: 12px;
+            margin-top: 24px;
         }
 
         .btn-modal {
             flex: 1;
-            padding: 16px;
+            padding: 14px;
             border: none;
-            border-radius: 12px;
-            font-weight: 700;
-            font-size: 1em;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 0.95em;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-modal-cancel {
             background: #e2e8f0;
             color: #334155;
+            border: 1px solid #cbd5e1;
         }
 
         .btn-modal-cancel:hover {
             background: #cbd5e1;
+            border-color: #94a3b8;
         }
 
         .btn-modal-agree {
             background: #cbd5e1;
             color: #94a3b8;
             cursor: not-allowed;
-            position: relative;
-            overflow: hidden;
+            border: none;
         }
 
         .btn-modal-agree.enabled {
-            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            background: #10b981;
             color: white;
             cursor: pointer;
+            box-shadow: 0 2px 8px rgba(16, 185, 129, 0.15);
         }
 
         .btn-modal-agree.enabled:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+            background: #059669;
+            transform: translateY(-1px);
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.25);
         }
 
         @@keyframes fadeIn {
@@ -521,7 +821,7 @@
         @@keyframes slideUp {
             from {
                 opacity: 0;
-                transform: translateY(50px);
+                transform: translateY(30px);
             }
             to {
                 opacity: 1;
@@ -529,38 +829,39 @@
             }
         }
 
-        @@keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
-        }
-
         .btn-submit {
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            background: #2E8BC0;
             color: white;
-            padding: 16px 50px;
+            padding: 14px 32px;
             border: none;
-            border-radius: 12px;
-            font-size: 1.1em;
-            font-weight: 700;
+            border-radius: 8px;
+            font-size: 1em;
+            font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 2px 8px rgba(46, 139, 192, 0.15);
         }
 
         .btn-submit:hover {
+            background: #1e5f8f;
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(63, 169, 245, 0.4);
+            box-shadow: 0 4px 12px rgba(46, 139, 192, 0.25);
         }
 
         .btn-back {
             background: #e2e8f0;
             color: #334155;
-            padding: 12px 30px;
-            border: none;
-            border-radius: 12px;
-            font-size: 1em;
+            padding: 14px 24px;
+            border: 1px solid #cbd5e1;
+            border-radius: 8px;
+            font-size: 0.95em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.2s;
             text-decoration: none;
             display: inline-flex;
             align-items: center;
@@ -569,15 +870,17 @@
 
         .btn-back:hover {
             background: #cbd5e1;
+            border-color: #94a3b8;
             transform: translateY(-2px);
         }
 
         .action-buttons {
             display: flex;
-            gap: 15px;
+            gap: 12px;
             justify-content: center;
             align-items: center;
-            margin-top: 30px;
+            margin-top: 32px;
+            flex-wrap: wrap;
         }
 
         @@media (max-width: 768px) {
@@ -598,10 +901,56 @@
             .btn-submit {
                 width: 100%;
             }
+
+            .step-indicator {
+                gap: 8px;
+            }
+
+            .step {
+                font-size: 0.85em;
+                padding: 8px 12px;
+            }
         }
     </style>
 </head>
 <body>
+    <!-- Initial Note Modal -->
+    <div id="initialNoteModal" class="initial-note-modal">
+        <div class="initial-note-inner">
+            <div class="initial-note-header">
+                <i class="fas fa-info-circle initial-note-icon"></i>
+                <h2 class="initial-note-title">Important Information About Adoption</h2>
+            </div>
+
+            <div class="initial-note-body">
+                <p class="initial-note-message">
+                    <strong>Thank you for considering adopting a pet from FurEver Home!</strong>
+                    Your decision to adopt is a lifelong commitment to provide a loving and stable home for your new furry friend.
+                    Please be truthful and thorough in your answers below, as the admin team or pet owner will verify your responses
+                    to ensure you are the right fit for their pet.
+                </p>
+
+                <div class="initial-note-highlights">
+                    <h4 style="color: #1a202c; margin: 0 0 12px 0; font-weight: 600;">Please Keep in Mind:</h4>
+                    <ul>
+                        <li><strong>Your Answers Matter:</strong> The admin team or the current pet owner will review your application and verify that your answers are truthful and complete.</li>
+                        <li><strong>Home Verification:</strong> You may be asked to provide proof of residence, landlord approval, or other documentation.</li>
+                        <li><strong>Reference Checks:</strong> We may contact your veterinarian or personal references to confirm your pet care experience.</li>
+                        <li><strong>Financial Responsibility:</strong> Pet ownership requires ongoing financial commitment including food, veterinary care, grooming, and emergency expenses.</li>
+                        <li><strong>Household Agreement:</strong> All family members must agree to and be prepared for pet adoption.</li>
+                        <li><strong>No False Information:</strong> Providing false or misleading information will result in application rejection and potential blacklisting.</li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="initial-note-footer">
+                <button id="btnCloseInitialNote" class="btn-note-close">
+                    <i class="fas fa-check"></i> I Understand & Proceed
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="application-card">
             <div class="app-header">
@@ -917,7 +1266,7 @@
 
                         <div class="agreement-body">
                             <div class="policy-notice">
-                                <h4>⚠️ Please Read Carefully Before Proceeding</h4>
+                                <h4>Please Read Carefully Before Proceeding</h4>
                                 <p style="color: #7f1d1d; margin-bottom: 15px;">
                                     By submitting this application, you are making a commitment to adopt this pet if approved.
                                 </p>
@@ -929,27 +1278,35 @@
                                         You can only withdraw your application <u>before</u> approval.
                                     </li>
                                     <li>
-                                        After approval, pickup details will be set and you <strong>must proceed</strong> with the adoption.
+                                        If you fail to respond to @if (hasCustomQuestions) { <strong>the owner's</strong> } else { <strong>our</strong> } request for additional information within 3 days, your application will be cancelled.
                                     </li>
                                     <li>
-                                        This policy ensures our pets find committed, loving homes.
-                                    </li>
-                                    <li>
-                                        Please ensure you are <strong>fully ready and committed</strong> before applying.
+                                        Providing false information or failing to comply with the adoption process may result in being banned from future adoptions.
                                     </li>
                                 </ul>
                             </div>
 
-                            <div class="agreement-checkbox-wrapper" id="agreementCheckboxWrapper" onclick="toggleAgreement()">
-                                <div class="checkbox-container">
-                                    <div class="custom-checkbox" id="customCheckbox">
-                                        <i class="fas fa-check"></i>
+                            <div class="agreement-checkbox-wrapper" id="agreementCheckbox">
+                                <div style="display: flex; flex-direction: column; gap: 12px;">
+                                    <!-- First Checkbox -->
+                                    <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="toggleCheckbox1()">
+                                        <div class="custom-checkbox" id="checkboxAgree">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <label class="checkbox-label" style="cursor: pointer; margin: 0;">
+                                            <strong>I agree to the adoption policy and conditions.</strong>
+                                        </label>
                                     </div>
-                                    <label class="checkbox-label">
-                                        <strong>I understand and agree to the FurEver Home adoption policy.</strong>
-                                        <br>
-                                        I acknowledge that once my application is approved, I cannot cancel or withdraw from this adoption. I am fully committed to providing a loving home for this pet.
-                                    </label>
+
+                                    <!-- Second Checkbox -->
+                                    <div style="display: flex; align-items: center; gap: 12px; cursor: pointer;" onclick="toggleCheckbox2()">
+                                        <div class="custom-checkbox" id="checkboxReadPolicy">
+                                            <i class="fas fa-check"></i>
+                                        </div>
+                                        <label class="checkbox-label" style="cursor: pointer; margin: 0;">
+                                            <strong>I have read and understood the information provided.</strong>
+                                        </label>
+                                    </div>
                                 </div>
                             </div>
 
@@ -957,14 +1314,10 @@
                                 <button type="button" class="btn-modal btn-modal-cancel" onclick="closeAgreementModal()">
                                     <i class="fas fa-times"></i> Cancel
                                 </button>
-                                <button type="button" class="btn-modal btn-modal-agree" id="btnAgree" disabled onclick="submitApplicationForm()">
-                                    <i class="fas fa-lock"></i> Agree & Submit Application
+                                <button type="button" class="btn-modal btn-modal-agree disabled" id="btnSubmitAgreement" onclick="submitApplicationForm()" disabled>
+                                    <i class="fas fa-check"></i> I Agree, Submit Application
                                 </button>
                             </div>
-
-                            <p style="text-align: center; color: #94a3b8; font-size: 0.9em; margin-top: 15px;">
-                                <i class="fas fa-shield-alt"></i> Your commitment helps us protect our animals
-                            </p>
                         </div>
                     </div>
                 </div>
@@ -972,17 +1325,93 @@
         </div>
     </div>
 
-    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
-    <script src="~/Scripts/jquery.validate.min.js"></script>
-    <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
-
+    <!-- Scripts -->
     <script>
-        let isAgreed = false;
+        let agreedToPolicy = false;
+        let readPolicy = false;
+        let hasSeenInitialModal = false; // Track if user has seen the modal
+
+        // Show initial note modal on page load
+        document.addEventListener('DOMContentLoaded', function () {
+            const initialModal = document.getElementById('initialNoteModal');
+            if (initialModal && !hasSeenInitialModal) {
+                initialModal.classList.add('show');
+            }
+
+            const btnCloseInitial = document.getElementById('btnCloseInitialNote');
+            if (btnCloseInitial) {
+                btnCloseInitial.addEventListener('click', function () {
+                    closeInitialNoteModal();
+                });
+            }
+        });
+
+        function closeInitialNoteModal() {
+            const modal = document.getElementById('initialNoteModal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+                hasSeenInitialModal = true; // Mark as seen
+            }
+        }
+
+        function toggleCheckbox1() {
+            agreedToPolicy = !agreedToPolicy;
+            updateCheckboxUI();
+        }
+
+        function toggleCheckbox2() {
+            readPolicy = !readPolicy;
+            updateCheckboxUI();
+        }
+
+        function updateCheckboxUI() {
+            const checkbox1 = document.getElementById('checkboxAgree');
+            const checkbox2 = document.getElementById('checkboxReadPolicy');
+            const wrapper = document.getElementById('agreementCheckbox');
+            const btnSubmit = document.getElementById('btnSubmitAgreement');
+
+            // Update checkbox 1
+            if (agreedToPolicy) {
+                checkbox1.classList.add('checked');
+            } else {
+                checkbox1.classList.remove('checked');
+            }
+
+            // Update checkbox 2
+            if (readPolicy) {
+                checkbox2.classList.add('checked');
+            } else {
+                checkbox2.classList.remove('checked');
+            }
+
+            // Update wrapper background
+            if (agreedToPolicy && readPolicy) {
+                wrapper.classList.add('checked');
+            } else {
+                wrapper.classList.remove('checked');
+            }
+
+            // Update submit button
+            if (agreedToPolicy && readPolicy) {
+                btnSubmit.classList.add('enabled');
+                btnSubmit.classList.remove('disabled');
+                btnSubmit.disabled = false;
+            } else {
+                btnSubmit.classList.remove('enabled');
+                btnSubmit.classList.add('disabled');
+                btnSubmit.disabled = true;
+            }
+        }
 
         function showAgreementModal() {
-            // Reset checkbox state
-            isAgreed = false;
+            // Reset checkboxes
+            agreedToPolicy = false;
+            readPolicy = false;
             updateCheckboxUI();
+
             document.getElementById('agreementModal').style.display = 'flex';
         }
 
@@ -990,48 +1419,42 @@
             document.getElementById('agreementModal').style.display = 'none';
         }
 
-        function toggleAgreement() {
-            isAgreed = !isAgreed;
-            updateCheckboxUI();
-        }
-
-        function updateCheckboxUI() {
-            const checkbox = document.getElementById('customCheckbox');
-            const wrapper = document.getElementById('agreementCheckboxWrapper');
-            const btnAgree = document.getElementById('btnAgree');
-
-            if (isAgreed) {
-                checkbox.classList.add('checked');
-                wrapper.classList.add('checked');
-                btnAgree.classList.add('enabled');
-                btnAgree.disabled = false;
-                btnAgree.innerHTML = '<i class="fas fa-check-circle"></i> Agree & Submit Application';
-            } else {
-                checkbox.classList.remove('checked');
-                wrapper.classList.remove('checked');
-                btnAgree.classList.remove('enabled');
-                btnAgree.disabled = true;
-                btnAgree.innerHTML = '<i class="fas fa-lock"></i> Agree & Submit Application';
-            }
-        }
-
         function submitApplicationForm() {
-            if (isAgreed) {
-                // Close modal
+            if (agreedToPolicy && readPolicy) {
                 closeAgreementModal();
-
-                // Submit the actual form
                 document.getElementById('applyForm').submit();
             }
         }
 
         // Close modal when clicking outside
-        window.onclick = function (event) {
-            const modal = document.getElementById('agreementModal');
-            if (event.target === modal) {
+        window.addEventListener('click', function (event) {
+            const initialModal = document.getElementById('initialNoteModal');
+            const agreementModal = document.getElementById('agreementModal');
+
+            if (event.target === initialModal) {
+                closeInitialNoteModal();
+            }
+
+            if (event.target === agreementModal) {
                 closeAgreementModal();
             }
-        }
+        });
+
+        // Close on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                const initialModal = document.getElementById('initialNoteModal');
+                const agreementModal = document.getElementById('agreementModal');
+
+                if (initialModal && initialModal.classList.contains('show')) {
+                    closeInitialNoteModal();
+                }
+
+                if (agreementModal && agreementModal.style.display === 'flex') {
+                    closeAgreementModal();
+                }
+            }
+        });
     </script>
 </body>
 </html>

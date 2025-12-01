@@ -31,6 +31,7 @@
             margin: 0 auto;
         }
 
+        /* ========== HEADER SECTION ========== */
         .post-card {
             background: white;
             border-radius: 24px;
@@ -41,59 +42,146 @@
 
         .post-header {
             background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
-            padding: 40px;
+            padding: 60px 40px;
             color: #2E8BC0;
             text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .post-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .post-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 250px;
+            height: 250px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
         }
 
         .post-header h1 {
-            font-size: 2.5em;
-            margin-bottom: 10px;
+            font-size: 2.8em;
+            margin-bottom: 12px;
             font-weight: 900;
+            position: relative;
+            z-index: 1;
+            text-shadow: 0 2px 4px rgba(0,0,0,0.1);
         }
 
         .post-header p {
-            font-size: 1.1em;
-            opacity: 0.9;
+            font-size: 1.15em;
+            opacity: 0.85;
+            position: relative;
+            z-index: 1;
+            font-weight: 500;
         }
 
         .post-body {
-            padding: 40px;
+            padding: 50px;
         }
 
+        /* ========== SECTION TITLE ========== */
         .section-title {
-            font-size: 1.5em;
+            font-size: 1.6em;
             color: #2E8BC0;
-            font-weight: 700;
-            margin-bottom: 20px;
+            font-weight: 800;
+            margin-bottom: 25px;
             display: flex;
             align-items: center;
-            gap: 10px;
-            padding-bottom: 15px;
+            gap: 12px;
+            padding-bottom: 20px;
             border-bottom: 3px solid #E8F4FC;
+            position: relative;
         }
 
+        .section-title i {
+            font-size: 1.3em;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .section-title::before {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 0;
+            width: 60px;
+            height: 3px;
+            background: linear-gradient(90deg, #3FA9F5 0%, #FFD93D 100%);
+        }
+
+        /* ========== INFO BANNER ========== */
         .info-banner {
             background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
-            border-left: 4px solid #3FA9F5;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 30px;
+            border-left: 5px solid #3FA9F5;
+            padding: 25px 30px;
+            border-radius: 15px;
+            margin-bottom: 35px;
             color: #1e40af;
+            box-shadow: 0 4px 15px rgba(63, 169, 245, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .info-banner::before {
+            content: '';
+            position: absolute;
+            top: -20px;
+            right: -20px;
+            width: 100px;
+            height: 100px;
+            background: rgba(63, 169, 245, 0.05);
+            border-radius: 50%;
         }
 
         .info-banner h4 {
-            margin-bottom: 10px;
+            margin-bottom: 15px;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 12px;
+            font-size: 1.1em;
+            font-weight: 700;
+            position: relative;
+            z-index: 1;
         }
 
+        .info-banner h4 i {
+            color: #3FA9F5;
+            font-size: 1.3em;
+        }
+
+        .info-banner ul {
+            margin-left: 32px;
+            line-height: 1.9;
+            position: relative;
+            z-index: 1;
+        }
+
+        .info-banner li {
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        /* ========== FORM GRID ========== */
         .form-grid {
             display: grid;
             grid-template-columns: repeat(2, 1fr);
             gap: 25px;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
         }
 
         .form-group {
@@ -107,28 +195,129 @@
         .form-group label {
             display: block;
             color: #334155;
-            margin-bottom: 8px;
-            font-weight: 600;
+            margin-bottom: 10px;
+            font-weight: 700;
             font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            color: #2E8BC0;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .label-with-help {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .help-icon {
+            position: relative;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 20px;
+            height: 20px;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border-radius: 50%;
+            font-size: 12px;
+            font-weight: 700;
+            cursor: help;
+            margin-left: auto;
+            transition: all 0.3s;
+        }
+
+        .help-icon:hover {
+            transform: scale(1.15);
+        }
+
+        .help-tooltip {
+            position: absolute;
+            bottom: calc(100% + 12px);
+            right: 0;
+            background: #1e293b;
+            color: #f1f5f9;
+            padding: 10px 14px;
+            border-radius: 10px;
+            font-size: 12px;
+            font-weight: 600;
+            white-space: nowrap;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+            pointer-events: none;
+        }
+
+        .help-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: #1e293b;
+            transform: rotate(45deg);
+        }
+
+        .help-icon:hover .help-tooltip {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        /* Age + Unit Combined Layout */
+        .age-group-wrapper {
+            grid-column: 1 / -1;
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 15px;
         }
 
         .required {
             color: #ef4444;
             margin-left: 3px;
+            font-weight: 900;
         }
 
         .form-group input,
         .form-group select,
         .form-group textarea {
             width: 100%;
-            padding: 14px 16px;
+            padding: 16px 18px;
             border: 2px solid #e2e8f0;
             border-radius: 12px;
             font-size: 15px;
-            transition: all 0.3s;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             outline: none;
             background: #f8fafc;
             font-family: inherit;
+            color: #1a202c;
+        }
+
+        .form-group input::placeholder,
+        .form-group textarea::placeholder {
+            color: #94a3b8;
+        }
+
+        .form-group select {
+            color: #1a202c;
+        }
+
+        .form-group select option {
+            color: #1a202c;
+            background: white;
+        }
+
+        .form-group input:hover,
+        .form-group select:hover,
+        .form-group textarea:hover {
+            border-color: #cbd5e1;
+            background: #ffffff;
         }
 
         .form-group input:focus,
@@ -136,68 +325,168 @@
         .form-group textarea:focus {
             border-color: #3FA9F5;
             background: white;
-            box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+            box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.15);
+            transform: translateY(-1px);
+            color: #1a202c;
         }
 
         .form-group textarea {
-            min-height: 100px;
+            min-height: 110px;
             resize: vertical;
+            color: #1a202c;
         }
 
-        /* Custom Questions Section */
+        /* ========== CHECKBOX STYLING ========== */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .checkbox-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .checkbox-item input[type="checkbox"] {
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            accent-color: #3FA9F5;
+        }
+
+        .checkbox-item label {
+            margin-bottom: 0;
+            cursor: pointer;
+            font-weight: 600;
+            color: #334155;
+            text-transform: none;
+            letter-spacing: normal;
+        }
+
+        /* ========== QUESTIONS SECTION ========== */
         .questions-section {
-            background: #FFF9E6;
-            padding: 30px;
-            border-radius: 15px;
+            background: linear-gradient(135deg, #FFF9E6 0%, #fff4d4 100%);
+            padding: 35px;
+            border-radius: 18px;
             border: 2px solid #FFD93D;
-            margin: 30px 0;
+            margin: 40px 0;
+            box-shadow: 0 8px 24px rgba(255, 217, 61, 0.15);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .questions-section::before {
+            content: '';
+            position: absolute;
+            top: -30px;
+            right: -30px;
+            width: 150px;
+            height: 150px;
+            background: rgba(255, 217, 61, 0.1);
+            border-radius: 50%;
         }
 
         .question-item {
             background: white;
-            padding: 20px;
-            border-radius: 12px;
-            margin-bottom: 15px;
+            padding: 25px;
+            border-radius: 14px;
+            margin-bottom: 18px;
             border: 2px solid #e2e8f0;
             position: relative;
+            transition: all 0.3s;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        .question-item:hover {
+            border-color: #FFD93D;
+            box-shadow: 0 8px 20px rgba(255, 217, 61, 0.15);
+            transform: translateY(-2px);
+        }
+
+        .question-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 15px;
+            gap: 12px;
         }
 
         .question-number {
             display: inline-flex;
             align-items: center;
             justify-content: center;
-            width: 32px;
-            height: 32px;
-            background: #FFD93D;
+            width: 40px;
+            height: 40px;
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
             color: #2E8BC0;
-            border-radius: 50%;
-            font-weight: 700;
-            margin-right: 10px;
+            border-radius: 12px;
+            font-weight: 800;
+            font-size: 1.1em;
+            box-shadow: 0 4px 12px rgba(255, 217, 61, 0.3);
+        }
+
+        .question-header strong {
+            color: #2E8BC0;
+            font-size: 1.05em;
+        }
+
+        .question-item input[type="text"] {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            margin-bottom: 15px;
+            transition: all 0.3s;
+            font-size: 15px;
+        }
+
+        .question-item input[type="text"]:focus {
+            border-color: #3FA9F5;
+            box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
         }
 
         .question-controls {
             display: flex;
-            gap: 10px;
-            margin-top: 15px;
+            gap: 12px;
         }
 
         .question-controls select {
             flex: 1;
+            padding: 12px 14px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            transition: all 0.3s;
+            background: white;
+            font-weight: 600;
+        }
+
+        .question-controls select:focus {
+            border-color: #3FA9F5;
+            box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
         }
 
         .btn-remove-question {
             background: #fee2e2;
             color: #dc2626;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
+            border: 2px solid #fecaca;
+            padding: 11px 18px;
+            border-radius: 10px;
             cursor: pointer;
-            font-weight: 600;
+            font-weight: 700;
             transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 14px;
         }
 
         .btn-remove-question:hover {
             background: #fecaca;
+            border-color: #f87171;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
         }
 
         .btn-add-question {
@@ -213,39 +502,197 @@
             display: flex;
             align-items: center;
             gap: 8px;
-            margin-top: 15px;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
         }
 
         .btn-add-question:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.3);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
         }
 
         .btn-add-question:disabled {
             background: #cbd5e1;
             cursor: not-allowed;
+            opacity: 0.6;
+            transform: none;
         }
 
-        .action-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 40px;
+        /* ========== FILE UPLOAD ========== */
+        .file-upload-wrapper {
+            position: relative;
+            overflow: hidden;
         }
 
-        .btn {
-            flex: 1;
-            padding: 16px;
-            border: none;
+        .file-upload-label {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            padding: 18px 32px;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
             border-radius: 12px;
-            font-size: 16px;
+            cursor: pointer;
+            font-weight: 700;
+            transition: all 0.3s;
+            box-shadow: 0 4px 15px rgba(63, 169, 245, 0.3);
+            border: 2px solid transparent;
+        }
+
+        .file-upload-label:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(63, 169, 245, 0.4);
+        }
+
+        .file-upload-label i {
+            font-size: 1.2em;
+            color: white;
+        }
+
+        .file-upload-wrapper input[type="file"] {
+            position: absolute;
+            left: -9999px;
+        }
+
+        .file-name {
+            margin-top: 12px;
+            color: #64748b;
+            font-size: 14px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .file-name.has-file {
+            color: #10b981;
+        }
+
+        /* ========== PHOTO PREVIEW ========== */
+        .photo-preview-container {
+            margin-top: 20px;
+            display: none;
+        }
+
+        .photo-preview-container.show {
+            display: block;
+            animation: fadeIn 0.4s ease-out;
+        }
+
+        .preview-wrapper {
+            background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
+            border: 2px solid #3FA9F5;
+            border-radius: 15px;
+            padding: 20px;
+            position: relative;
+        }
+
+        .preview-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #2E8BC0;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 12px;
+            display: block;
+        }
+
+        .preview-image-wrapper {
+            position: relative;
+            width: 100%;
+            max-width: 300px;
+            margin-bottom: 15px;
+            border-radius: 12px;
+            overflow: hidden;
+            box-shadow: 0 8px 24px rgba(63, 169, 245, 0.2);
+        }
+
+        #photoPreview {
+            width: 100%;
+            height: auto;
+            display: block;
+            border-radius: 12px;
+        }
+
+        .preview-actions {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .btn-change-photo {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 20px;
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
             font-weight: 700;
             cursor: pointer;
             transition: all 0.3s;
-            text-decoration: none;
             display: flex;
             align-items: center;
             justify-content: center;
             gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-change-photo:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 16px rgba(63, 169, 245, 0.3);
+        }
+
+        .btn-delete-photo {
+            flex: 1;
+            min-width: 150px;
+            padding: 12px 20px;
+            background: #fee2e2;
+            color: #dc2626;
+            border: 2px solid #fecaca;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+
+        .btn-delete-photo:hover {
+            background: #fecaca;
+            border-color: #f87171;
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.2);
+        }
+
+        /* ========== ACTION BUTTONS ========== */
+        .action-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 50px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 18px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.1);
         }
 
         .btn-submit {
@@ -255,57 +702,561 @@
 
         .btn-submit:hover {
             transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 217, 61, 0.4);
+            box-shadow: 0 8px 24px rgba(255, 217, 61, 0.4);
+        }
+
+        .btn-submit:active {
+            transform: translateY(0);
         }
 
         .btn-back {
             background: #e2e8f0;
             color: #334155;
+            border: 2px solid #cbd5e1;
         }
 
         .btn-back:hover {
             background: #cbd5e1;
-        }
-
-        .file-upload-wrapper {
-            position: relative;
-            overflow: hidden;
-        }
-
-        .file-upload-label {
-            display: inline-block;
-            padding: 14px 30px;
-            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-            color: white;
-            border-radius: 12px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .file-upload-label:hover {
+            border-color: #94a3b8;
             transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
         }
 
-        .file-upload-wrapper input[type="file"] {
-            position: absolute;
-            left: -9999px;
+        /* ========== INITIAL FILE UPLOAD STATE ========== */
+        .file-upload-state {
+            display: block;
         }
 
-        .file-name {
-            margin-top: 10px;
-            color: #64748b;
-            font-size: 14px;
+        .file-upload-state.hidden {
+            display: none;
         }
 
+        /* ========== RESPONSIVE ========== */
         @@media (max-width: 768px) {
             .form-grid {
                 grid-template-columns: 1fr;
             }
+
+            .checkbox-group {
+                grid-template-columns: 1fr;
+            }
+
+            .post-header {
+                padding: 40px 30px;
+            }
+
+            .post-header h1 {
+                font-size: 2em;
+            }
+
+            .post-body {
+                padding: 30px 20px;
+            }
+
+            .action-buttons {
+                flex-direction: column;
+            }
+
+            .btn {
+                padding: 16px 24px;
+                font-size: 15px;
+            }
+
+            .questions-section {
+                padding: 25px;
+            }
+
+            .preview-wrapper {
+                max-width: 100%;
+            }
+
+            #photoPreview {
+                height: 250px;
+                object-fit: cover;
+            }
         }
+
+        /* ========== ANIMATIONS ========== */
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .post-card {
+            animation: fadeIn 0.6s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        .question-item {
+            animation: fadeIn 0.4s ease-out forwards;
+        }
+
+        /* ========== INFO POPUP MODAL ========== */
+        #infoNoteModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            z-index: 10000;
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        #infoNoteModal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .modal-note-inner {
+            background: white;
+            border-radius: 20px;
+            max-width: 520px;
+            width: 90%;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal Header */
+        .modal-note-header {
+            background: linear-gradient(135deg, #FFB74D 0%, #FF9800 100%);
+            padding: 35px 28px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .modal-note-header::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -10%;
+            width: 200px;
+            height: 200px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+        }
+
+        .modal-note-header::after {
+            content: '';
+            position: absolute;
+            bottom: -30%;
+            left: -5%;
+            width: 180px;
+            height: 180px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 50%;
+        }
+
+        .modal-note-icon {
+            font-size: 3.5em;
+            color: white;
+            margin-bottom: 15px;
+            display: inline-block;
+            animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            position: relative;
+            z-index: 1;
+        }
+
+        @@keyframes bounce {
+            0% {
+                transform: scale(0);
+            }
+            50% {
+                transform: scale(1.1);
+            }
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        .modal-note-title {
+            font-size: 1.6em;
+            font-weight: 800;
+            color: white;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Modal Body */
+        .modal-note-body {
+            padding: 35px 28px;
+        }
+
+        .modal-note-message {
+            font-size: 1em;
+            color: #334155;
+            line-height: 1.8;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .modal-note-message strong {
+            color: #2E8BC0;
+            font-weight: 700;
+        }
+
+        .modal-note-highlights {
+            background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
+            border-left: 4px solid #3FA9F5;
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin: 20px 0;
+            color: #1e40af;
+        }
+
+        .modal-note-highlights ul {
+            margin: 0;
+            padding-left: 20px;
+            list-style: none;
+        }
+
+        .modal-note-highlights li {
+            margin: 8px 0;
+            padding-left: 20px;
+            position: relative;
+            font-size: 0.95em;
+            font-weight: 500;
+        }
+
+        .modal-note-highlights li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #3FA9F5;
+            font-weight: bold;
+            font-size: 1.2em;
+        }
+
+        /* Modal Footer */
+        .modal-note-footer {
+            padding: 20px 28px 28px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        .btn-note-close {
+            padding: 14px 32px;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.3);
+        }
+
+        .btn-note-close:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-note-close:active {
+            transform: translateY(0);
+        }
+
+        /* Responsive */
+        @@media (max-width: 480px) {
+            .modal-note-inner {
+                margin: 20px;
+            }
+
+            .modal-note-header {
+                padding: 28px 20px;
+            }
+
+            .modal-note-title {
+                font-size: 1.4em;
+            }
+
+            .modal-note_body {
+                padding: 25px 20px;
+            }
+
+            .modal-note-footer {
+                padding: 15px 20px 20px;
+            }
+
+            .btn-note-close {
+                width: 100%;
+            }
+        }
+
+        /* ========== LOADING MODAL ========== */
+        #loadingModal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            backdrop-filter: blur(8px);
+            z-index: 10001;
+            align-items: center;
+            justify-content: center;
+        }
+
+        #loadingModal.show {
+            display: flex;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+        .loading-modal-inner {
+            background: white;
+            border-radius: 24px;
+            padding: 50px 40px;
+            max-width: 450px;
+            width: 90%;
+            text-align: center;
+            box-shadow: 0 25px 60px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        @@keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Spinner Animation */
+        .loading-spinner {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 30px;
+            position: relative;
+        }
+
+        .spinner-circle {
+            width: 100%;
+            height: 100%;
+            border: 6px solid #E8F4FC;
+            border-top-color: #3FA9F5;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @@keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-icon {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            font-size: 2em;
+            color: #3FA9F5;
+            animation: pulse 1.5s ease-in-out infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% { opacity: 1; transform: translate(-50%, -50%) scale(1); }
+            50% { opacity: 0.6; transform: translate(-50%, -50%) scale(0.9); }
+        }
+
+        .loading-title {
+            font-size: 1.8em;
+            font-weight: 800;
+            color: #2E8BC0;
+            margin-bottom: 15px;
+        }
+
+        .loading-message {
+            font-size: 1.05em;
+            color: #64748b;
+            line-height: 1.6;
+            margin-bottom: 20px;
+            font-weight: 500;
+        }
+
+        .loading-dots {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 25px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            border-radius: 50%;
+            animation: bounce 1.4s infinite ease-in-out;
+        }
+
+        .dot:nth-child(1) { animation-delay: -0.32s; }
+        .dot:nth-child(2) { animation-delay: -0.16s; }
+        .dot:nth-child(3) { animation-delay: 0s; }
+
+        @@keyframes bounce {
+            0%, 80%, 100% { transform: scale(0); opacity: 0.5; }
+            40% { transform: scale(1); opacity: 1; }
+        }
+
+        /* Demo Form Styles */
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            padding: 40px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .demo-container {
+            background: white;
+            border-radius: 24px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.1);
+        }
+
+        .demo-title {
+            font-size: 2em;
+            color: #2E8BC0;
+            margin-bottom: 20px;
+            text-align: center;
+            font-weight: 800;
+        }
+
+        .demo-description {
+            text-align: center;
+            color: #64748b;
+            margin-bottom: 30px;
+            line-height: 1.6;
+        }
+
+        .btn-submit-demo {
+            width: 100%;
+            padding: 18px 28px;
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            color: #2E8BC0;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 800;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            box-shadow: 0 4px 15px rgba(255, 217, 61, 0.3);
+        }
+
+        .btn-submit-demo:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(255, 217, 61, 0.4);
+        }
+
+        .btn-submit-demo:disabled {
+            opacity: 0.6;
+            cursor: not-allowed;
+        }
+
+        .status-message {
+            margin-top: 20px;
+            padding: 15px;
+            border-radius: 10px;
+            text-align: center;
+            font-weight: 600;
+            display: none;
+        }
+
+        .status-message.success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 2px solid #10b981;
+            display: block;
     </style>
 </head>
 <body>
+    <!-- ========== INFO NOTE MODAL ========== -->
+    <div id="infoNoteModal" class="show">
+        <div class="modal-note-inner" role="dialog" aria-modal="true" aria-labelledby="infoNoteTitle">
+            <!-- Header with Icon -->
+            <div class="modal-note-header">
+                <div class="modal-note-icon">
+                    <i class="fas fa-clipboard-list"></i>
+                </div>
+                <h2 id="infoNoteTitle" class="modal-note-title">Important Note!</h2>
+            </div>
+
+            <!-- Body with Message -->
+            <div class="modal-note-body">
+                <p class="modal-note-message">
+                    <strong>Your pet posting will be reviewed by our admin team before going live.</strong>
+                </p>
+
+                <p class="modal-note-message">
+                    Please wait for an approval notification once your pet has been added to our system. You'll receive updates through your notifications.
+                </p>
+
+                <div class="modal-note-highlights">
+                    <ul>
+                        <li>Admin review typically takes 24-48 hours</li>
+                        <li>Check your notifications regularly for updates</li>
+                        <li>You'll be notified when your pet is approved</li>
+                        <li>Once approved, your pet goes live immediately</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- Footer with Action -->
+            <div class="modal-note-footer">
+                <button type="button" id="btnCloseNoteModal" class="btn-note-close" onclick="closeNoteModal()">
+                    <i class="fas fa-check-circle"></i> Got It!
+                </button>
+            </div>
+        </div>
+    </div>
+
     <div class="container">
         <div class="post-card">
             <div class="post-header">
@@ -316,7 +1267,7 @@
             <div class="post-body">
                 <div class="info-banner">
                     <h4><i class="fas fa-info-circle"></i> Important Information</h4>
-                    <ul style="margin-left: 20px; line-height: 1.8;">
+                    <ul>
                         <li>Your post will be reviewed by our admin team before going live</li>
                         <li>You'll be able to review and approve adoption applications</li>
                         <li>You can create custom screening questions for potential adopters</li>
@@ -354,19 +1305,6 @@
                         </div>
 
                         <div class="form-group">
-                            <label>Age <span class="required">*</span></label>
-                            @Html.TextBoxFor(m => m.Age, new { type = "number", min = "0", placeholder = "Enter age", required = "required" })
-                        </div>
-
-                        <div class="form-group">
-                            <label>Age Unit <span class="required">*</span></label>
-                            @Html.DropDownListFor(m => m.AgeUnit,
-                                new SelectList(new[] { "Months", "Years" }),
-                                "-- Select Unit --",
-                                new { required = "required" })
-                        </div>
-
-                        <div class="form-group">
                             <label>Gender <span class="required">*</span></label>
                             @Html.DropDownListFor(m => m.Gender,
                                 new SelectList(new[] { "Male", "Female" }),
@@ -382,8 +1320,64 @@
                                 new { required = "required" })
                         </div>
 
+                        <!-- Age + Age Unit Combined -->
+                        <div class="age-group-wrapper">
+                            <div class="form-group">
+                                <div class="label-with-help">
+                                    <label>
+                                        Age <span class="required">*</span>
+                                    </label>
+                                    <div class="help-icon">
+                                        ?
+                                        <div class="help-tooltip">Pet's current age</div>
+                                    </div>
+                                </div>
+                                @Html.TextBoxFor(m => m.Age, new { type = "number", min = "0", placeholder = "Enter age", required = "required" })
+                            </div>
+
+                            <div class="form-group">
+                                <div class="label-with-help">
+                                    <label>
+                                        Unit <span class="required">*</span>
+                                    </label>
+                                    <div class="help-icon">
+                                        ?
+                                        <div class="help-tooltip">Months or Years</div>
+                                    </div>
+                                </div>
+                                @Html.DropDownListFor(m => m.AgeUnit,
+                                    new SelectList(new[] { "Months", "Years" }),
+                                    "-- Select Unit --",
+                                    new { required = "required" })
+                            </div>
+                            <div class="form-group full-width">
+                                <label>
+                                    <i class="fas fa-map-marker-alt"></i> Location <span class="required">*</span>
+                                </label>
+                                @Html.TextBoxFor(m => m.Location, new
+                                {
+                                    placeholder = "e.g., Quezon City, Metro Manila",
+                                    required = "required",
+                                    maxlength = "255"
+                                })
+                                <small style="color: #64748b; display: block; margin-top: 8px;">
+                                    <i class="fas fa-info-circle"></i> Specify where the pet is currently located
+                                </small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
                         <div class="form-group">
-                            <label>Days in Your Care <span class="required">*</span></label>
+                            <div class="label-with-help">
+                                <label>
+                                    Days in Your Care <span class="required">*</span>
+                                </label>
+                                <div class="help-icon">
+                                    ?
+                                    <div class="help-tooltip">How long you've cared for this pet</div>
+                                </div>
+                            </div>
                             @Html.TextBoxFor(m => m.DaysInCenter, new { type = "number", min = "0", placeholder = "How long have you had this pet?", required = "required" })
                         </div>
                     </div>
@@ -408,42 +1402,138 @@
                         @Html.TextAreaFor(m => m.WhyAdoptMe, new { placeholder = "Share what makes this pet special...", rows = "3" })
                     </div>
 
-                    <div class="form-grid">
-                        <div class="form-group">
-                            <label style="display: flex; align-items: center; gap: 8px;">
-                                @Html.CheckBoxFor(m => m.IsHealthy, new { @checked = "checked" })
-                                <span>Pet is Healthy</span>
-                            </label>
+                    <div class="checkbox-group">
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="isHealthy" @Html.CheckBoxFor(m => m.IsHealthy, new { @checked = "checked" }) />
+                            <label for="isHealthy">Pet is Healthy</label>
                         </div>
 
-                        <div class="form-group">
-                            <label style="display: flex; align-items: center; gap: 8px;">
-                                @Html.CheckBoxFor(m => m.IsNeutered, new { @checked = "checked" })
-                                <span>Pet is Neutered/Spayed</span>
-                            </label>
+                        <div class="checkbox-item">
+                            <input type="checkbox" id="isNeutered" @Html.CheckBoxFor(m => m.IsNeutered, new { @checked = "checked" }) />
+                            <label for="isNeutered">Pet is Neutered/Spayed</label>
                         </div>
                     </div>
 
                     <div class="form-group full-width">
-                        <label>Pet Photo <span class="required">*</span></label>
-                        <div class="file-upload-wrapper">
-                            <label for="petImage" class="file-upload-label">
-                                <i class="fas fa-camera"></i> Choose Photo
-                            </label>
-                            <input type="file" id="petImage" name="PetImage" accept="image/*" required onchange="displayFileName(this)" />
-                            <div class="file-name" id="fileName">No file chosen</div>
+                        <label>Pet Photos (Up to 3) <span class="required">*</span></label>
+
+                        <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-top: 15px;">
+
+                            <!-- Photo Slot 1 (Required) -->
+                            <div class="photo-slot">
+                                <div class="photo-slot-label">Photo 1 <span class="required">*</span></div>
+                                <div class="photo-upload-box" id="uploadBox1" onclick="document.getElementById('petImage1').click()">
+                                    <div id="previewBox1" class="preview-content">
+                                        <i class="fas fa-camera" style="font-size: 2.5em; color: #3FA9F5;"></i>
+                                        <div style="margin-top: 10px;">Click to upload</div>
+                                    </div>
+                                </div>
+                                <input type="file" id="petImage1" name="PetImage" accept="image/*" required style="display: none;">
+                            </div>
+
+                            <!-- Photo Slot 2 (Optional) -->
+                            <div class="photo-slot">
+                                <div class="photo-slot-label">Photo 2</div>
+                                <div class="photo-upload-box" id="uploadBox2" onclick="document.getElementById('petImage2').click()">
+                                    <div id="previewBox2" class="preview-content">
+                                        <i class="fas fa-camera" style="font-size: 2.5em; color: #94a3b8;"></i>
+                                        <div style="margin-top: 10px; color: #94a3b8;">Optional</div>
+                                    </div>
+                                </div>
+                                <input type="file" id="petImage2" name="PetImage2" accept="image/*" style="display: none;">
+                            </div>
+
+                            <!-- Photo Slot 3 (Optional) -->
+                            <div class="photo-slot">
+                                <div class="photo-slot-label">Photo 3</div>
+                                <div class="photo-upload-box" id="uploadBox3" onclick="document.getElementById('petImage3').click()">
+                                    <div id="previewBox3" class="preview-content">
+                                        <i class="fas fa-camera" style="font-size: 2.5em; color: #94a3b8;"></i>
+                                        <div style="margin-top: 10px; color: #94a3b8;">Optional</div>
+                                    </div>
+                                </div>
+                                <input type="file" id="petImage3" name="PetImage3" accept="image/*" style="display: none;">
+                            </div>
+
+                        </div>
+
+                        <small style="color: #64748b; display: block; margin-top: 15px;">
+                            <i class="fas fa-info-circle"></i> First photo is required. Add up to 2 more photos (PNG, JPG - Max 5MB each)
+                        </small>
+                    </div>
+
+                    <style>
+                        .photo-slot {
+                            text-align: center;
+                        }
+
+                        .photo-slot-label {
+                            font-weight: 600;
+                            color: #334155;
+                            margin-bottom: 10px;
+                            font-size: 0.9em;
+                        }
+
+                        .photo-upload-box {
+                            border: 2px dashed #cbd5e1;
+                            border-radius: 12px;
+                            padding: 30px 15px;
+                            cursor: pointer;
+                            transition: all 0.3s;
+                            background: #f8fafc;
+                            min-height: 200px;
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                        }
+
+                            .photo-upload-box:hover {
+                                border-color: #3FA9F5;
+                                background: #eff6ff;
+                                transform: translateY(-2px);
+                                box-shadow: 0 4px 12px rgba(63, 169, 245, 0.2);
+                            }
+
+                        .preview-content {
+                            text-align: center;
+                            width: 100%;
+                        }
+
+                            .preview-content img {
+                                width: 100%;
+                                height: 180px;
+                                object-fit: cover;
+                                border-radius: 10px;
+                            }
+                    </style>
+
+                    <!-- PHOTO PREVIEW STATE -->
+                    <div class="photo-preview-container" id="photoPreviewContainer">
+                        <div class="preview-wrapper">
+                            <span class="preview-label"><i class="fas fa-image"></i> Photo Preview</span>
+                            <div class="preview-image-wrapper">
+                                <img id="photoPreview" src="" alt="Pet photo preview">
+                            </div>
+                            <div class="preview-actions">
+                                <button type="button" class="btn-change-photo" onclick="triggerFileInput()">
+                                    <i class="fas fa-sync-alt"></i> Change Photo
+                                </button>
+                                <button type="button" class="btn-delete-photo" onclick="deletePhoto()">
+                                    <i class="fas fa-trash"></i> Delete
+                                </button>
+                            </div>
                         </div>
                     </div>
 
                     <!-- SECTION 2: CUSTOM SCREENING QUESTIONS -->
-                    <div class="section-title" style="margin-top: 40px;">
+                    <div class="section-title" style="margin-top: 50px;">
                         <i class="fas fa-clipboard-question"></i>
                         Custom Screening Questions (Optional)
                     </div>
 
-                    <div class="info-banner" style="background: #FFF9E6; border-left-color: #FFD93D;">
+                    <div class="info-banner" style="background: linear-gradient(135deg, #FFF9E6 0%, #fff4d4 100%); border-left-color: #FFD93D; color: #92400e;">
                         <h4 style="color: #92400e;"><i class="fas fa-lightbulb"></i> Create Your Own Questions</h4>
-                        <p style="color: #92400e;">Add up to 5 custom questions to help you find the best match for your pet. These will be shown to potential adopters when they apply.</p>
+                        <p style="color: #92400e; margin-left: 32px; font-weight: 500;">Add up to 5 custom questions to help you find the best match for your pet. These will be shown to potential adopters when they apply.</p>
                     </div>
 
                     <div class="questions-section" id="questionsSection">
@@ -470,14 +1560,108 @@
         </div>
     </div>
 
+    <!-- ========== LOADING MODAL ========== -->
+    <div id="loadingModal">
+        <div class="loading-modal-inner">
+            <div class="loading-spinner">
+                <div class="spinner-circle"></div>
+                <div class="loading-icon">
+                    <i class="fas fa-paw"></i>
+                </div>
+            </div>
+            <h2 class="loading-title">Submitting Your Pet...</h2>
+            <p class="loading-message">
+                Please wait while we process your submission.<br>
+                <strong>Do not close or refresh this page.</strong>
+            </p>
+            <div class="loading-dots">
+                <div class="dot"></div>
+                <div class="dot"></div>
+                <div class="dot"></div>
+            </div>
+        </div>
+    </div>
+
     <script>
+        // ========== INFO NOTE MODAL FUNCTIONALITY ==========
+        function closeNoteModal() {
+            const modal = document.getElementById('infoNoteModal');
+            if (modal) {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                }, 300);
+            }
+        }
+
+        // Close modal when clicking outside (on backdrop)
+        document.addEventListener('DOMContentLoaded', function () {
+            const modal = document.getElementById('infoNoteModal');
+            if (modal) {
+                modal.addEventListener('click', function (e) {
+                    if (e.target === modal) {
+                        closeNoteModal();
+                    }
+                });
+            }
+        });
+
+        // Close modal on Escape key
+        document.addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                const modal = document.getElementById('infoNoteModal');
+                if (modal && modal.classList.contains('show')) {
+                    closeNoteModal();
+                }
+            }
+        });
+
+        // ========== FILE UPLOAD & PHOTO PREVIEW FUNCTIONALITY ==========
+        // Multi-image preview system
+        function setupPhotoPreview(inputId, previewBoxId, slotNumber) {
+            document.getElementById(inputId).addEventListener('change', function (e) {
+                const file = e.target.files[0];
+                const previewBox = document.getElementById(previewBoxId);
+
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function (event) {
+                        previewBox.innerHTML = `
+                        <img src="${event.target.result}" style="width: 100%; height: 180px; object-fit: cover; border-radius: 10px;">
+                        <button type="button" onclick="clearPhoto('${inputId}', '${previewBoxId}', ${slotNumber})"
+                                style="margin-top: 10px; padding: 8px 16px; background: #ef4444; color: white; border: none; border-radius: 8px; cursor: pointer; font-size: 0.85em;">
+                            <i class="fas fa-trash"></i> Remove
+                        </button>
+                    `;
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+        function clearPhoto(inputId, previewBoxId, slotNumber) {
+            // Clear file input
+            document.getElementById(inputId).value = '';
+
+            // Reset preview box
+            const previewBox = document.getElementById(previewBoxId);
+            const isRequired = slotNumber === 1;
+
+            previewBox.innerHTML = `
+        <i class="fas fa-camera" style="font-size: 2.5em; color: ${isRequired ? '#3FA9F5' : '#94a3b8'};"></i>
+        <div style="margin-top: 10px; color: ${isRequired ? '#1a202c' : '#94a3b8'};">
+            ${isRequired ? 'Click to upload' : 'Optional'}
+        </div>
+`;
+        }
+        // Setup all 3 photo slots
+        setupPhotoPreview('petImage1', 'previewBox1', 1);
+        setupPhotoPreview('petImage2', 'previewBox2', 2);
+        setupPhotoPreview('petImage3', 'previewBox3', 3);
+
+
+        // ========== QUESTIONS FUNCTIONALITY ========= =
         let questionCount = 0;
         const maxQuestions = 5;
-
-        function displayFileName(input) {
-            const fileName = input.files[0]?.name || 'No file chosen';
-            document.getElementById('fileName').textContent = fileName;
-        }
 
         function addQuestion() {
             if (questionCount >= maxQuestions) {
@@ -493,36 +1677,33 @@
             questionDiv.id = `question-${questionCount}`;
 
             questionDiv.innerHTML = `
-                    <div style="display: flex; align-items: center; margin-bottom: 10px;">
-                        <span class="question-number">${questionCount}</span>
-                        <strong style="color: #2E8BC0;">Question ${questionCount}</strong>
-                    </div>
+                        <div class="question-header">
+                            <span class="question-number">${questionCount}</span>
+                            <strong>Question ${questionCount}</strong>
+                        </div>
 
-                    <input type="text"
-                           name="Questions[${questionCount - 1}]"
-                           placeholder="Enter your question (e.g., Do you have experience with this breed?)"
-                           required
-                           style="width: 100%; padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px; margin-bottom: 10px;" />
+                        <input type="text"
+                               name="Questions[${questionCount - 1}]"
+                               placeholder="Enter your question (e.g., Do you have experience with this breed?)"
+                               required />
 
-                    <div class="question-controls">
-                        <select name="QuestionTypes[${questionCount - 1}]"
-                                style="padding: 12px; border: 2px solid #e2e8f0; border-radius: 10px;">
-                            <option value="Text">Text Answer</option>
-                            <option value="YesNo">Yes/No</option>
-                        </select>
+                        <div class="question-controls">
+                            <select name="QuestionTypes[${questionCount - 1}]">
+                                <option value="Text">Text Answer</option>
+                                <option value="YesNo">Yes/No</option>
+                            </select>
 
-                        <button type="button" class="btn-remove-question" onclick="removeQuestion(${questionCount})">
-                            <i class="fas fa-trash"></i> Remove
-                        </button>
-                    </div>
-                `;
+                            <button type="button" class="btn-remove-question" onclick="removeQuestion(${questionCount})">
+                                <i class="fas fa-trash"></i> Remove
+                            </button>
+                        </div>
+                    `;
 
             container.appendChild(questionDiv);
 
             // Disable add button if max reached
             if (questionCount >= maxQuestions) {
                 document.getElementById('btnAddQuestion').disabled = true;
-                document.getElementById('btnAddQuestion').style.opacity = '0.5';
             }
         }
 
@@ -534,7 +1715,6 @@
 
                 // Re-enable add button
                 document.getElementById('btnAddQuestion').disabled = false;
-                document.getElementById('btnAddQuestion').style.opacity = '1';
 
                 // Renumber remaining questions
                 renumberQuestions();
@@ -550,6 +1730,28 @@
             });
             questionCount = questions.length;
         }
+
+        // ========== FORM SUBMISSION WITH LOADING MODAL ==========
+        document.addEventListener('DOMContentLoaded', function () {
+            const postForm = document.getElementById('postForm');
+
+            if (postForm) {
+                postForm.addEventListener('submit', function (e) {
+                    const submitBtn = this.querySelector('.btn-submit');
+                    const loadingModal = document.getElementById('loadingModal');
+
+                    // Disable submit button to prevent double-clicks
+                    submitBtn.disabled = true;
+                    submitBtn.style.opacity = '0.6';
+                    submitBtn.style.cursor = 'not-allowed';
+
+                    // Show loading modal
+                    loadingModal.classList.add('show');
+
+                    // Form will submit normally after this
+                });
+            }
+        });
     </script>
 </body>
 </html>

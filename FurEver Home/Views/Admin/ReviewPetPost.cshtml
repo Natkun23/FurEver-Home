@@ -647,6 +647,43 @@
                 box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
             }
 
+
+        /* Thumbnail Gallery for Review Page */
+        .thumbnail-gallery {
+            position: absolute;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            display: flex;
+            gap: 10px;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            border-radius: 10px;
+            backdrop-filter: blur(8px);
+            z-index: 10;
+        }
+
+        .thumbnail {
+            width: 80px;
+            height: 80px;
+            object-fit: cover;
+            border-radius: 8px;
+            cursor: pointer;
+            border: 3px solid transparent;
+            transition: all 0.3s;
+            opacity: 0.7;
+        }
+
+            .thumbnail:hover {
+                opacity: 1;
+                transform: scale(1.05);
+            }
+
+            .thumbnail.active {
+                border-color: #FFD93D;
+                opacity: 1;
+            }
+
         @@media (max-width: 1200px) {
             .content-grid {
                 grid-template-columns: 1fr;
@@ -684,9 +721,35 @@
             <div>
                 <div class="pet-card">
                     <div class="pet-image-container">
-                        <img src="@(string.IsNullOrEmpty(Model.ImageUrl) ? "https://via.placeholder.com/600x400?text=Pet+Image" : Model.ImageUrl)"
-                             alt="@Model.Name"
-                             class="pet-image">
+                        <!-- Main Display Image -->
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                        {
+                            <img src="@Model.ImageUrl" alt="@Model.Name" class="pet-image" id="mainReviewImage">
+                        }
+                        else
+                        {
+                            <img src="https://via.placeholder.com/600x400?text=Pet+Image" alt="@Model.Name" class="pet-image" id="mainReviewImage">
+                        }
+
+                        <!-- Thumbnail Gallery (only show if multiple images exist) -->
+                        @if (!string.IsNullOrEmpty(Model.ImageUrl2) || !string.IsNullOrEmpty(Model.ImageUrl3))
+                        {
+                            <div class="thumbnail-gallery">
+                                @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                                {
+                                    <img src="@Model.ImageUrl" class="thumbnail active" onclick="changeReviewImage(this)">
+                                }
+                                @if (!string.IsNullOrEmpty(Model.ImageUrl2))
+                                {
+                                    <img src="@Model.ImageUrl2" class="thumbnail" onclick="changeReviewImage(this)">
+                                }
+                                @if (!string.IsNullOrEmpty(Model.ImageUrl3))
+                                {
+                                    <img src="@Model.ImageUrl3" class="thumbnail" onclick="changeReviewImage(this)">
+                                }
+                            </div>
+                        }
+
                         <div class="pet-type-badge">@Model.PetType.TypeName</div>
                     </div>
 
@@ -696,7 +759,7 @@
 
                         <div class="pet-stats-grid">
                             <div class="stat-item">
-                                <div class="stat-icon">🎂</div>
+                                <div class="stat-icon"></div>
                                 <div class="stat-label">Age</div>
                                 <div class="stat-value">@Model.AgeDisplay</div>
                             </div>
@@ -706,7 +769,7 @@
                                 <div class="stat-value">@Model.Gender</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-icon">📏</div>
+                                <div class="stat-icon"></div>
                                 <div class="stat-label">Size</div>
                                 <div class="stat-value">@Model.Size</div>
                             </div>
@@ -746,17 +809,17 @@
 
                         <div class="pet-stats-grid">
                             <div class="stat-item">
-                                <div class="stat-icon">🏥</div>
+                                <div class="stat-icon"></div>
                                 <div class="stat-label">Health</div>
                                 <div class="stat-value">@(Model.IsHealthy ? "Healthy" : "Care")</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-icon">✂️</div>
+                                <div class="stat-icon"></div>
                                 <div class="stat-label">@(Model.Gender == "Male" ? "Neutered" : "Spayed")</div>
                                 <div class="stat-value">@(Model.IsNeutered ? "Yes" : "No")</div>
                             </div>
                             <div class="stat-item">
-                                <div class="stat-icon">📅</div>
+                                <div class="stat-icon"></div>
                                 <div class="stat-label">Days in Center</div>
                                 <div class="stat-value">@Model.DaysInCenter</div>
                             </div>
@@ -1027,6 +1090,16 @@
                 return false;
             }
         });
+
+        // Change main review image when thumbnail is clicked
+        function changeReviewImage(thumbnail) {
+            // Update main image
+            document.getElementById('mainReviewImage').src = thumbnail.src;
+
+            // Update active thumbnail
+            document.querySelectorAll('.thumbnail').forEach(t => t.classList.remove('active'));
+            thumbnail.classList.add('active');
+        }
     </script>
 </body>
 </html>

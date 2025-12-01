@@ -1,0 +1,958 @@
+@model List<FurEver_Home.Models.AdminUserViewModel>
+@{
+    ViewBag.Title = "Manage Admin Accounts - FurEver Home";
+    Layout = null;
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #f0f2f5;
+            padding: 30px;
+            padding-top: 80px !important;
+        }
+
+        /* ==================== TOP NAVIGATION BAR ==================== */
+        .top-nav-bar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: white;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 15px 30px;
+            z-index: 1000;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .nav-left {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .nav-right {
+            display: flex;
+            align-items: center;
+        }
+
+        .btn-nav {
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            text-decoration: none;
+            font-size: 0.9em;
+        }
+
+        .btn-dashboard-nav {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border: none;
+        }
+
+            .btn-dashboard-nav:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(63, 169, 245, 0.4);
+            }
+
+        .admin-badge {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 10px 20px;
+            border-radius: 10px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9em;
+        }
+
+        /* ==================== CONTAINER ==================== */
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+        }
+
+        /* ==================== PAGE HEADER ==================== */
+        .page-header {
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 2em;
+            color: #2E8BC0;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .btn-create {
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            color: white;
+            padding: 14px 28px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: none;
+            cursor: pointer;
+        }
+
+            .btn-create:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            }
+
+        /* Sync button */
+        .btn-sync {
+            background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%);
+            color: #78350f;
+            padding: 12px 24px;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            border: 2px solid #f59e0b;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(245, 158, 11, 0.2);
+        }
+
+            .btn-sync:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(245, 158, 11, 0.3);
+            }
+
+        /* ==================== ALERTS ==================== */
+        .alert {
+            padding: 16px 20px;
+            border-radius: 12px;
+            margin-bottom: 20px;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            animation: slideDown 0.3s ease;
+        }
+
+        @@keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .alert-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            border: 2px solid #10b981;
+            color: #065f46;
+        }
+
+        .alert-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            border: 2px solid #ef4444;
+            color: #991b1b;
+        }
+
+        .alert .close {
+            margin-left: auto;
+            background: none;
+            border: none;
+            font-size: 1.5em;
+            cursor: pointer;
+            color: inherit;
+            opacity: 0.6;
+        }
+
+            .alert .close:hover {
+                opacity: 1;
+            }
+
+        /* ==================== CARD ==================== */
+        .card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.1);
+            overflow: hidden;
+        }
+
+        .card-body {
+            padding: 0;
+        }
+
+        /* ==================== TABLE ==================== */
+        .table-responsive {
+            overflow-x: auto;
+        }
+
+        .table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+            .table thead {
+                background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            }
+
+            .table th {
+                padding: 18px 20px;
+                text-align: left;
+                font-weight: 700;
+                color: #334155;
+                font-size: 0.9em;
+                text-transform: uppercase;
+                letter-spacing: 0.5px;
+            }
+
+            .table td {
+                padding: 20px;
+                border-bottom: 1px solid #f1f5f9;
+                vertical-align: middle;
+            }
+
+            .table tbody tr {
+                transition: all 0.3s;
+            }
+
+                .table tbody tr:hover {
+                    background: #f8fafc;
+                }
+
+        /* ==================== BADGES ==================== */
+        .badge {
+            padding: 6px 14px;
+            border-radius: 20px;
+            font-size: 0.85em;
+            font-weight: 600;
+            display: inline-block;
+            margin-right: 6px;
+            margin-bottom: 4px;
+        }
+
+        .badge-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+
+        .badge-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+        .badge-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+        /* ==================== BUTTONS ==================== */
+        .btn-group {
+            display: flex;
+            gap: 8px;
+        }
+
+        .btn-sm {
+            padding: 10px 16px;
+            border-radius: 10px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.95em;
+            text-decoration: none;
+        }
+
+        .btn-warning {
+            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
+            color: #92400e;
+            border: 2px solid #f59e0b;
+        }
+
+            .btn-warning:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(245, 158, 11, 0.3);
+            }
+
+        .btn-info {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            color: #1e40af;
+            border: 2px solid #3b82f6;
+        }
+
+            .btn-info:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(59, 130, 246, 0.3);
+            }
+
+        .btn-danger {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            color: #991b1b;
+            border: 2px solid #ef4444;
+        }
+
+            .btn-danger:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(239, 68, 68, 0.3);
+            }
+
+        .btn-success {
+            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+            color: #065f46;
+            border: 2px solid #10b981;
+        }
+
+            .btn-success:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 15px rgba(16, 185, 129, 0.3);
+            }
+
+        /* ==================== MODAL ==================== */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 2000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.6);
+            animation: fadeIn 0.3s;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal.show {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .modal-dialog {
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.3s;
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .modal-title {
+            font-size: 1.3em;
+            font-weight: 700;
+            margin: 0;
+        }
+
+        .modal-header .close {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 2em;
+            cursor: pointer;
+            line-height: 1;
+        }
+
+        .modal-body {
+            padding: 30px;
+        }
+
+        .modal-footer {
+            padding: 20px 30px;
+            background: #f8fafc;
+            display: flex;
+            justify-content: flex-end;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+            .form-group label {
+                display: block;
+                color: #334155;
+                margin-bottom: 8px;
+                font-weight: 600;
+                font-size: 14px;
+            }
+
+        .form-control {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #e2e8f0;
+            border-radius: 10px;
+            font-size: 15px;
+            transition: all 0.3s;
+            outline: none;
+            background: #f8fafc;
+        }
+
+            .form-control:focus {
+                border-color: #3FA9F5;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+            }
+
+        .form-text {
+            font-size: 0.85em;
+            color: #64748b;
+            margin-top: 6px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+            .btn-primary:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(63, 169, 245, 0.4);
+            }
+
+        .btn-secondary {
+            background: #e2e8f0;
+            color: #334155;
+            padding: 12px 24px;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s;
+        }
+
+            .btn-secondary:hover {
+                background: #cbd5e1;
+            }
+
+        .text-muted {
+            color: #64748b;
+        }
+
+        .text-center {
+            text-align: center;
+        }
+
+        /* ==================== RESPONSIVE ==================== */
+        @@media (max-width: 768px) {
+            body {
+                padding: 15px;
+                padding-top: 110px !important;
+            }
+
+            .top-nav-bar {
+                flex-direction: column;
+                gap: 12px;
+                padding: 12px 20px;
+            }
+
+            .nav-left {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .page-header {
+                flex-direction: column;
+                gap: 20px;
+                align-items: flex-start;
+            }
+
+            .page-title {
+                font-size: 1.5em;
+            }
+
+            .table-responsive {
+                overflow-x: scroll;
+            }
+
+            .btn-group {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- ==================== TOP NAVIGATION BAR ==================== -->
+    <div class="top-nav-bar">
+        <div class="nav-left">
+            <a href="@Url.Action("Dashboard", "Admin")" class="btn-nav btn-dashboard-nav">
+                <i class="fas fa-dashboard"></i> Dashboard
+            </a>
+        </div>
+        <div class="nav-right">
+            <span class="admin-badge">
+                <i class="fas fa-shield-halved"></i> Super Admin
+            </span>
+        </div>
+    </div>
+
+    <div class="container">
+        <!-- ==================== PAGE HEADER ==================== -->
+        <div class="page-header">
+            <h1 class="page-title">
+                <i class="fas fa-user-shield"></i>
+                Manage Admin Accounts
+            </h1>
+            <a href="@Url.Action("CreateAdmin", "Admin")" class="btn-create">
+                <i class="fas fa-plus"></i> Create New Admin
+            </a>
+        </div>
+
+        <!-- ==================== SYNC ROLES BUTTON ==================== -->
+        <div class="text-right" style="margin-bottom: 20px;">
+            <button class="btn-sync" onclick="showSyncRolesModal()">
+                <i class="fas fa-sync"></i> Sync
+            </button>
+        </div>
+
+        <!-- ==================== ALERTS ==================== -->
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success">
+                <i class="fas fa-check-circle"></i>
+                <span>@TempData["Success"]</span>
+                <button type="button" class="close" onclick="this.parentElement.style.display='none'">&times;</button>
+            </div>
+        }
+
+        @if (TempData["Error"] != null)
+        {
+            <div class="alert alert-danger">
+                <i class="fas fa-exclamation-circle"></i>
+                <span>@TempData["Error"]</span>
+                <button type="button" class="close" onclick="this.parentElement.style.display='none'">&times;</button>
+            </div>
+        }
+
+        <!-- ==================== ADMIN TABLE ==================== -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th>Full Name</th>
+                                <th>Email</th>
+                                <th>Phone</th>
+                                <th>Assigned Roles</th>
+                                <th>Status</th>
+                                <th>Date Registered</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            @if (Model != null && Model.Any())
+                            {
+                                foreach (var item in Model)
+                                {
+                                    <tr>
+                                        <td><strong>@item.User.FullName</strong></td>
+                                        <td>@item.User.Email</td>
+                                        <td>@(item.User.PhoneNumber ?? "N/A")</td>
+                                        <td>
+                                            @if (item.AssignedRoles != null && item.AssignedRoles.Any())
+                                            {
+                                                foreach (var role in item.AssignedRoles)
+                                                {
+                                                    <span class="badge badge-info">@role.RoleName</span>
+                                                }
+                                            }
+                                            else
+                                            {
+                                                <span class="text-muted">No roles assigned</span>
+                                            }
+                                        </td>
+                                        <td>
+                                            @if (item.User.IsActive)
+                                            {
+                                                <span class="badge badge-success">Active</span>
+                                            }
+                                            else
+                                            {
+                                                <span class="badge badge-danger">Inactive</span>
+                                            }
+                                        </td>
+                                        <td>@item.User.DateRegistered.ToString("MMM dd, yyyy")</td>
+                                        <td>
+                                            <div class="btn-group">
+                                                @{
+                                                    var currentUserId = (int?)Session["UserId"];
+                                                    var isSelfAccount = item.User.UserId == currentUserId;
+                                                    var isSuperAdmin = item.AssignedRoles != null && item.AssignedRoles.Any(r => r.RoleName == "Super Admin");
+                                                }
+
+                                                @* Only show Edit button if NOT self and NOT Super Admin *@
+                                                @if (!isSelfAccount && !isSuperAdmin)
+                                                {
+                                                    <a href="@Url.Action("EditAdminRoles", "Admin", new { id = item.User.UserId })"
+                                                       class="btn-sm btn-warning" title="Edit Roles">
+                                                        <i class="fas fa-edit"></i>
+                                                    </a>
+                                                }
+
+                                                @* Only show Reset Password if NOT self *@
+                                                @if (!isSelfAccount)
+                                                {
+                                                    <button type="button" class="btn-sm btn-info"
+                                                            onclick="showResetPasswordModal(@item.User.UserId, '@item.User.FullName')"
+                                                            title="Reset Password">
+                                                        <i class="fas fa-key"></i>
+                                                    </button>
+                                                }
+
+                                                @* Only show Deactivate/Activate if NOT self and NOT Super Admin *@
+                                                @if (!isSelfAccount && !isSuperAdmin)
+                                                {
+                                                    <button type="button"
+                                                            class="btn-sm @(item.User.IsActive ? "btn-danger" : "btn-success")"
+                                                            onclick="showDeactivateModal(@item.User.UserId, '@item.User.FullName', @item.User.IsActive.ToString().ToLower())"
+                                                            title="@(item.User.IsActive ? "Deactivate" : "Activate")">
+                                                        <i class="fas fa-@(item.User.IsActive ? "ban" : "check")"></i>
+                                                    </button>
+                                                }
+
+                                                @* Only show Delete if NOT self and NOT Super Admin *@
+                                                @if (!isSelfAccount && !isSuperAdmin)
+                                                {
+                                                    <button type="button" class="btn-sm btn-danger"
+                                                            onclick="showDeleteModal(@item.User.UserId, '@item.User.FullName')"
+                                                            title="Delete Admin">
+                                                        <i class="fas fa-trash"></i>
+                                                    </button>
+                                                }
+
+                                                @* Show "View Only" badge if it's self or Super Admin *@
+                                                @if (isSelfAccount || isSuperAdmin)
+                                                {
+                                                    <span style="color: #94a3b8; font-style: italic; font-size: 0.85em; padding: 8px;">
+                                                        <i class="fas fa-@(isSelfAccount ? "user" : "shield-halved")"></i>
+                                                        @(isSelfAccount ? "Your Account" : "Protected")
+                                                    </span>
+                                                }
+                                            </div>
+                                        </td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td colspan="7" class="text-center text-muted">No admin accounts found.</td>
+                                </tr>
+                            }
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== RESET PASSWORD MODAL ==================== -->
+    <div class="modal" id="resetPasswordModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Reset Admin Password</h5>
+                    <button type="button" class="close" onclick="closeResetModal()">&times;</button>
+                </div>
+                <form id="resetPasswordForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-body">
+                        <p>Reset password for: <strong id="adminName"></strong></p>
+                        <div class="form-group">
+                            <label>New Password</label>
+                            <input type="password" name="newPassword" class="form-control" required minlength="6" />
+                            <small class="form-text">Minimum 6 characters</small>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeResetModal()">Cancel</button>
+                        <button type="submit" class="btn-primary">Reset Password</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DELETE CONFIRMATION MODAL ==================== -->
+    <div class="modal" id="deleteModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Delete Admin Account</h5>
+                    <button type="button" class="close" onclick="closeDeleteModal()">&times;</button>
+                </div>
+                <form id="deleteForm" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-body">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                            <i class="fas fa-exclamation-triangle" style="font-size: 2em; color: #ef4444;"></i>
+                            <div>
+                                <p style="margin: 0; font-weight: 600; color: #1f2937;">Are you sure you want to delete this admin account?</p>
+                                <p style="margin: 8px 0 0 0; color: #64748b; font-size: 0.9em;">Admin: <strong id="deleteAdminName"></strong></p>
+                            </div>
+                        </div>
+                        <div style="background: #fee2e2; border: 2px solid #fecaca; padding: 12px 16px; border-radius: 10px; color: #991b1b; font-size: 0.9em;">
+                            <i class="fas fa-info-circle" style="margin-right: 8px;"></i>
+                            <strong>Warning:</strong> This action cannot be undone. The admin account and all associated data will be permanently deleted.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeDeleteModal()">Cancel</button>
+                        <button type="submit" class="btn-danger" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                            <i class="fas fa-trash"></i> Delete Permanently
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== DEACTIVATE CONFIRMATION MODAL ==================== -->
+    <div class="modal" id="deactivateModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div id="deactivateModalHeader" class="modal-header">
+                    <h5 class="modal-title" id="deactivateModalTitle">Deactivate Admin Account</h5>
+                    <button type="button" class="close" onclick="closeDeactivateModal()">&times;</button>
+                </div>
+                <form id="deactivateFormModal" method="post">
+                    @Html.AntiForgeryToken()
+                    <div class="modal-body">
+                        <div style="display: flex; align-items: center; gap: 15px; margin-bottom: 20px;">
+                            <i id="deactivateModalIcon" class="fas fa-ban" style="font-size: 2em; color: #ef4444;"></i>
+                            <div>
+                                <p id="deactivateModalMessage" style="margin: 0; font-weight: 600; color: #1f2937;">Are you sure you want to deactivate this admin account?</p>
+                                <p style="margin: 8px 0 0 0; color: #64748b; font-size: 0.9em;">Admin: <strong id="deactivateAdminName"></strong></p>
+                            </div>
+                        </div>
+                        <div id="deactivateWarningBox" style="background: #fee2e2; border: 2px solid #fecaca; padding: 12px 16px; border-radius: 10px; color: #991b1b; font-size: 0.9em;">
+                            <i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i>
+                            <strong>Warning:</strong> The admin will not be able to access the admin panel. This action can be reversed by reactivating the account.
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn-secondary" onclick="closeDeactivateModal()">Cancel</button>
+                        <button type="submit" id="deactivateConfirmBtn" class="btn-danger" style="background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); color: white; padding: 12px 24px; border: none; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                            <i class="fas fa-ban"></i> Deactivate
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- ==================== SYNC ROLES CONFIRMATION MODAL ==================== -->
+    <div class="modal" id="syncRolesModal">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Sync Admin Roles</h5>
+                    <button type="button" class="close" onclick="closeSyncRolesModal()">&times;</button>
+                </div>
+                <div class="modal-body">
+                    <p style="margin: 0; font-weight: 600; color: #1f2937;">This will sync all admin role columns with their assigned roles.</p>
+                    <p style="margin-top: 8px; color: #64748b; font-size: 0.9em;">Are you sure you want to continue?</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn-secondary" onclick="closeSyncRolesModal()">Cancel</button>
+                    <a href="@Url.Action("SyncUserRoles", "Admin")" id="confirmSyncRolesBtn" class="btn-warning"
+                       style="background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); color: #78350f; padding: 12px 24px; border-radius: 10px; cursor: pointer; font-weight: 600; transition: all 0.3s;">
+                        <i class="fas fa-sync"></i> Sync Roles
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="~/Scripts/jquery-3.4.1.min.js"></script>
+    <script>
+        // Show Reset Password Modal
+        function showResetPasswordModal(userId, userName) {
+            document.getElementById('adminName').textContent = userName;
+            document.getElementById('resetPasswordForm').action = '/Admin/ResetAdminPassword/' + userId;
+            document.getElementById('resetPasswordModal').classList.add('show');
+        }
+
+        // Close Reset Password Modal
+        function closeResetModal() {
+            document.getElementById('resetPasswordModal').classList.remove('show');
+        }
+
+        // Show Delete Confirmation Modal
+        function showDeleteModal(userId, userName) {
+            document.getElementById('deleteAdminName').textContent = userName;
+            document.getElementById('deleteForm').action = '/Admin/DeleteAdmin/' + userId;
+            document.getElementById('deleteModal').classList.add('show');
+        }
+
+        // Close Delete Modal
+        function closeDeleteModal() {
+            document.getElementById('deleteModal').classList.remove('show');
+        }
+
+        // Show Deactivate Confirmation Modal
+        function showDeactivateModal(userId, userName, isActive) {
+            const isCurrentlyActive = isActive === true || isActive === 'true';
+            const modalHeader = document.getElementById('deactivateModalHeader');
+            const modalTitle = document.getElementById('deactivateModalTitle');
+            const modalMessage = document.getElementById('deactivateModalMessage');
+            const modalIcon = document.getElementById('deactivateModalIcon');
+            const warningBox = document.getElementById('deactivateWarningBox');
+            const confirmBtn = document.getElementById('deactivateConfirmBtn');
+            const form = document.getElementById('deactivateFormModal');
+
+            if (isCurrentlyActive) {
+                // Deactivating
+                modalHeader.style.borderBottom = '4px solid #ef4444';
+                modalTitle.textContent = 'Deactivate Admin Account';
+                modalMessage.textContent = 'Are you sure you want to deactivate this admin account?';
+                modalIcon.className = 'fas fa-ban';
+                modalIcon.style.color = '#ef4444';
+                warningBox.style.background = '#fee2e2';
+                warningBox.style.borderColor = '#fecaca';
+                warningBox.style.color = '#991b1b';
+                warningBox.innerHTML = '<i class="fas fa-exclamation-triangle" style="margin-right: 8px;"></i><strong>Warning:</strong> The admin will not be able to access the admin panel. This action can be reversed by reactivating the account.';
+                confirmBtn.style.background = 'linear-gradient(135deg, #ef4444 0%, #dc2626 100%)';
+                confirmBtn.innerHTML = '<i class="fas fa-ban"></i> Deactivate';
+                form.action = '/Admin/DeactivateAdmin/' + userId;
+            } else {
+                // Activating
+                modalHeader.style.borderBottom = '4px solid #10b981';
+                modalTitle.textContent = 'Activate Admin Account';
+                modalMessage.textContent = 'Are you sure you want to activate this admin account?';
+                modalIcon.className = 'fas fa-user-check';
+                modalIcon.style.color = '#10b981';
+                warningBox.style.background = '#e0f7ea';
+                warningBox.style.borderColor = '#81c784';
+                warningBox.style.color = '#1b5e20';
+                warningBox.innerHTML = '<i class="fas fa-info-circle" style="margin-right: 8px;"></i><strong>Info:</strong> The admin will regain full access to the admin panel and all their permissions.';
+                confirmBtn.style.background = 'linear-gradient(135deg, #10b981 0%, #059669 100%)';
+                confirmBtn.innerHTML = '<i class="fas fa-check"></i> Activate';
+                form.action = '/Admin/DeactivateAdmin/' + userId;
+            }
+
+            document.getElementById('deactivateAdminName').textContent = userName;
+            document.getElementById('deactivateModal').classList.add('show');
+        }
+
+        // Close Deactivate Modal
+        function closeDeactivateModal() {
+            document.getElementById('deactivateModal').classList.remove('show');
+        }
+
+        // Show Sync Roles Confirmation Modal
+        function showSyncRolesModal() {
+            document.getElementById('syncRolesModal').classList.add('show');
+        }
+
+        // Close Sync Roles Modal
+        function closeSyncRolesModal() {
+            document.getElementById('syncRolesModal').classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        window.onclick = function(event) {
+            var modal = document.getElementById('resetPasswordModal');
+            if (event.target == modal) {
+                closeResetModal();
+            }
+
+            var deleteModal = document.getElementById('deleteModal');
+            if (event.target == deleteModal) {
+                closeDeleteModal();
+            }
+
+            var deactivateModal = document.getElementById('deactivateModal');
+            if (event.target == deactivateModal) {
+                closeDeactivateModal();
+            }
+
+            var syncRolesModal = document.getElementById('syncRolesModal');
+            if (event.target == syncRolesModal) {
+                closeSyncRolesModal();
+            }
+        }
+
+    </script>
+</body>
+</html>

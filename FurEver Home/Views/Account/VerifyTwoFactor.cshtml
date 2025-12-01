@@ -10,6 +10,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
@@ -41,15 +44,15 @@
             overflow: hidden;
         }
 
-        .twofa-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #10b981 0%, #3FA9F5 100%);
-        }
+            .twofa-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #10b981 0%, #3FA9F5 100%);
+            }
 
         .icon-circle {
             width: 100px;
@@ -64,8 +67,13 @@
         }
 
         @@keyframes pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.05); }
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.05);
+            }
         }
 
         .icon-circle i {
@@ -98,15 +106,15 @@
             border: 2px solid #a7f3d0;
         }
 
-        .email-display i {
-            color: #10b981;
-            margin-right: 8px;
-        }
+            .email-display i {
+                color: #10b981;
+                margin-right: 8px;
+            }
 
-        .email-display strong {
-            color: #065f46;
-            font-size: 16px;
-        }
+            .email-display strong {
+                color: #065f46;
+                font-size: 16px;
+            }
 
         .code-input-wrapper {
             display: flex;
@@ -129,16 +137,16 @@
             color: #10b981;
         }
 
-        .code-digit:focus {
-            border-color: #10b981;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
-        }
+            .code-digit:focus {
+                border-color: #10b981;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(16, 185, 129, 0.1);
+            }
 
-        .code-digit.filled {
-            background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
-            border-color: #10b981;
-        }
+            .code-digit.filled {
+                background: linear-gradient(135deg, #d1fae5 0%, #a7f3d0 100%);
+                border-color: #10b981;
+            }
 
         .hidden-input {
             position: absolute;
@@ -157,11 +165,11 @@
             gap: 12px;
         }
 
-        .info-box i {
-            color: #3FA9F5;
-            font-size: 1.2em;
-            margin-top: 2px;
-        }
+            .info-box i {
+                color: #3FA9F5;
+                font-size: 1.2em;
+                margin-top: 2px;
+            }
 
         .info-box-text {
             color: #1e40af;
@@ -184,35 +192,35 @@
             margin-top: 24px;
         }
 
-        .btn-verify:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-        }
+            .btn-verify:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+            }
 
-        .btn-verify:disabled {
-            background: #cbd5e1;
-            cursor: not-allowed;
-            transform: none;
-        }
+            .btn-verify:disabled {
+                background: #cbd5e1;
+                cursor: not-allowed;
+                transform: none;
+            }
 
         .back-login {
             text-align: center;
             margin-top: 24px;
         }
 
-        .back-login a {
-            color: #64748b;
-            text-decoration: none;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s;
-        }
+            .back-login a {
+                color: #64748b;
+                text-decoration: none;
+                font-size: 14px;
+                display: inline-flex;
+                align-items: center;
+                gap: 8px;
+                transition: color 0.3s;
+            }
 
-        .back-login a:hover {
-            color: #10b981;
-        }
+                .back-login a:hover {
+                    color: #10b981;
+                }
 
         .alert {
             padding: 14px 16px;
@@ -230,6 +238,7 @@
                 transform: translateY(-10px);
                 opacity: 0;
             }
+
             to {
                 transform: translateY(0);
                 opacity: 1;
@@ -259,10 +268,10 @@
             border: 1px solid #e2e8f0;
         }
 
-        .security-note i {
-            color: #10b981;
-            margin-right: 6px;
-        }
+            .security-note i {
+                color: #10b981;
+                margin-right: 6px;
+            }
 
         .signin-overlay {
             display: none;
@@ -278,9 +287,9 @@
             animation: fadeIn 0.5s ease;
         }
 
-        .signin-overlay.active {
-            display: flex;
-        }
+            .signin-overlay.active {
+                display: flex;
+            }
 
         .signin-content {
             text-align: center;
@@ -300,8 +309,13 @@
         }
 
         @@keyframes scaleUpDown {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.1); }
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
         }
 
         .signin-icon i {
@@ -360,47 +374,47 @@
 
         @if (TempData["Success"] != null)
         {
-            <div class="alert alert-success">
-                <i class="fas fa-check-circle"></i>
-                <span>@TempData["Success"]</span>
-            </div>
+        <div class="alert alert-success">
+            <i class="fas fa-check-circle"></i>
+            <span>@TempData["Success"]</span>
+        </div>
         }
 
         @if (TempData["Error"] != null)
         {
-            <div class="alert alert-error">
-                <i class="fas fa-exclamation-circle"></i>
-                <span>@TempData["Error"]</span>
-            </div>
+        <div class="alert alert-error">
+            <i class="fas fa-exclamation-circle"></i>
+            <span>@TempData["Error"]</span>
+        </div>
         }
 
         @using (Html.BeginForm("VerifyTwoFactor", "Account", FormMethod.Post, new { id = "twoFaForm" }))
         {
-            @Html.AntiForgeryToken()
-            @Html.HiddenFor(m => m.Email)
+        @Html.AntiForgeryToken()
+        @Html.HiddenFor(m => m.Email)
 
-            <div class="code-input-wrapper">
-                <input type="text" class="code-digit" id="digit1" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
-                <input type="text" class="code-digit" id="digit2" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
-                <input type="text" class="code-digit" id="digit3" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
-                <input type="text" class="code-digit" id="digit4" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
-                <input type="text" class="code-digit" id="digit5" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
-                <input type="text" class="code-digit" id="digit6" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+        <div class="code-input-wrapper">
+            <input type="text" class="code-digit" id="digit1" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+            <input type="text" class="code-digit" id="digit2" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+            <input type="text" class="code-digit" id="digit3" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+            <input type="text" class="code-digit" id="digit4" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+            <input type="text" class="code-digit" id="digit5" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+            <input type="text" class="code-digit" id="digit6" maxlength="1" pattern="[0-9]" inputmode="numeric" autocomplete="off">
+        </div>
+
+        @Html.TextBoxFor(m => m.TwoFactorCode, new { @class = "hidden-input", id = "codeInput" })
+        @Html.ValidationMessageFor(m => m.TwoFactorCode, "", new { @class = "field-validation-error", style = "text-align: center; display: block;" })
+
+        <div class="info-box">
+            <i class="fas fa-info-circle"></i>
+            <div class="info-box-text">
+                Open your authenticator app (Google Authenticator, Microsoft Authenticator, etc.) and enter the 6-digit code shown for FurEver Home.
             </div>
+        </div>
 
-            @Html.TextBoxFor(m => m.TwoFactorCode, new { @class = "hidden-input", id = "codeInput" })
-            @Html.ValidationMessageFor(m => m.TwoFactorCode, "", new { @class = "field-validation-error", style = "text-align: center; display: block;" })
-
-            <div class="info-box">
-                <i class="fas fa-info-circle"></i>
-                <div class="info-box-text">
-                    Open your authenticator app (Google Authenticator, Microsoft Authenticator, etc.) and enter the 6-digit code shown for FurEver Home.
-                </div>
-            </div>
-
-            <button type="submit" class="btn-verify" id="verifyBtn">
-                <i class="fas fa-shield-halved"></i> Verify Code
-            </button>
+        <button type="submit" class="btn-verify" id="verifyBtn">
+            <i class="fas fa-shield-halved"></i> Verify Code
+        </button>
         }
 
         <div class="back-login">
@@ -418,6 +432,27 @@
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script src="~/Scripts/jquery.validate.min.js"></script>
     <script src="~/Scripts/jquery.validate.unobtrusive.min.js"></script>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // Prevent back button navigation
+            window.history.pushState(null, null, window.location.href);
+
+            window.addEventListener('popstate', function(event) {
+                window.history.pushState(null, null, window.location.href);
+                window.location.replace('@Url.Action("Login", "Account")');
+            });
+
+            window.addEventListener('pageshow', function(event) {
+                if (event.persisted || (window.performance && window.performance.navigation.type === 2)) {
+                    window.location.replace('@Url.Action("Login", "Account")');
+                }
+            });
+        })();
+    </script>
+
     <script>
         const codeInputs = document.querySelectorAll('.code-digit');
         const hiddenInput = document.getElementById('codeInput');

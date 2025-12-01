@@ -186,16 +186,17 @@
         }
 
         .table-header {
-            padding: 30px;
+            padding: 40px;
             background: linear-gradient(135deg, #E8F4FC 0%, #d4e9f7 100%);
             display: flex;
             justify-content: space-between;
             align-items: center;
             border-bottom: 2px solid #d4e9f7;
+            gap: 30px;
         }
 
         .table-title {
-            font-size: 1.6em;
+            font-size: 2em;
             color: #2E8BC0;
             font-weight: 700;
             display: flex;
@@ -209,21 +210,29 @@
 
         .search-box {
             position: relative;
+            flex: 1;
+            max-width: 400px;
         }
 
             .search-box input {
-                padding: 12px 18px 12px 45px;
+                padding: 14px 18px 14px 48px;
                 border: 2px solid #e2e8f0;
-                border-radius: 10px;
-                width: 320px;
+                border-radius: 12px;
+                width: 100%;
                 font-size: 14px;
-                transition: all 0.3s;
+                transition: all 0.3s ease;
+                background: white;
             }
+
+                .search-box input::placeholder {
+                    color: #cbd5e1;
+                }
 
                 .search-box input:focus {
                     outline: none;
                     border-color: #3FA9F5;
-                    box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
+                    box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.15);
+                    background: #f8fafb;
                 }
 
             .search-box i {
@@ -233,6 +242,21 @@
                 transform: translateY(-50%);
                 color: #94a3b8;
                 font-size: 1.1em;
+                pointer-events: none;
+            }
+
+        .search-results-info {
+            display: none;
+            padding: 12px 40px;
+            background: #f0f9ff;
+            border-bottom: 1px solid #e0f2fe;
+            color: #0369a1;
+            font-size: 0.9em;
+            font-weight: 500;
+        }
+
+            .search-results-info.active {
+                display: block;
             }
 
         .users-table {
@@ -259,12 +283,16 @@
             }
 
             .users-table tr {
-                transition: all 0.3s;
+                transition: all 0.3s ease;
             }
 
             .users-table tbody tr:hover {
-                background: #f8fafc;
-                transform: scale(1.001);
+                background: #f0f7ff;
+                box-shadow: inset 0 0 0 2px #e0f2fe;
+            }
+
+            .users-table tbody tr.no-match {
+                display: none;
             }
 
         .user-cell {
@@ -286,6 +314,7 @@
             font-size: 1.2em;
             flex-shrink: 0;
             box-shadow: 0 4px 12px rgba(63, 169, 245, 0.2);
+            transition: all 0.3s ease;
         }
 
             .user-cell-avatar img {
@@ -293,6 +322,11 @@
                 height: 100%;
                 border-radius: 50%;
                 object-fit: cover;
+            }
+
+            .users-table tbody tr:hover .user-cell-avatar {
+                transform: scale(1.08);
+                box-shadow: 0 6px 16px rgba(63, 169, 245, 0.35);
             }
 
         .user-cell-info {
@@ -304,6 +338,11 @@
             color: #2E8BC0;
             margin-bottom: 5px;
             font-size: 1em;
+            transition: color 0.3s ease;
+        }
+
+        .users-table tbody tr:hover .user-cell-name {
+            color: #1e5a8e;
         }
 
         .user-cell-email {
@@ -316,6 +355,7 @@
 
             .user-cell-email i {
                 font-size: 0.9em;
+                color: #94a3b8;
             }
 
         .status-badge {
@@ -326,10 +366,15 @@
             display: inline-flex;
             align-items: center;
             gap: 6px;
+            transition: all 0.3s ease;
         }
 
             .status-badge i {
                 font-size: 1em;
+            }
+
+            .users-table tbody tr:hover .status-badge {
+                transform: translateY(-2px);
             }
 
         .status-verified {
@@ -380,13 +425,18 @@
             display: inline-flex;
             align-items: center;
             gap: 8px;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 8px rgba(63, 169, 245, 0.2);
         }
 
             .btn-view:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(63, 169, 245, 0.3);
+                box-shadow: 0 6px 20px rgba(63, 169, 245, 0.4);
                 color: white;
+            }
+
+            .btn-view:active {
+                transform: translateY(0);
             }
 
             .btn-view i {
@@ -402,15 +452,20 @@
             font-size: 0.85em;
             font-weight: 600;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: all 0.3s ease;
             display: inline-flex;
             align-items: center;
             gap: 8px;
+            box-shadow: 0 2px 8px rgba(255, 217, 61, 0.2);
         }
 
             .btn-toggle:hover {
                 transform: translateY(-2px);
-                box-shadow: 0 6px 20px rgba(255, 217, 61, 0.3);
+                box-shadow: 0 6px 20px rgba(255, 217, 61, 0.4);
+            }
+
+            .btn-toggle:active {
+                transform: translateY(0);
             }
 
             .btn-toggle i {
@@ -426,6 +481,16 @@
             font-size: 5em;
             color: #cbd5e1;
             margin-bottom: 20px;
+            animation: float 3s ease-in-out infinite;
+        }
+
+        @@keyframes float {
+            0%, 100% {
+                transform: translateY(0px);
+            }
+            50% {
+                transform: translateY(-10px);
+            }
         }
 
         .empty-title {
@@ -438,6 +503,258 @@
         .empty-text {
             color: #666;
             font-size: 1.1em;
+        }
+
+        .no-search-results {
+            text-align: center;
+            padding: 60px 40px;
+        }
+
+        .no-search-icon {
+            font-size: 4em;
+            color: #cbd5e1;
+            margin-bottom: 20px;
+        }
+
+        .no-search-title {
+            font-size: 1.5em;
+            color: #2E8BC0;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .no-search-text {
+            color: #666;
+            font-size: 1em;
+        }
+
+        /* ==================== ACCOUNT STATUS MODAL STYLES ==================== */
+        .account-modal {
+            display: none;
+            position: fixed;
+            z-index: 5000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.75);
+            backdrop-filter: blur(8px);
+            animation: fadeIn 0.3s ease;
+        }
+
+            .account-modal.show {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+            }
+
+        .account-modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            box-shadow: 0 25px 70px rgba(0,0,0,0.4);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .account-modal-header {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            padding: 30px;
+            text-align: center;
+            color: white;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 15px;
+        }
+
+            .account-modal-header.deactivate {
+                background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            }
+
+            .account-modal-header.activate {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            }
+
+        .modal-icon-wrapper {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5em;
+            animation: pulse 2s infinite;
+        }
+
+        @@keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+        }
+
+        .account-modal-header h2 {
+            font-size: 1.8em;
+            margin: 0;
+            font-weight: 700;
+        }
+
+        .account-modal-body {
+            padding: 30px;
+        }
+
+        .user-info-section {
+            background: #f8fafc;
+            padding: 18px 20px;
+            border-radius: 12px;
+            margin-bottom: 25px;
+            border-left: 4px solid #3FA9F5;
+        }
+
+            .account-modal-header.deactivate ~ .account-modal-body .user-info-section {
+                border-left-color: #ef4444;
+                background: #fef2f2;
+            }
+
+            .account-modal-header.activate ~ .account-modal-body .user-info-section {
+                border-left-color: #10b981;
+                background: #f0fdf4;
+            }
+
+        .user-name {
+            font-size: 1.3em;
+            font-weight: 700;
+            color: #1e293b;
+            margin-bottom: 5px;
+        }
+
+        .user-email {
+            font-size: 0.95em;
+            color: #64748b;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .modal-message {
+            font-size: 1.1em;
+            color: #475569;
+            margin-bottom: 15px;
+            line-height: 1.6;
+        }
+
+        .modal-warning {
+            background: #fef3c7;
+            border-left: 4px solid #f59e0b;
+            padding: 15px;
+            border-radius: 10px;
+            color: #92400e;
+            margin-bottom: 25px;
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+        }
+
+            .modal-warning i {
+                font-size: 1.3em;
+                margin-top: 2px;
+                flex-shrink: 0;
+            }
+
+        .modal-warning-text {
+            flex: 1;
+        }
+
+            .modal-warning-text strong {
+                display: block;
+                margin-bottom: 5px;
+            }
+
+        .account-modal-footer {
+            padding: 20px 30px;
+            background: #f8fafc;
+            border-top: 1px solid #e2e8f0;
+            display: flex;
+            gap: 12px;
+        }
+
+        .modal-btn {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 1em;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .modal-btn-cancel {
+            background: #e2e8f0;
+            color: #334155;
+        }
+
+            .modal-btn-cancel:hover {
+                background: #cbd5e1;
+                transform: translateY(-2px);
+            }
+
+        .modal-btn-confirm {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+        }
+
+            .modal-btn-confirm:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(63, 169, 245, 0.4);
+            }
+
+            .modal-btn-confirm.deactivate {
+                background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%);
+            }
+
+                .modal-btn-confirm.deactivate:hover {
+                    box-shadow: 0 8px 20px rgba(239, 68, 68, 0.4);
+                }
+
+            .modal-btn-confirm.activate {
+                background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+            }
+
+                .modal-btn-confirm.activate:hover {
+                    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
+                }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
 
         /* Responsive */
@@ -480,6 +797,27 @@
 
             .action-buttons {
                 flex-direction: column;
+            }
+
+            .account-modal-content {
+                width: 95%;
+            }
+
+            .account-modal-header {
+                padding: 25px 20px;
+            }
+
+            .account-modal-body {
+                padding: 25px 20px;
+            }
+
+            .account-modal-footer {
+                padding: 15px 20px;
+                flex-direction: column;
+            }
+
+            .modal-btn {
+                width: 100%;
             }
         }
     </style>
@@ -581,12 +919,16 @@
             <div class="table-header">
                 <div class="table-title">
                     <i class="fas fa-users"></i>
-                    All Users (@Model.Count)
+                    FurEverHome Active Accounts (<span id="totalUsersCount">@Model.Count</span>)
                 </div>
                 <div class="search-box">
                     <i class="fas fa-search"></i>
-                    <input type="text" placeholder="Search users by name or email..." id="searchInput">
+                    <input type="text" placeholder="Search users by name or email..." id="searchInput" autocomplete="off">
                 </div>
+            </div>
+
+            <div class="search-results-info" id="searchResultsInfo">
+                Showing <span id="matchingCount">0</span> result(s) matching "<span id="searchTerm"></span>"
             </div>
 
             @if (Model.Count == 0)
@@ -614,7 +956,7 @@
                     <tbody id="usersTableBody">
                         @foreach (var user in Model)
                         {
-                            <tr>
+                            <tr class="user-row" data-search-text="@(user.FullName + " " + user.Email)">
                                 <td>
                                     <div class="user-cell">
                                         <div class="user-cell-avatar">
@@ -682,36 +1024,247 @@
                                 </td>
                                 <td>
                                     <div class="action-buttons">
-                                        <a href="@Url.Action("UserDetails", "Admin", new { id = user.UserId })" class="btn-view">
-                                            <i class="fas fa-eye"></i> View
-                                        </a>
-                                        @using (Html.BeginForm("ToggleUserStatus", "Admin", FormMethod.Post, new { style = "display: inline;" }))
+                                        @* Super Admin & Moderator can view *@
+                                        @if (ViewBag.IsSuperAdmin || ViewBag.IsModerator)
                                         {
-                                            @Html.AntiForgeryToken()
-                                            <input type="hidden" name="id" value="@user.UserId" />
-                                            <button type="submit" class="btn-toggle" onclick="return confirm('Are you sure you want to @(user.IsActive ? "deactivate" : "activate") this user?')">
+                                            <a href="@Url.Action("UserDetails", "Admin", new { id = user.UserId })" class="btn-view">
+                                                <i class="fas fa-eye"></i> View
+                                            </a>
+                                        }
+
+                                        @* Only Super Admin can activate/deactivate *@
+                                        @if (ViewBag.IsSuperAdmin)
+                                        {
+                                            <button type="button" class="btn-toggle" onclick="openStatusModal(@user.UserId, '@user.FullName', '@user.Email', @user.IsActive.ToString().ToLower())">
                                                 <i class="fas fa-@(user.IsActive ? "ban" : "check")"></i>
                                                 @(user.IsActive ? "Deactivate" : "Activate")
                                             </button>
                                         }
+
+                                        @* Support role sees nothing *@
+                                        @if (ViewBag.IsSupport && !ViewBag.IsSuperAdmin && !ViewBag.IsModerator)
+                                        {
+                                            <span style="color: #94a3b8; font-style: italic;">No actions available</span>
+                                        }
                                     </div>
-                                </td>
-                            </tr>
+                                </td>                            </tr>
                         }
                     </tbody>
                 </table>
+                <div class="no-search-results" id="noSearchResults" style="display: none;">
+                    <div class="no-search-icon">
+                        <i class="fas fa-search"></i>
+                    </div>
+                    <div class="no-search-title">No Results Found</div>
+                    <div class="no-search-text">
+                        No users match your search criteria. Try adjusting your search terms.
+                    </div>
+                </div>
             }
+        </div>
+    </div>
+
+    <!-- ==================== ACCOUNT STATUS MODAL ==================== -->
+    <div id="accountStatusModal" class="account-modal">
+        <div class="account-modal-content">
+            <div id="modalHeader" class="account-modal-header">
+                <div class="modal-icon-wrapper">
+                    <i id="modalIcon" class="fas fa-exclamation-circle"></i>
+                </div>
+                <h2 id="modalTitle">Confirm Action</h2>
+            </div>
+
+            <div class="account-modal-body">
+                <div class="user-info-section">
+                    <div class="user-name" id="modalUserName">User Name</div>
+                    <div class="user-email">
+                        <i class="fas fa-envelope"></i>
+                        <span id="modalUserEmail">user@email.com</span>
+                    </div>
+                </div>
+
+                <p class="modal-message" id="modalMessage">
+                    Are you sure you want to proceed with this action?
+                </p>
+
+                <div class="modal-warning">
+                    <i id="warningIcon" class="fas fa-info-circle"></i>
+                    <div class="modal-warning-text">
+                        <strong id="warningTitle">Note:</strong>
+                        <span id="warningText">This action cannot be undone immediately.</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="account-modal-footer">
+                <button type="button" class="modal-btn modal-btn-cancel" onclick="closeStatusModal()">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <form id="statusForm" method="POST" style="flex: 1; display: flex;">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden" id="userId" name="id" value="" />
+                    <button type="submit" id="confirmBtn" class="modal-btn modal-btn-confirm" style="width: 100%;">
+                        <i id="confirmIcon" class="fas fa-check"></i>
+                        <span id="confirmText">Confirm</span>
+                    </button>
+                </form>
+            </div>
         </div>
     </div>
 
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
     <script>
-        // Search functionality
-        $('#searchInput').on('keyup', function () {
-            var value = $(this).val().toLowerCase();
-            $('#usersTableBody tr').filter(function () {
-                $(this).toggle($(this).text().toLowerCase().indexOf(value) > -1)
-            });
+        'use strict';
+
+        // ==================== ENHANCED SEARCH FUNCTIONALITY ====================
+        const searchInput = document.getElementById('searchInput');
+        const usersTableBody = document.getElementById('usersTableBody');
+        const searchResultsInfo = document.getElementById('searchResultsInfo');
+        const noSearchResults = document.getElementById('noSearchResults');
+        const userRows = document.querySelectorAll('.user-row');
+        const matchingCountSpan = document.getElementById('matchingCount');
+        const searchTermSpan = document.getElementById('searchTerm');
+        const totalUsersCount = document.getElementById('totalUsersCount');
+
+        function performSearch() {
+            const searchValue = searchInput.value.toLowerCase().trim();
+            let matchCount = 0;
+            let visibleRows = 0;
+
+            if (searchValue === '') {
+                // Reset to showing all rows
+                userRows.forEach(row => {
+                    row.classList.remove('no-match');
+                    visibleRows++;
+                });
+                searchResultsInfo.classList.remove('active');
+                noSearchResults.style.display = 'none';
+                usersTableBody.style.display = 'table-body';
+            } else {
+                // Perform search
+                userRows.forEach(row => {
+                    const searchText = row.getAttribute('data-search-text').toLowerCase();
+                    const isMatch = searchText.includes(searchValue);
+
+                    if (isMatch) {
+                        row.classList.remove('no-match');
+                        visibleRows++;
+                        matchCount++;
+                    } else {
+                        row.classList.add('no-match');
+                    }
+                });
+
+                // Update search results info
+                matchingCountSpan.textContent = matchCount;
+                searchTermSpan.textContent = searchInput.value;
+                searchResultsInfo.classList.add('active');
+
+                // Show/hide no results message
+                if (matchCount === 0) {
+                    noSearchResults.style.display = 'block';
+                    usersTableBody.style.display = 'none';
+                } else {
+                    noSearchResults.style.display = 'none';
+                    usersTableBody.style.display = 'table-body';
+                }
+            }
+        }
+
+        // Event listeners for search
+        searchInput.addEventListener('keyup', performSearch);
+        searchInput.addEventListener('change', performSearch);
+
+        // Clear search on input clear button (if present)
+        searchInput.addEventListener('search', performSearch);
+
+        // Prevent accidental form submission
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                e.preventDefault();
+                performSearch();
+            }
+        });
+
+        // Focus styling
+        searchInput.addEventListener('focus', function() {
+            this.parentElement.style.boxShadow = '0 0 0 3px rgba(63, 169, 245, 0.2)';
+        });
+
+        searchInput.addEventListener('blur', function() {
+            this.parentElement.style.boxShadow = 'none';
+        });
+
+        // ==================== ACCOUNT STATUS MODAL FUNCTIONS ====================
+        function openStatusModal(userId, userName, userEmail, isActive) {
+            const modal = document.getElementById('accountStatusModal');
+            const modalHeader = document.getElementById('modalHeader');
+            const statusForm = document.getElementById('statusForm');
+            const userIdInput = document.getElementById('userId');
+            
+            // Store current state
+            const isCurrentlyActive = isActive === 'true';
+            
+            // Update form action based on action type
+            if (isCurrentlyActive) {
+                // Deactivating
+                statusForm.action = '@Url.Action("ToggleUserStatus", "Admin")';
+                modalHeader.className = 'account-modal-header deactivate';
+                document.getElementById('modalIcon').className = 'fas fa-user-slash';
+                document.getElementById('modalTitle').textContent = 'Deactivate Account';
+                document.getElementById('modalMessage').textContent = 
+                    `Are you sure you want to deactivate ${userName}'s account? They will no longer be able to log in to the platform.`;
+                document.getElementById('warningTitle').textContent = 'Warning:';
+                document.getElementById('warningText').textContent = 
+                    'The user will not be able to access the platform. Their ongoing applications will be paused.';
+                document.getElementById('warningIcon').className = 'fas fa-exclamation-triangle';
+                document.getElementById('confirmIcon').className = 'fas fa-ban';
+                document.getElementById('confirmText').textContent = 'Deactivate';
+                document.getElementById('confirmBtn').className = 'modal-btn modal-btn-confirm deactivate';
+            } else {
+                // Activating
+                statusForm.action = '@Url.Action("ToggleUserStatus", "Admin")';
+                modalHeader.className = 'account-modal-header activate';
+                document.getElementById('modalIcon').className = 'fas fa-user-check';
+                document.getElementById('modalTitle').textContent = 'Activate Account';
+                document.getElementById('modalMessage').textContent = 
+                    `Are you sure you want to activate ${userName}'s account? They will be able to log in again.`;
+                document.getElementById('warningTitle').textContent = 'Info:';
+                document.getElementById('warningText').textContent = 
+                    'The user will regain full access to the platform and their applications.';
+                document.getElementById('warningIcon').className = 'fas fa-info-circle';
+                document.getElementById('confirmIcon').className = 'fas fa-check';
+                document.getElementById('confirmText').textContent = 'Activate';
+                document.getElementById('confirmBtn').className = 'modal-btn modal-btn-confirm activate';
+            }
+            
+            // Set user info
+            document.getElementById('modalUserName').textContent = userName;
+            document.getElementById('modalUserEmail').textContent = userEmail;
+            userIdInput.value = userId;
+            
+            // Show modal
+            modal.classList.add('show');
+        }
+
+        function closeStatusModal() {
+            const modal = document.getElementById('accountStatusModal');
+            modal.classList.remove('show');
+        }
+
+        // Close modal when clicking outside
+        window.addEventListener('click', function(event) {
+            const modal = document.getElementById('accountStatusModal');
+            if (event.target === modal) {
+                closeStatusModal();
+            }
+        });
+
+        // Close modal with Escape key
+        document.addEventListener('keydown', function(event) {
+            if (event.key === 'Escape') {
+                closeStatusModal();
+            }
         });
     </script>
 </body>

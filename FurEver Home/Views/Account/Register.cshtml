@@ -4,6 +4,22 @@
     Layout = null;
 }
 
+
+@functions {
+    public string GetTimeAgo(DateTime timestamp)
+    {
+        var timeSpan = DateTime.Now - timestamp;
+
+        if (timeSpan.TotalMinutes < 1) return "Just now";
+        if (timeSpan.TotalMinutes < 60) return $"{(int)timeSpan.TotalMinutes} minutes ago";
+        if (timeSpan.TotalHours < 24) return $"{(int)timeSpan.TotalHours} hours ago";
+        if (timeSpan.TotalDays < 30) return $"{(int)timeSpan.TotalDays} days ago";
+        if (timeSpan.TotalDays < 365) return $"{(int)(timeSpan.TotalDays / 30)} months ago";
+        return $"{(int)(timeSpan.TotalDays / 365)} years ago";
+    }
+}
+
+
 <!DOCTYPE html>
 <html>
 <head>
@@ -40,15 +56,15 @@
             overflow: hidden;
         }
 
-        .register-container::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(90deg, #FFD93D 0%, #3FA9F5 100%);
-        }
+            .register-container::before {
+                content: '';
+                position: absolute;
+                top: 0;
+                left: 0;
+                right: 0;
+                height: 4px;
+                background: linear-gradient(90deg, #FFD93D 0%, #3FA9F5 100%);
+            }
 
         .logo-container {
             text-align: center;
@@ -80,13 +96,13 @@
             margin-bottom: 20px;
         }
 
-        .form-group label {
-            display: block;
-            color: #334155;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
-        }
+            .form-group label {
+                display: block;
+                color: #334155;
+                margin-bottom: 8px;
+                font-weight: 600;
+                font-size: 14px;
+            }
 
         .input-wrapper {
             position: relative;
@@ -101,7 +117,23 @@
             font-size: 18px;
         }
 
-        .form-group input {
+        .toggle-password {
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #94a3b8;
+            cursor: pointer;
+            font-size: 18px;
+            transition: color 0.3s;
+        }
+
+            .toggle-password:hover {
+                color: #3FA9F5;
+            }
+
+        .form-group input,
+        .form-group select {
             width: 100%;
             padding: 14px 16px 14px 48px;
             border: 2px solid #e2e8f0;
@@ -112,15 +144,32 @@
             background: #f8fafc;
         }
 
-        .form-group input:focus {
-            border-color: #FFD93D;
-            background: white;
-            box-shadow: 0 0 0 4px rgba(255, 217, 61, 0.1);
+        .form-group input[type="password"] {
+            padding-right: 48px;
         }
 
-        .form-group input.input-validation-error {
-            border-color: #ef4444;
+        .form-group select {
+            cursor: pointer;
+            appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%2394a3b8' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 16px center;
+            padding-right: 48px;
+            max-height: 200px;
+            overflow-y: auto;
         }
+
+            .form-group input:focus,
+            .form-group select:focus {
+                border-color: #FFD93D;
+                background: white;
+                box-shadow: 0 0 0 4px rgba(255, 217, 61, 0.1);
+            }
+
+            .form-group input.input-validation-error,
+            .form-group select.input-validation-error {
+                border-color: #ef4444;
+            }
 
         .field-validation-error {
             color: #ef4444;
@@ -139,14 +188,14 @@
             transition: all 0.3s;
         }
 
-        .file-upload-wrapper:hover {
-            border-color: #FFD93D;
-            background: #fffbeb;
-        }
+            .file-upload-wrapper:hover {
+                border-color: #FFD93D;
+                background: #fffbeb;
+            }
 
-        .file-upload-wrapper input[type="file"] {
-            display: none;
-        }
+            .file-upload-wrapper input[type="file"] {
+                display: none;
+            }
 
         .file-upload-label {
             display: block;
@@ -170,14 +219,16 @@
             font-size: 12px;
         }
 
-        .id-type-selector {
-            display: grid;
-            grid-template-columns: repeat(2, 1fr);
-            gap: 12px;
-            margin-top: 12px;
+        .optional-badge {
+            display: inline-block;
+            background: #eff6ff;
+            color: #3FA9F5;
+            padding: 4px 10px;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 600;
+            margin-top: 8px;
         }
-
-      
 
         .btn-register {
             width: 100%;
@@ -194,14 +245,14 @@
             margin-top: 24px;
         }
 
-        .btn-register:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 8px 20px rgba(255, 217, 61, 0.4);
-        }
+            .btn-register:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 20px rgba(255, 217, 61, 0.4);
+            }
 
-        .btn-register:active {
-            transform: translateY(0);
-        }
+            .btn-register:active {
+                transform: translateY(0);
+            }
 
         .divider {
             text-align: center;
@@ -209,24 +260,24 @@
             position: relative;
         }
 
-        .divider::before {
-            content: '';
-            position: absolute;
-            left: 0;
-            top: 50%;
-            width: 100%;
-            height: 1px;
-            background: #e2e8f0;
-        }
+            .divider::before {
+                content: '';
+                position: absolute;
+                left: 0;
+                top: 50%;
+                width: 100%;
+                height: 1px;
+                background: #e2e8f0;
+            }
 
-        .divider span {
-            background: white;
-            padding: 0 16px;
-            color: #94a3b8;
-            font-size: 14px;
-            position: relative;
-            z-index: 1;
-        }
+            .divider span {
+                background: white;
+                padding: 0 16px;
+                color: #94a3b8;
+                font-size: 14px;
+                position: relative;
+                z-index: 1;
+            }
 
         .signin-link {
             text-align: center;
@@ -234,35 +285,16 @@
             font-size: 14px;
         }
 
-        .signin-link a {
-            color: #3FA9F5;
-            text-decoration: none;
-            font-weight: 600;
-            transition: color 0.3s;
-        }
+            .signin-link a {
+                color: #3FA9F5;
+                text-decoration: none;
+                font-weight: 600;
+                transition: color 0.3s;
+            }
 
-        .signin-link a:hover {
-            color: #2E8BC0;
-        }
-
-        .back-home {
-            text-align: center;
-            margin-top: 24px;
-        }
-
-        .back-home a {
-            color: #64748b;
-            text-decoration: none;
-            font-size: 14px;
-            display: inline-flex;
-            align-items: center;
-            gap: 8px;
-            transition: color 0.3s;
-        }
-
-        .back-home a:hover {
-            color: #FFD93D;
-        }
+                .signin-link a:hover {
+                    color: #2E8BC0;
+                }
 
         .info-note {
             background: #eff6ff;
@@ -274,9 +306,142 @@
             color: #1e40af;
         }
 
-        .info-note i {
-            margin-right: 8px;
+            .info-note i {
+                margin-right: 8px;
+            }
+
+        /* Modal Styles */
+        .modal-overlay {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(0, 0, 0, 0.6);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            animation: fadeIn 0.3s ease;
         }
+
+        .modal-overlay.active {
+            display: flex;
+        }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@keyframes slideUp {
+            from {
+                transform: translateY(30px);
+                opacity: 0;
+            }
+            to {
+                transform: translateY(0);
+                opacity: 1;
+            }
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            max-width: 500px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.2);
+            animation: slideUp 0.3s ease;
+        }
+
+        .modal-header {
+            background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%);
+            padding: 24px 32px;
+            border-radius: 20px 20px 0 0;
+            text-align: center;
+        }
+
+            .modal-header h2 {
+                color: #2E8BC0;
+                font-size: 24px;
+                font-weight: 700;
+                margin-bottom: 8px;
+            }
+
+            .modal-header p {
+                color: #64748b;
+                font-size: 14px;
+            }
+
+        .modal-body {
+            padding: 32px;
+        }
+
+        .info-row {
+            display: flex;
+            padding: 16px;
+            margin-bottom: 12px;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #3FA9F5;
+        }
+
+        .info-label {
+            font-weight: 600;
+            color: #334155;
+            min-width: 140px;
+            font-size: 14px;
+        }
+
+        .info-value {
+            color: #64748b;
+            flex: 1;
+            font-size: 14px;
+            word-break: break-word;
+        }
+
+        .modal-footer {
+            padding: 0 32px 32px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .btn-modal {
+            flex: 1;
+            padding: 14px;
+            border: none;
+            border-radius: 12px;
+            font-size: 15px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-cancel {
+            background: #f1f5f9;
+            color: #64748b;
+        }
+
+            .btn-cancel:hover {
+                background: #e2e8f0;
+            }
+
+        .btn-confirm {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            box-shadow: 0 4px 12px rgba(63, 169, 245, 0.3);
+        }
+
+            .btn-confirm:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 16px rgba(63, 169, 245, 0.4);
+            }
 
         @@media (max-width: 480px) {
             .register-container {
@@ -290,6 +455,25 @@
             .logo-img {
                 width: 160px;
             }
+
+            .modal-content {
+                width: 95%;
+            }
+
+            .modal-header,
+            .modal-body,
+            .modal-footer {
+                padding: 20px;
+            }
+
+            .info-row {
+                flex-direction: column;
+                gap: 4px;
+            }
+
+            .info-label {
+                min-width: auto;
+            }
         }
     </style>
 </head>
@@ -302,7 +486,7 @@
         <h1 class="welcome-text">Join FurEver Home</h1>
         <p class="subtitle">Create your account to start helping pets</p>
 
-        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data" }))
+        @using (Html.BeginForm("Register", "Account", FormMethod.Post, new { enctype = "multipart/form-data", id = "registerForm" }))
         {
             @Html.AntiForgeryToken()
 
@@ -310,7 +494,7 @@
                 @Html.LabelFor(m => m.FullName)
                 <div class="input-wrapper">
                     <i class="fas fa-user input-icon"></i>
-                    @Html.TextBoxFor(m => m.FullName, new { placeholder = "Enter your full name" })
+                    @Html.TextBoxFor(m => m.FullName, new { placeholder = "Enter your full name", id = "fullName" })
                 </div>
                 @Html.ValidationMessageFor(m => m.FullName, "", new { @class = "field-validation-error" })
             </div>
@@ -319,7 +503,7 @@
                 @Html.LabelFor(m => m.Email)
                 <div class="input-wrapper">
                     <i class="fas fa-envelope input-icon"></i>
-                    @Html.TextBoxFor(m => m.Email, new { placeholder = "Enter your email", type = "email" })
+                    @Html.TextBoxFor(m => m.Email, new { placeholder = "Enter your email", type = "email", id = "email" })
                 </div>
                 @Html.ValidationMessageFor(m => m.Email, "", new { @class = "field-validation-error" })
             </div>
@@ -328,7 +512,7 @@
                 @Html.LabelFor(m => m.MobileNumber)
                 <div class="input-wrapper">
                     <i class="fas fa-mobile-alt input-icon"></i>
-                    @Html.TextBoxFor(m => m.MobileNumber, new { placeholder = "09XX XXX XXXX or +639XX XXX XXXX", type = "tel" })
+                    @Html.TextBoxFor(m => m.MobileNumber, new { placeholder = "09XX XXX XXXX or +639XX XXX XXXX", type = "tel", id = "mobileNumber" })
                 </div>
                 @Html.ValidationMessageFor(m => m.MobileNumber, "", new { @class = "field-validation-error" })
                 <small style="color: #64748b; display: block; margin-top: 6px; margin-left: 4px; font-size: 12px;">
@@ -336,12 +520,12 @@
                 </small>
             </div>
 
-
             <div class="form-group">
                 @Html.LabelFor(m => m.Password)
                 <div class="input-wrapper">
                     <i class="fas fa-lock input-icon"></i>
-                    @Html.PasswordFor(m => m.Password, new { placeholder = "Create a password (min. 6 characters)" })
+                    @Html.PasswordFor(m => m.Password, new { placeholder = "Create a password (min. 6 characters)", id = "password" })
+                    <i class="fas fa-eye toggle-password" id="togglePassword"></i>
                 </div>
                 @Html.ValidationMessageFor(m => m.Password, "", new { @class = "field-validation-error" })
             </div>
@@ -350,19 +534,39 @@
                 @Html.LabelFor(m => m.ConfirmPassword)
                 <div class="input-wrapper">
                     <i class="fas fa-lock input-icon"></i>
-                    @Html.PasswordFor(m => m.ConfirmPassword, new { placeholder = "Confirm your password" })
+                    @Html.PasswordFor(m => m.ConfirmPassword, new { placeholder = "Confirm your password", id = "confirmPassword" })
+                    <i class="fas fa-eye toggle-password" id="toggleConfirmPassword"></i>
                 </div>
                 @Html.ValidationMessageFor(m => m.ConfirmPassword, "", new { @class = "field-validation-error" })
             </div>
 
             <div class="form-group">
-                <div class="form-group">
-                    <label>ID Type</label>
-                    @Html.TextBoxFor(m => m.IDType, new { placeholder = "e.g., National ID, Passport, Driver's License, Postal ID, etc.", @class = "form-control" })
-                    <small style="color: #64748b; display: block; margin-top: 8px;">
-                        <i class="fas fa-info-circle"></i> Enter any valid government-issued ID type
-                    </small>
+                <label>ID Type</label>
+                <div class="input-wrapper">
+                    <i class="fas fa-id-card input-icon"></i>
+                    @Html.DropDownListFor(m => m.IDType, new SelectList(new[]
+                    {
+                        "Philippine Identification (PhilID) / ePhilID",
+                        "Unified Multi-Purpose Identification (UMID) Card",
+                        "Passport",
+                        "Driver's License",
+                        "Professional Regulation Commission (PRC) ID",
+                        "National Bureau of Investigation (NBI) Clearance",
+                        "Voter's ID",
+                        "Postal ID",
+                        "Senior Citizen ID",
+                        "SSS ID",
+                        "GSIS e-Card",
+                        "Pag-IBIG ID",
+                        "PhilHealth Insurance Card",
+                        "PWD ID",
+                        "Barangay ID or Certification"
+                    }), "-- Select ID Type --", new { @class = "form-control", id = "idType" })
                 </div>
+                @Html.ValidationMessageFor(m => m.IDType, "", new { @class = "field-validation-error" })
+                <small style="color: #64748b; display: block; margin-top: 8px;">
+                    <i class="fas fa-info-circle"></i> Select your government-issued ID type
+                </small>
             </div>
 
             <div class="file-upload-wrapper">
@@ -373,6 +577,7 @@
                     <div class="file-upload-text">Upload Your Valid ID</div>
                     <div class="file-upload-hint">Click to browse or drag and drop</div>
                     <div class="file-upload-hint">PNG, JPG or PDF (Max 5MB)</div>
+                    <span class="optional-badge">CAN STILL UPLOAD LATER</span>
                 </label>
                 <input type="file" id="idUpload" name="IDImage" accept="image/*,.pdf">
                 <div id="fileName" style="margin-top: 12px; color: #3FA9F5; font-size: 14px; font-weight: 600;"></div>
@@ -383,7 +588,7 @@
                 Your ID will be verified by our FurEverHome team within 24-48 hours. This helps us ensure the safety of our pets and community.
             </div>
 
-            <button type="submit" class="btn-register">
+            <button type="button" class="btn-register" id="reviewButton">
                 <i class="fas fa-user-plus"></i> Create Account
             </button>
         }
@@ -395,8 +600,46 @@
         <div class="signin-link">
             Already have an account? <a href="@Url.Action("Login", "Account")">Sign In</a>
         </div>
+    </div>
 
-
+    <!-- Confirmation Modal -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2><i class="fas fa-check-circle"></i> Confirm Your Information</h2>
+                <p>Please review your details before creating your account</p>
+            </div>
+            <div class="modal-body">
+                <div class="info-row">
+                    <span class="info-label">Full Name:</span>
+                    <span class="info-value" id="reviewFullName"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Email:</span>
+                    <span class="info-value" id="reviewEmail"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">Mobile Number:</span>
+                    <span class="info-value" id="reviewMobile"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">ID Type:</span>
+                    <span class="info-value" id="reviewIDType"></span>
+                </div>
+                <div class="info-row">
+                    <span class="info-label">ID Upload:</span>
+                    <span class="info-value" id="reviewIDUpload"></span>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn-modal btn-cancel" id="cancelButton">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" class="btn-modal btn-confirm" id="confirmButton">
+                    <i class="fas fa-check"></i> Confirm & Create
+                </button>
+            </div>
+        </div>
     </div>
 
     <script src="~/Scripts/jquery-3.4.1.min.js"></script>
@@ -411,9 +654,79 @@
             }
         });
 
-       
+        // Password toggle functionality
+        document.getElementById('togglePassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('password');
+            const icon = this;
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        document.getElementById('toggleConfirmPassword').addEventListener('click', function () {
+            const passwordInput = document.getElementById('confirmPassword');
+            const icon = this;
+
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                icon.classList.remove('fa-eye');
+                icon.classList.add('fa-eye-slash');
+            } else {
+                passwordInput.type = 'password';
+                icon.classList.remove('fa-eye-slash');
+                icon.classList.add('fa-eye');
+            }
+        });
+
+        // Review button - Show modal
+        document.getElementById('reviewButton').addEventListener('click', function () {
+            // Get form values
+            const fullName = document.getElementById('fullName').value;
+            const email = document.getElementById('email').value;
+            const mobile = document.getElementById('mobileNumber').value;
+            const idType = document.getElementById('idType').value;
+            const idFile = document.getElementById('idUpload').files[0];
+
+            // Basic validation
+            if (!fullName || !email || !mobile || !idType) {
+                alert('Please fill in all required fields before proceeding.');
+                return;
+            }
+
+            // Populate modal with values
+            document.getElementById('reviewFullName').textContent = fullName;
+            document.getElementById('reviewEmail').textContent = email;
+            document.getElementById('reviewMobile').textContent = mobile;
+            document.getElementById('reviewIDType').textContent = idType || 'Not selected';
+            document.getElementById('reviewIDUpload').textContent = idFile ? idFile.name : 'No file uploaded (can upload later)';
+
+            // Show modal
+            document.getElementById('confirmModal').classList.add('active');
+        });
+
+        // Cancel button - Close modal
+        document.getElementById('cancelButton').addEventListener('click', function () {
+            document.getElementById('confirmModal').classList.remove('active');
+        });
+
+        // Close modal when clicking outside
+        document.getElementById('confirmModal').addEventListener('click', function (e) {
+            if (e.target === this) {
+                this.classList.remove('active');
+            }
+        });
+
+        // Confirm button - Submit form
+        document.getElementById('confirmButton').addEventListener('click', function () {
+            document.getElementById('registerForm').submit();
+        });
     </script>
-
-
 </body>
 </html>

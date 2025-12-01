@@ -12,6 +12,9 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
     <title>@ViewBag.Title</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="icon" type="image/png" href="~/Content/Images/circle_furever.png">
@@ -464,14 +467,14 @@
         }
 
             .hero h1 {
-                font-size: 5.4em;
+                font-size: 5.5em;
                 margin-bottom: 15px;
                 font-weight: 900;
                 text-shadow: 3px 3px 10px rgba(0,0,0,0.45);
             }
 
             .hero p {
-                font-size: 1.5em;
+                font-size: 2em;
                 margin-bottom: 30px;
                 text-shadow: 2px 2px 8px rgba(0,0,0,0.4);
             }
@@ -516,8 +519,8 @@
             color: white;
             padding: 15px 40px;
             border-radius: 30px;
-            font-weight: 700;
-            font-size: 1.1em;
+            font-weight: 950;
+            font-size: 1.8em;
             border: 3px solid white;
             cursor: pointer;
             text-decoration: none;
@@ -618,7 +621,7 @@
             max-width: 100%;
             margin: 0;
             display: grid;
-            grid-template-columns: 2fr 1fr 1fr 1fr auto;
+            grid-template-columns: 1fr 1fr;
             gap: 15px;
             align-items: end;
         }
@@ -643,7 +646,7 @@
                 box-shadow: 0 0 0 4px rgba(63, 169, 245, 0.1);
                 background: white;
             }
-
+        
         /* Reset button styling */
         .btn-reset {
             padding: 14px 28px;
@@ -677,6 +680,7 @@
             gap: 10px;
             flex-wrap: wrap;
         }
+
         .filter-tag {
             background: #E8F4FC;
             color: #2E8BC0;
@@ -1164,7 +1168,7 @@
         /* Responsive */
         @@media (max-width: 968px) {
             .filter-container {
-                grid-template-columns: 1fr 1fr;
+                grid-template-columns: 1fr;
             }
 
             .btn-reset {
@@ -1178,59 +1182,60 @@
         }
 
         /* Hide old floating button */
-.sidebar-toggle-btn {
-    display: none !important;
-}
+        .sidebar-toggle-btn {
+            display: none !important;
+        }
 
-/* Navbar menu toggle button */
-.navbar-menu-toggle {
-    background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
-    color: white;
-    border: none;
-    padding: 12px 20px;
-    border-radius: 12px;
-    font-weight: 700;
-    cursor: pointer;
-    transition: all 0.3s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    font-size: 1em;
-    box-shadow: 0 4px 15px rgba(63, 169, 245, 0.3);
-}
+        /* Navbar menu toggle button */
+        .navbar-menu-toggle {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            border: none;
+            padding: 12px 20px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 1em;
+            box-shadow: 0 4px 15px rgba(63, 169, 245, 0.3);
+        }
 
-.navbar-menu-toggle:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 6px 20px rgba(63, 169, 245, 0.5);
-}
+            .navbar-menu-toggle:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 6px 20px rgba(63, 169, 245, 0.5);
+            }
 
-.navbar-menu-toggle.active {
-    background: linear-gradient(135deg, #2E8BC0 0%, #1a6b94 100%);
-}
+            .navbar-menu-toggle.active {
+                background: linear-gradient(135deg, #2E8BC0 0%, #1a6b94 100%);
+            }
 
-.navbar-menu-toggle i {
-    font-size: 1.2em;
-    transition: transform 0.3s;
-}
+            .navbar-menu-toggle i {
+                font-size: 1.2em;
+                transition: transform 0.3s;
+            }
 
-.navbar-menu-toggle.active i {
-    transform: rotate(90deg);
-}
+            .navbar-menu-toggle.active i {
+                transform: rotate(90deg);
+            }
 
-@@media (max-width: 968px) {
-    .navbar-menu-toggle span {
-        display: none;
-    }
-    .navbar-menu-toggle {
-        padding: 10px 14px;
-    }
-}
+        @@media (max-width: 968px) {
+            .navbar-menu-toggle span {
+                display: none;
+            }
 
-@@media (max-width: 768px) {
-    .navbar-menu-toggle {
-        order: -1;
-    }
-}
+            .navbar-menu-toggle {
+                padding: 10px 14px;
+            }
+        }
+
+        @@media (max-width: 768px) {
+            .navbar-menu-toggle {
+                order: -1;
+            }
+        }
 
         @@media (max-width: 768px) {
             .hero h1 {
@@ -1307,38 +1312,573 @@
         }
 
         /* Success Stories Button */
-.btn-success-stories {
-    background: linear-gradient(135deg, #10b981 0%, #059669 100%);
-    color: white;
-    padding: 15px 40px;
-    border-radius: 30px;
-    font-weight: 700;
-    font-size: 1.1em;
-    border: 3px solid white;
-    cursor: pointer;
-    text-decoration: none;
-    display: inline-flex;
-    align-items: center;
-    gap: 10px;
-    transition: all 0.3s;
-    box-shadow: 0 8px 20px rgba(16, 185, 129, 0.4);
-    margin-left: 15px;
-}
+        .btn-success-stories {
+            background: linear-gradient(135deg, #3FA9F5 0%, #2E8BC0 100%);
+            color: white;
+            padding: 12px 22px;
+            border-radius: 12px;
+            font-weight: 700;
+            font-size: 0.95em;
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            transition: all 0.25s ease;
+            box-shadow: 0 8px 20px rgba(63, 169, 245, 0.18);
+        }
 
-.btn-success-stories:hover {
-    transform: translateY(-3px);
-    box-shadow: 0 12px 30px rgba(16, 185, 129, 0.6);
-    color: white;
-}
+            .btn-success-stories:hover {
+                transform: translateY(-3px);
+                box-shadow: 0 12px 30px rgba(63, 169, 245, 0.28);
+                color: white;
+            }
 
-/* Mobile responsive */
-@@media (max-width: 768px) {
-    .btn-success-stories {
-        margin-left: 0;
-        margin-top: 15px;
+        /* Mobile responsive */
+        @@media (max-width: 768px) {
+            .btn-success-stories {
+                margin-left: 0;
+                margin-top: 12px;
+                width: 100%;
+                justify-content: center;
+            }
+        }
+
+        /* Logout Confirmation Modal - Professional Design */
+        #logoutConfirmModal {
+            display: none;
+            position: fixed;
+            z-index: 20000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            backdrop-filter: blur(4px);
+            align-items: center;
+            justify-content: center;
+            animation: fadeIn 0.3s ease-out;
+        }
+
+            #logoutConfirmModal.show {
+                animation: fadeIn 0.3s ease-out;
+            }
+
+        @@keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Modal Container */
+        #logoutConfirmModal .modal-inner {
+            background: white;
+            border-radius: 16px;
+            max-width: 480px;
+            width: 90%;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15), 0 0 1px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.34, 1.56, 0.64, 1);
+        }
+
+        /* Modal Header - Warning Theme */
+        #logoutConfirmModal .modal-header {
+            background: linear-gradient(135deg, #FFB74D 0%, #FF9800 100%);
+            padding: 32px 28px;
+            text-align: center;
+            position: relative;
+            overflow: hidden;
+        }
+
+            #logoutConfirmModal .modal-header::before {
+                content: '';
+                position: absolute;
+                top: -50%;
+                right: -10%;
+                width: 200px;
+                height: 200px;
+                background: rgba(255, 255, 255, 0.1);
+                border-radius: 50%;
+            }
+
+        /* Modal Icon */
+        #logoutConfirmModal .modal-icon {
+            font-size: 3.5em;
+            color: white;
+            margin-bottom: 16px;
+            display: inline-block;
+            animation: bounce 0.6s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @@keyframes bounce {
+            0% {
+                transform: scale(0);
+            }
+
+            50% {
+                transform: scale(1.1);
+            }
+
+            100% {
+                transform: scale(1);
+            }
+        }
+
+        /* Modal Title */
+        #logoutConfirmModal .modal-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            color: white;
+            margin: 0;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            position: relative;
+            z-index: 1;
+        }
+
+        /* Modal Body */
+        #logoutConfirmModal .modal-body {
+            padding: 28px 28px;
+        }
+
+        #logoutConfirmModal .modal-message {
+            font-size: 0.95em;
+            color: #555;
+            line-height: 1.6;
+            margin: 0 0 8px 0;
+            text-align: center;
+        }
+
+        #logoutConfirmModal .modal-submessage {
+            font-size: 0.85em;
+            color: #999;
+            text-align: center;
+            margin: 0;
+        }
+
+        /* Modal Footer - Actions */
+        #logoutConfirmModal .modal-footer {
+            padding: 20px 28px 28px;
+            display: flex;
+            gap: 12px;
+            justify-content: center;
+        }
+
+        /* Buttons */
+        #logoutConfirmModal .btn {
+            padding: 12px 28px;
+            border: none;
+            border-radius: 10px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.95em;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            min-width: 140px;
+        }
+
+            #logoutConfirmModal .btn:hover {
+                transform: translateY(-2px);
+                box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+            }
+
+            #logoutConfirmModal .btn:active {
+                transform: translateY(0);
+            }
+
+        /* Cancel Button */
+        #logoutConfirmModal .btn-cancel {
+            background: #f0f2f5;
+            color: #333;
+            border: 2px solid #e2e8f0;
+        }
+
+            #logoutConfirmModal .btn-cancel:hover {
+                background: #e8eaed;
+                border-color: #cbd5e1;
+            }
+
+        /* Logout Button */
+        #logoutConfirmModal .btn-logout {
+            background: linear-gradient(135deg, #FF6B6B 0%, #EE5A52 100%);
+            color: white;
+            flex: 1;
+            max-width: 200px;
+        }
+
+            #logoutConfirmModal .btn-logout:hover {
+                background: linear-gradient(135deg, #FF5252 0%, #E64A42 100%);
+                box-shadow: 0 12px 24px rgba(255, 107, 107, 0.3);
+            }
+
+        /* Icon inside buttons */
+        #logoutConfirmModal .btn i {
+            font-size: 1.1em;
+        }
+
+        /* Responsive */
+        @@media (max-width: 480px) {
+            #logoutConfirmModal .modal-inner {
+                margin: 20px;
+            }
+
+            #logoutConfirmModal .modal-header {
+                padding: 24px 20px;
+            }
+
+            #logoutConfirmModal .modal-body {
+                padding: 20px;
+            }
+
+            #logoutConfirmModal .modal-footer {
+                padding: 16px 20px 20px;
+                flex-direction: column;
+            }
+
+            #logoutConfirmModal .btn {
+                min-width: 100%;
+            }
+
+            #logoutConfirmModal .btn-logout {
+                max-width: 100%;
+            }
+        }
+
+        /* Verification Modal Styles - matches your existing modal styles */
+        .crop-modal {
+            display: none;
+            position: fixed;
+            z-index: 3000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            backdrop-filter: blur(5px);
+        }
+
+            .crop-modal.show {
+                display: flex !important;
+                align-items: center;
+                justify-content: center;
+            }
+
+        .crop-modal-content {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 60px rgba(0,0,0,0.3);
+            overflow: hidden;
+            animation: slideUp 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        .crop-modal-header {
+            padding: 25px;
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+            .crop-modal-header h2 {
+                font-size: 1.5em;
+                margin: 0;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+            }
+
+        .close-btn {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.5em;
+            cursor: pointer;
+            transition: transform 0.3s;
+        }
+
+            .close-btn:hover {
+                transform: rotate(90deg);
+            }
+
+        @@keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+    </style>
+
+    <div id="logoutConfirmModal" aria-hidden="true">
+        <div class="modal-inner" role="dialog" aria-modal="true" aria-labelledby="logoutConfirmTitle">
+            <!-- Header with Icon -->
+            <div class="modal-header">
+                <div class="modal-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <h2 id="logoutConfirmTitle" class="modal-title">Confirm Logout</h2>
+            </div>
+
+            <!-- Body with Message -->
+            <div class="modal-body">
+                <p class="modal-message">
+                    <strong>Are you sure you want to logout?</strong>
+                </p>
+                <p class="modal-submessage">
+                    You'll need to log in again to access your account.
+                </p>
+            </div>
+
+            <!-- Footer with Actions -->
+            <div class="modal-footer">
+                <button type="button" id="logoutCancelBtn" class="btn btn-cancel">
+                    <i class="fas fa-times"></i> Cancel
+                </button>
+                <button type="button" id="logoutConfirmBtn" class="btn btn-logout">
+                    <i class="fas fa-sign-out-alt"></i> Logout
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ID Verification Required Modal -->
+    <div id="verificationRequiredModal" class="crop-modal" style="display: none;">
+        <div class="crop-modal-content" style="max-width: 550px;">
+            <div class="crop-modal-header" style="background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);">
+                <h2><i class="fas fa-id-card"></i> ID Verification Required</h2>
+                <button type="button" class="close-btn" onclick="closeVerificationModal()">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+
+            <div class="crop-modal-body" style="padding: 40px; text-align: center;">
+                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%); display: flex; align-items: center; justify-content: center; margin: 0 auto 25px; font-size: 3em; color: white; box-shadow: 0 10px 30px rgba(251, 191, 36, 0.4);">
+                    <i class="fas fa-exclamation-triangle"></i>
+                </div>
+
+                <h3 style="font-size: 1.8em; color: #1e293b; margin-bottom: 15px; font-weight: 700;">
+                    Verification Needed
+                </h3>
+
+                <p style="font-size: 1.1em; color: #475569; margin-bottom: 15px; line-height: 1.6;">
+                    To post pets for adoption, you need to verify your identity first.
+                </p>
+
+                <p style="color: #64748b; margin-bottom: 25px; line-height: 1.7;">
+                    This helps us ensure the safety and security of all pets on our platform.
+                    The verification process is quick and easy!
+                </p>
+
+                <div style="background: #fef3c7; border-left: 4px solid #fbbf24; padding: 18px 20px; border-radius: 10px; display: flex; align-items: flex-start; gap: 15px; margin-bottom: 30px; text-align: left; color: #92400e;">
+                    <i class="fas fa-info-circle" style="font-size: 1.3em; margin-top: 2px; color: #f59e0b;"></i>
+                    <div>
+                        <strong style="display: block; margin-bottom: 5px;">What you need:</strong>
+                        <span>A valid government-issued ID (Driver's License, Passport, National ID, etc.)</span>
+                    </div>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: center;">
+                    <button type="button" onclick="closeVerificationModal()" style="padding: 14px 28px; border: 2px solid #e2e8f0; border-radius: 12px; background: white; color: #64748b; font-weight: 600; cursor: pointer; transition: all 0.3s;">
+                        <i class="fas fa-times"></i> Maybe Later
+                    </button>
+                    <a href="@Url.Action("Profile", "Account")" style="padding: 14px 28px; border-radius: 12px; background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); color: white; font-weight: 600; text-decoration: none; transition: all 0.3s; display: inline-flex; align-items: center; gap: 8px;">
+                        <i class="fas fa-id-card"></i> Verify My ID Now
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+
+
+    <script>
+// Check if user needs ID verification
+function checkIDVerification() {
+    @if (Session["UserId"] != null)
+    {
+        var userId = (int)Session["UserId"];
+        var user = db.Users.Find(userId);
+        if (user != null && (string.IsNullOrEmpty(user.IDImageUrl) || user.IDStatus == "Rejected"))
+        {
+            <text>
+            // Show verification modal if ID is missing or rejected
+            document.getElementById('verificationRequiredModal').classList.add('show');
+            </text>
+        }
     }
 }
-    </style>
+
+function closeVerificationModal() {
+    document.getElementById('verificationRequiredModal').classList.remove('show');
+}
+
+// Close modal on background click
+document.addEventListener('click', function(e) {
+    var modal = document.getElementById('verificationRequiredModal');
+    if (e.target === modal) {
+        closeVerificationModal();
+    }
+});
+
+// Close modal on ESC key
+document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') {
+        closeVerificationModal();
+    }
+});
+
+// Intercept "Post Pet" button clicks
+document.addEventListener('DOMContentLoaded', function() {
+    // Find all "Post Pet" links/buttons
+    var postPetLinks = document.querySelectorAll('a[href*="PostForAdoption"], .btn-secondary, .quick-action-btn');
+
+    postPetLinks.forEach(function(link) {
+        link.addEventListener('click', function(e) {
+            @if (Session["UserId"] != null)
+            {
+                var userId = (int)Session["UserId"];
+                var user = db.Users.Find(userId);
+                if (user != null && (string.IsNullOrEmpty(user.IDImageUrl) || user.IDStatus != "Verified"))
+                {
+                    <text>
+                    e.preventDefault();
+                    document.getElementById('verificationRequiredModal').classList.add('show');
+                    </text>
+                }
+            }
+        });
+    });
+});
+    </script>
+
+    <script>
+// Show modal on page load if user is logged in but not verified
+window.addEventListener('DOMContentLoaded', function() {
+    @if (Session["UserId"] != null)
+    {
+        var userId = (int)Session["UserId"];
+        var user = db.Users.Find(userId);
+        if (user != null && string.IsNullOrEmpty(user.IDImageUrl))
+        {
+            <text>
+            // Only show once per session
+            if (!sessionStorage.getItem('verificationModalShown')) {
+                setTimeout(function() {
+                    document.getElementById('verificationRequiredModal').classList.add('show');
+                    sessionStorage.setItem('verificationModalShown', 'true');
+                }, 2000); // Show after 2 seconds
+            }
+            </text>
+        }
+    }
+});
+    </script>
+    <script>
+        (function () {
+            'use strict';
+            const modal = document.getElementById('logoutConfirmModal');
+            const btnCancel = document.getElementById('logoutCancelBtn');
+            const btnConfirm = document.getElementById('logoutConfirmBtn');
+
+            function showLogoutModal(href) {
+                modal.style.display = 'flex';
+                modal.setAttribute('data-logout-href', href);
+                modal.classList.add('show');
+                // Set focus to cancel button for accessibility
+                setTimeout(() => {
+                    btnCancel.focus();
+                }, 100);
+            }
+
+            function hideLogoutModal() {
+                modal.classList.remove('show');
+                setTimeout(() => {
+                    modal.style.display = 'none';
+                    modal.removeAttribute('data-logout-href');
+                }, 300);
+            }
+
+            // Intercept clicks on logout anchors (works for navbar, sidebar, and dropdown menu)
+            document.addEventListener('click', function (e) {
+                const a = e.target.closest('a');
+                if (!a) return;
+                const href = a.getAttribute('href') || '';
+                if (/logout/i.test(href)) {
+                    e.preventDefault();
+                    showLogoutModal(href);
+                }
+            }, true);
+
+            // Cancel button
+            btnCancel.addEventListener('click', function () {
+                hideLogoutModal();
+            });
+
+            // Confirm logout button
+            btnConfirm.addEventListener('click', function () {
+                const href = modal.getAttribute('data-logout-href');
+                if (!href) return;
+
+                // Disable button during logout to prevent double-clicks
+                btnConfirm.disabled = true;
+                btnConfirm.style.opacity = '0.6';
+                btnConfirm.style.cursor = 'not-allowed';
+
+                // Create a temporary anchor with data-action=logout so existing handlers allow navigation
+                const temp = document.createElement('a');
+                temp.href = href;
+                temp.setAttribute('data-action', 'logout');
+                temp.style.display = 'none';
+                document.body.appendChild(temp);
+
+                // Dispatch a click to trigger existing capture-phase handlers
+                temp.click();
+
+                // As a fallback, force navigation after a short delay
+                setTimeout(function () {
+                    if (document.location.href !== href) {
+                        window.location.href = href;
+                    }
+                }, 300);
+            });
+
+            // Close modal on Escape key
+            document.addEventListener('keydown', function (e) {
+                if (e.key === 'Escape' && modal.style.display === 'flex') {
+                    hideLogoutModal();
+                }
+            });
+
+            // Close modal when clicking outside (on backdrop)
+            modal.addEventListener('click', function (e) {
+                if (e.target === modal) {
+                    hideLogoutModal();
+                }
+            });
+        })();
+    </script>
 </head>
 <body>
 
@@ -1686,7 +2226,7 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                     <span>Menu</span>
                 </button>
             }
-            
+
             <div class="nav-links">
                 @if (Session["UserId"] != null)
                 {
@@ -1829,312 +2369,314 @@ function markAsReadAndRedirect(notificationId, notificationType) {
     </nav>
 
     @* ========== HERO SECTION ========== *@
-<section class="hero">
-    <h1>
-        @if (ViewBag.PetType == "Dogs")
-        {
-            <text>🐕 Browse Our Adorable Dogs</text>
-        }
-        else if (ViewBag.PetType == "Cats")
-        {
-            <text>🐱 Browse Our Lovely Cats</text>
-        }
-        else
-        {
-            <text>Find Your Paw-fect Match!</text>
-        }
-    </h1>
-    <p>Find your perfect furry companion today!</p>
+    <section class="hero">
+        <h1>
+            @if (ViewBag.PetType == "Dogs")
+            {
+                <text>Browse Our Adorable Dogs!</text>
+            }
+            else if (ViewBag.PetType == "Cats")
+            {
+                <text>Browse Our Lovely Cats!</text>
+            }
+            else
+            {
+                <text>Find Your Paw-fect Match!</text>
+            }
+        </h1>
+        <p>Find your perfect furry companion today!</p>
 
-    @if (Session["UserId"] != null)
-    {
-        <div style="margin-bottom: 50px;">
-            <a href="@Url.Action("PostForAdoption", "Pets")" class="btn-secondary" style="background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%); color: #2E8BC0;">
-                <i class="fas fa-heart"></i> Post Pet for Adoption!
-            </a>
-        </div>
-    }
-
-    @* ⭐ NEW SUCCESS STORIES BUTTON *@
-    <a href="@Url.Action("SuccessfulStories", "Home")" class="btn-success-stories">
-        <i class="fas fa-star"></i> View Adoption Stories
-    </a>
-    </div>
-
-    <div class="hero-stats">
-        <div class="stat-item">
-            <div class="stat-icon">🏠</div>
-            <div class="stat-text">
-                <div class="stat-number">@Model.Count</div>
-                <div class="stat-label">Available Pets</div>
+        @if (Session["UserId"] != null)
+        {
+            <div style="margin-bottom: 50px;">
+                <a href="@Url.Action("PostForAdoption", "Pets")" class="btn-secondary" style="background: linear-gradient(135deg, #FFD93D 0%, #F6C90E 100%); color: #2E8BC0;">
+                    <i class="fas fa-heart"></i> Post Pet for Adoption!
+                </a>
             </div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-icon">❤</div>
-            <div class="stat-text">
-                <div class="stat-number">10,000+</div>
-                <div class="stat-label">Happy Adoptions</div>
-            </div>
-        </div>
-        <div class="stat-item">
-            <div class="stat-icon">⭐</div>
-            <div class="stat-text">
-                <div class="stat-number">100%</div>
-                <div class="stat-label">Vaccinated & Healthy</div>
-            </div>
-        </div>
-    </div>
-</section>
+        }
+    </section>
 
     @* ========== FILTER SECTION ========== *@
-<div class="filter-section">
-    <div class="filter-card-wrapper">
-        <div class="filter-toggle" onclick="toggleFilters()">
-            <div class="filter-toggle-text">
-                <i class="fas fa-filter"></i>
-                <span>Filters & Search</span>
-            </div>
-            <i class="fas fa-chevron-down filter-toggle-icon active" id="filterToggleIcon"></i>
-        </div>
-
-        <div class="filter-content show" id="filterContent">
-            <div class="filter-container">
-                <div class="filter-group">
-                    <label><i class="fas fa-search"></i> Search by Name</label>
-                    <input type="text" id="searchInput" placeholder="Type pet name...">
+    <div class="filter-section">
+        <div class="filter-card-wrapper">
+            <div class="filter-toggle" onclick="toggleFilters()">
+                <div class="filter-toggle-text">
+                    <i class="fas fa-filter"></i>
+                    <span>Filters & Search</span>
                 </div>
-
-                <div class="filter-group">
-                    <label><i class="fas fa-venus-mars"></i> Gender</label>
-                    <select id="genderFilter">
-                        <option value="">All Genders</option>
-                        <option value="Male">Male</option>
-                        <option value="Female">Female</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label><i class="fas fa-ruler"></i> Size</label>
-                    <select id="sizeFilter">
-                        <option value="">All Sizes</option>
-                        <option value="Small">Small</option>
-                        <option value="Medium">Medium</option>
-                        <option value="Large">Large</option>
-                    </select>
-                </div>
-
-                <div class="filter-group">
-                    <label><i class="fas fa-birthday-cake"></i> Age</label>
-                    <select id="ageFilter">
-                        <option value="">All Ages</option>
-                        <option value="0-1">Puppy/Kitten (0-1 year)</option>
-                        <option value="1-3">Young (1-3 years)</option>
-                        <option value="3-7">Adult (3-7 years)</option>
-                        <option value="7-100">Senior (7+ years)</option>
-                    </select>
-                </div>
-
-                <button class="btn-reset" onclick="resetFilters()">
-                    <i class="fas fa-redo"></i> Reset
-                </button>
+                <i class="fas fa-chevron-down filter-toggle-icon active" id="filterToggleIcon"></i>
             </div>
 
-            <div class="active-filters" id="activeFilters"></div>
-        </div>
-    </div>
+            <div class="filter-content show" id="filterContent">
+                <div class="filter-container">
+                    <div class="filter-group">
+                        <label><i class="fas fa-search"></i> Search by Name</label>
+                        <input type="text" id="searchInput" placeholder="Type pet name...">
+                    </div>
 
-    @* ========== MAIN CONTENT ========== *@
-    <div class="main-content">
-        <div class="content-header">
-            <div class="results-info">
-                Showing <span class="results-count" id="resultsCount">@Model.Count</span> pets
-            </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-venus-mars"></i> Gender</label>
+                        <select id="genderFilter">
+                            <option value="">All Genders</option>
+                            <option value="Male">Male</option>
+                            <option value="Female">Female</option>
+                        </select>
+                    </div>
 
-            <div class="sort-group">
-                <label><i class="fas fa-sort"></i> Sort by:</label>
-                <select id="sortSelect">
-                    <option value="newest">Newest First</option>
-                    <option value="oldest">Oldest First</option>
-                    <option value="name-asc">Name (A-Z)</option>
-                    <option value="name-desc">Name (Z-A)</option>
-                    <option value="age-asc">Age (Low to High)</option>
-                    <option value="age-desc">Age (High to Low)</option>
-                </select>
+                    <div class="filter-group">
+                        <label><i class="fas fa-ruler"></i> Size</label>
+                        <select id="sizeFilter">
+                            <option value="">All Sizes</option>
+                            <option value="Small">Small</option>
+                            <option value="Medium">Medium</option>
+                            <option value="Large">Large</option>
+                        </select>
+                    </div>
+
+                    <div class="filter-group">
+                        <label><i class="fas fa-birthday-cake"></i> Age</label>
+                        <select id="ageFilter">
+                            <option value="">All Ages</option>
+                            <option value="0-1">Puppy/Kitten (0-1 year)</option>
+                            <option value="1-3">Young (1-3 years)</option>
+                            <option value="3-7">Adult (3-7 years)</option>
+                            <option value="7-100">Senior (7+ years)</option>
+                        </select>
+                    </div>
+                    <div class="filter-group">
+                        <label><i class="fas fa-map-marker-alt"></i> Location</label>
+                        <input type="text" id="locationFilter" placeholder="Search location...">
+                    </div>
+
+                    <button class="btn-reset" onclick="resetFilters()">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                </div>
+
+                <div class="active-filters" id="activeFilters"></div>
             </div>
         </div>
 
-        @if (Model.Count == 0)
-        {
-            <div class="empty-state">
-                <div class="empty-icon">
-                    @if (ViewBag.PetType == "Dogs")
-                    {
-                        <i class="fas fa-dog"></i>
-                    }
-                    else if (ViewBag.PetType == "Cats")
-                    {
-                        <i class="fas fa-cat"></i>
-                    }
-                    else
-                    {
-                        <i class="fas fa-paw"></i>
-                    }
+        @* ========== MAIN CONTENT ========== *@
+        <div class="main-content">
+            <div class="content-header">
+                <div class="results-info">
+                    Showing <span class="results-count" id="resultsCount">@Model.Count</span> pets
                 </div>
-                <h3>No Pets Available</h3>
-                <p>Check back soon for new furry friends looking for homes!</p>
+
+                <div class="sort-group">
+                    <label><i class="fas fa-sort"></i> Sort by:</label>
+                    <select id="sortSelect">
+                        <option value="newest">Newest First</option>
+                        <option value="oldest">Oldest First</option>
+                        <option value="name-asc">Name (A-Z)</option>
+                        <option value="name-desc">Name (Z-A)</option>
+                        <option value="age-asc">Age (Low to High)</option>
+                        <option value="age-desc">Age (High to Low)</option>
+                    </select>
+                </div>
             </div>
-        }
-        else
-        {
-            <div class="pets-grid" id="petsGrid">
-                @foreach (var pet in Model)
-                {
-                    var petAge = pet.AgeUnit == "Months" ? (pet.Age / 12.0) : pet.Age;
-                    var daysInCenter = pet.DaysInCenter;
-                    <div class="pet-card"
-                         data-name="@(pet.Name ?? "").ToLower()"
-                         data-gender="@(pet.Gender ?? "")"
-                         data-size="@(pet.Size ?? "")"
-                         data-age="@petAge.ToString("F2")"
-                         data-days="@daysInCenter"
-                         data-date="@pet.DateAdded.ToString("yyyyMMdd")"
-                         style="display: block;">
 
-                        <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/320x280?text=" + pet.Name : pet.ImageUrl)"
-                             alt="@pet.Name"
-                             class="pet-image">
-
-                        @if (pet.PostedByType == "Organization")
+            @if (Model.Count == 0)
+            {
+                <div class="empty-state">
+                    <div class="empty-icon">
+                        @if (ViewBag.PetType == "Dogs")
                         {
-                            <div class="posted-by-card-badge">
-                                <i class="fas fa-building"></i>
-                                <span>@pet.OrganizationName</span>
-                            </div>
+                            <i class="fas fa-dog"></i>
                         }
-                        else if (pet.Creator != null)
+                        else if (ViewBag.PetType == "Cats")
                         {
-                            <div class="posted-by-card-badge">
-                                <i class="fas fa-user"></i>
-                                <span>@pet.Creator.FullName</span>
-                            </div>
+                            <i class="fas fa-cat"></i>
                         }
+                        else
+                        {
+                            <i class="fas fa-paw"></i>
+                        }
+                    </div>
+                    <h3>No Pets Available</h3>
+                    <p>Check back soon for new furry friends looking for homes!</p>
+                </div>
+            }
+            else
+            {
+                <div class="pets-grid" id="petsGrid">
+                    @foreach (var pet in Model)
+                    {
+                        var petAge = pet.AgeUnit == "Months" ? (pet.Age / 12.0) : pet.Age;
+                        var daysInCenter = pet.DaysInCenter;
+                        <div class="pet-card"
+                             data-name="@(pet.Name ?? "").ToLower()"
+                             data-gender="@(pet.Gender ?? "")"
+                             data-size="@(pet.Size ?? "")"
+                             data-age="@petAge.ToString("F2")"
+                             data-days="@daysInCenter"
+                             data-date="@pet.DateAdded.ToString("yyyyMMdd")"
+                             data-location="@(pet.Location ?? "").ToLower()"
+                             style="display: block;">
 
-                        <div class="pet-badge">@pet.AgeDisplay</div>
-                        <div class="pet-days-badge">
-                            <i class="fas fa-calendar-alt"></i>
-                            @pet.DaysInCenter day@(pet.DaysInCenter != 1 ? "s" : "") here
-                        </div>
+                            <img src="@(string.IsNullOrEmpty(pet.ImageUrl) ? "https://via.placeholder.com/320x280?text=" + pet.Name : pet.ImageUrl)"
+                                 alt="@pet.Name"
+                                 class="pet-image">
 
-                        <div class="pet-info">
-                            <div class="pet-header">
-                                <div class="pet-name">@pet.Name</div>
-                            </div>
-
-                            <div class="pet-breed">@pet.Breed</div>
-
-                            <div class="pet-details">
-                                <div class="pet-detail-item">
-                                    <i class="fas fa-@(pet.Gender == "Male" ? "mars" : "venus")"></i>
-                                    @pet.Gender
-                                </div>
-                                <div class="pet-detail-item">
-                                    <i class="fas fa-ruler"></i>
-                                    @pet.Size
-                                </div>
-                                <div class="pet-detail-item">
-                                    <i class="fas fa-calendar"></i>
-                                    @pet.DaysInCenter days
-                                </div>
-                            </div>
-
-                            <div class="posted-by-info">
-                                @if (pet.PostedByType == "Organization")
-                                {
-                                    <div class="posted-by-icon-small">
-                                        <i class="fas fa-building"></i>
-                                    </div>
-                                    <div class="posted-by-text">
-                                        <div class="posted-by-label">Organization</div>
-                                        <div class="posted-by-name">@pet.OrganizationName</div>
-                                    </div>
-                                }
-                                else if (pet.Creator != null)
-                                {
-                                    <div class="posted-by-icon-small">
-                                        @pet.Creator.FullName.Substring(0, 1).ToUpper()
-                                    </div>
-                                    <div class="posted-by-text">
-                                        <div class="posted-by-label">Posted by</div>
-                                        <div class="posted-by-name">@pet.Creator.FullName</div>
-                                    </div>
-                                }
-                                else
-                                {
-                                    <div class="posted-by-icon-small">
-                                        <i class="fas fa-home"></i>
-                                    </div>
-                                    <div class="posted-by-text">
-                                        <div class="posted-by-label">Posted by</div>
-                                        <div class="posted-by-name">FurEver Home</div>
-                                    </div>
-                                }
-                            </div>
-
-                            <p class="pet-description">@pet.Description</p>
-
-                            @if (!string.IsNullOrEmpty(pet.Traits))
+                            @if (pet.PostedByType == "Organization")
                             {
-                                <div class="pet-traits">
-                                    @foreach (var trait in pet.Traits.Split(',').Take(3))
-                                    {
-                                        <span class="trait">@trait.Trim()</span>
-                                    }
+                                <div class="posted-by-card-badge">
+                                    <i class="fas fa-building"></i>
+                                    <span>@pet.OrganizationName</span>
+                                </div>
+                            }
+                            else if (pet.Creator != null)
+                            {
+                                <div class="posted-by-card-badge">
+                                    <i class="fas fa-user"></i>
+                                    <span>@pet.Creator.FullName</span>
                                 </div>
                             }
 
-                            <div class="pet-actions">
-                                <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="btn-view">
-                                    <i class="fas fa-eye"></i> View Details
-                                </a>
-                                <a href="@Url.Action("Apply", "Pets", new { id = pet.PetId })" class="btn-adopt">
-                                    <i class="fas fa-heart"></i> Adopt Me
-                                </a>
+                            <div class="pet-badge">@pet.AgeDisplay</div>
+                            <div class="pet-days-badge">
+                                <i class="fas fa-calendar-alt"></i>
+                                @pet.DaysInCenter day@(pet.DaysInCenter != 1 ? "s" : "") here
+                            </div>
+
+                            <div class="pet-info">
+                                <div class="pet-header">
+                                    <div class="pet-name">@pet.Name</div>
+                                </div>
+
+                                <div class="pet-breed">@pet.Breed</div>
+
+                                <div class="pet-details">
+                                    <div class="pet-detail-item">
+                                        <i class="fas fa-@(pet.Gender == "Male" ? "mars" : "venus")"></i>
+                                        @pet.Gender
+                                    </div>
+                                    <div class="pet-detail-item">
+                                        <i class="fas fa-ruler"></i>
+                                        @pet.Size
+                                    </div>
+                                    <div class="pet-detail-item">
+                                        <i class="fas fa-calendar"></i>
+                                        @pet.DaysInCenter days
+                                    </div>
+                                </div>
+                                @if (!string.IsNullOrEmpty(pet.Location))
+                                {
+                                    <div class="pet-details" style="margin-top: 8px;">
+                                        <div class="pet-detail-item">
+                                            <i class="fas fa-map-marker-alt"></i>
+                                            @pet.Location
+                                        </div>
+                                    </div>
+                                }
+
+                                <div class="posted-by-info">
+                                    @if (pet.PostedByType == "Organization")
+                                    {
+                                        <div class="posted-by-icon-small">
+                                            <i class="fas fa-building"></i>
+                                        </div>
+                                        <div class="posted-by-text">
+                                            <div class="posted-by-label">Organization</div>
+                                            <div class="posted-by-name">@pet.OrganizationName</div>
+                                        </div>
+                                    }
+                                    else if (pet.Creator != null)
+                                    {
+                                        @* Show profile picture OR initial for customers only *@
+                                        if (!string.IsNullOrEmpty(pet.Creator.ProfilePictureUrl))
+                                        {
+                                            <div class="posted-by-icon-small" style="background: none; padding: 0; overflow: hidden;">
+                                                <img src="@pet.Creator.ProfilePictureUrl"
+                                                     alt="@pet.Creator.FullName"
+                                                     style="width: 100%; height: 100%; object-fit: cover;">
+                                            </div>
+                                        }
+                                        else
+                                        {
+                                            <div class="posted-by-icon-small">
+                                                @pet.Creator.FullName.Substring(0, 1).ToUpper()
+                                            </div>
+                                        }
+                                        <div class="posted-by-text">
+                                            <div class="posted-by-label">Posted by</div>
+                                            <div class="posted-by-name">@pet.Creator.FullName</div>
+                                        </div>
+                                    }
+                                    else
+                                    {
+                                        <div class="posted-by-icon-small">
+                                            <i class="fas fa-home"></i>
+                                        </div>
+                                        <div class="posted-by-text">
+                                            <div class="posted-by-label">Posted by</div>
+                                            <div class="posted-by-name">FurEver Home</div>
+                                        </div>
+                                    }
+                                </div>
+
+                                <p class="pet-description">@pet.Description</p>
+
+                                @if (!string.IsNullOrEmpty(pet.Traits))
+                                {
+                                    <div class="pet-traits">
+                                        @foreach (var trait in pet.Traits.Split(',').Take(3))
+                                        {
+                                            <span class="trait">@trait.Trim()</span>
+                                        }
+                                    </div>
+                                }
+
+                                <div class="pet-actions">
+                                    <a href="@Url.Action("Details", "Pets", new { id = pet.PetId })" class="btn-view">
+                                        <i class="fas fa-eye"></i> View Details
+                                    </a>
+                                    <a href="@Url.Action("Apply", "Pets", new { id = pet.PetId })" class="btn-adopt">
+                                        <i class="fas fa-heart"></i> Adopt Me
+                                    </a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                }
-            </div>
-        }
-    </div>
+                    }
+                </div>
+            }
+        </div>
 
-    @* ========== WHY ADOPT SECTION ========== *@
-    <div class="why-adopt">
-        <div class="why-content">
-            <div class="why-text">
-                <h2>Why Adopt From FurEver Home?</h2>
-                <ul class="why-list">
-                    <li>All pets are vaccinated, spayed/neutered, and microchipped</li>
-                    <li>Post-adoption support and resources</li>
-                    <li>30-day health guarantee</li>
-                    <li>Thorough matching process to find your perfect companion</li>
-                    <li>Save a life and make room for another pet in need</li>
-                </ul>
-                <div style="margin-top: 30px;">
-                    <p class="stats"><i class="fas fa-trophy"></i> 10,000+ successful adoptions since 2023</p>
+        @* ========== WHY ADOPT SECTION ========== *@
+        <div class="why-adopt">
+            <div class="why-content">
+                <div class="why-text">
+                    <h2>Why Adopt From FurEver Home?</h2>
+                    <ul class="why-list">
+                        <li>All pets are vaccinated, spayed/neutered, and microchipped</li>
+                        <li>Post-adoption support and resources</li>
+                        <li>30-day health guarantee</li>
+                        <li>Thorough matching process to find your perfect companion</li>
+                        <li>Save a life and make room for another pet in need</li>
+                    </ul>
+                    <div style="margin-top: 30px;">
+                        
+                        <div style="margin-top: 18px;">
+                            <a href="@Url.Action("SuccessfulStories", "Home")" class="btn-success-stories" aria-label="Read Adoption Stories">
+                                <i class="fas fa-star"></i>
+                                Read Adoption Stories
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600" alt="Happy pets" class="why-image">
                 </div>
             </div>
-            <div>
-                <img src="https://images.unsplash.com/photo-1450778869180-41d0601e046e?w=600" alt="Happy pets" class="why-image">
-            </div>
         </div>
-    </div>
 
-    @* ========== FOOTER ========== *@
+        @* ========== FOOTER ========== *@
     <footer class="footer" id="contact">
         <div class="footer-content">
             <div class="footer-section">
                 <img src="~/Content/Images/circle_furever.png" alt="FurEver Home" style="width: 100px; margin-bottom: 15px;">
-                <p>Connecting loving homes with pets in need since 2023.</p>
+                <p>Connecting loving homes with pets.</p>
                 <p class="stats">All rights reserved. FurEverHome Team</p>
             </div>
             <div class="footer-section">
@@ -2146,23 +2688,261 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                 {
                     <a href="@Url.Action("PostForAdoption", "Pets")">Post Pet for Adoption</a>
                 }
-                <a href="#contact">Contact</a>
             </div>
             <div class="footer-section">
                 <h3>Contact Us</h3>
                 <p><i class="fas fa-phone"></i> (555) 123-4567</p>
-                <p><i class="fas fa-envelope"></i> adopt@pawfinder.com</p>
-                <p><i class="fas fa-map-marker-alt"></i> 123 Pet Street, Anytown, USA</p>
+                <p><i class="fas fa-envelope"></i> adopt@fureverhome@gmail.com</p>
+                <p><i class="fas fa-map-marker-alt"></i> 123 Pet Street, Anytown, Philippines</p>
             </div>
         </div>
         <div class="footer-bottom">
             <p>&copy; 2025 FurEver Home. All rights reserved.</p>
         </div>
-    </footer>
 
-    @* ========== JAVASCRIPT ========== *@
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-    <script>
+
+        @* ========== JAVASCRIPT ========== *@
+        <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+
+
+
+
+
+
+
+        // ===== BULLETPROOF BACK BUTTON PREVENTION =====
+        // This works for Dashboard.cshtml, Index.cshtml, and VerifyOtp.cshtml
+
+        <script>
+(function() {
+    'use strict';
+
+    let navigationLocked = false;
+    let lockTimeout = null;
+
+    // Immediately lock navigation on page load
+    function lockNavigation() {
+        navigationLocked = true;
+
+        // Push multiple states to make it harder to bypass
+        for (let i = 0; i < 3; i++) {
+            window.history.pushState(
+                { locked: true, timestamp: Date.now() },
+                '',
+                window.location.href
+            );
+        }
+    }
+
+    // Handle popstate (back button)
+    function handlePopState(event) {
+        if (navigationLocked) {
+            // Immediately push forward - no delay
+            window.history.pushState(
+                { locked: true, timestamp: Date.now() },
+                '',
+                window.location.href
+            );
+
+            // Clear any existing timeout
+            if (lockTimeout) {
+                clearTimeout(lockTimeout);
+            }
+
+            // Re-lock after a brief moment to catch rapid clicks
+            lockTimeout = setTimeout(function() {
+                lockNavigation();
+            }, 10);
+
+            // Prevent any default action
+            if (event) {
+                event.preventDefault();
+                event.stopPropagation();
+            }
+
+            return false;
+        }
+    }
+
+    // Initialize on DOM ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', lockNavigation);
+    } else {
+        lockNavigation();
+    }
+
+    // Listen for popstate
+    window.addEventListener('popstate', handlePopState, true);
+
+    // Also listen for hashchange (in case someone tries that)
+    window.addEventListener('hashchange', function(e) {
+        if (navigationLocked) {
+            e.preventDefault();
+            window.history.pushState(
+                { locked: true, timestamp: Date.now() },
+                '',
+                window.location.href
+            );
+            return false;
+        }
+    }, true);
+
+    // Prevent keyboard shortcuts
+    document.addEventListener('keydown', function(e) {
+        // Alt + Left (back)
+        if (e.altKey && (e.keyCode === 37 || e.key === 'ArrowLeft')) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+        }
+
+        // Backspace (except in inputs)
+        if (e.keyCode === 8 || e.key === 'Backspace') {
+            const element = e.target;
+            const isEditable = element.tagName === 'INPUT' ||
+                             element.tagName === 'TEXTAREA' ||
+                             element.isContentEditable;
+
+            if (!isEditable) {
+                e.preventDefault();
+                e.stopPropagation();
+                e.stopImmediatePropagation();
+                return false;
+            }
+        }
+    }, true);
+
+    // Prevent mouse back button (button 3/4 on some mice)
+    document.addEventListener('mousedown', function(e) {
+        if (e.button === 3 || e.button === 4) {
+            e.preventDefault();
+            e.stopPropagation();
+            e.stopImmediatePropagation();
+            return false;
+        }
+    }, true);
+
+    // Handle page visibility changes
+    document.addEventListener('visibilitychange', function() {
+        if (!document.hidden && navigationLocked) {
+            // Re-lock when page becomes visible
+            lockNavigation();
+        }
+    });
+
+    // Handle page show/hide events
+    window.addEventListener('pageshow', function(event) {
+        if (event.persisted && navigationLocked) {
+            // Page loaded from cache - re-lock
+            lockNavigation();
+        }
+    });
+
+    // Prevent beforeunload circumvention
+    let unloadAllowed = false;
+
+    window.addEventListener('beforeunload', function(e) {
+        if (navigationLocked && !unloadAllowed) {
+            // This will be caught by our popstate handler
+            lockNavigation();
+        }
+    });
+
+    // Allow navigation for specific actions
+    function allowNavigation() {
+        navigationLocked = false;
+        unloadAllowed = true;
+    }
+
+    // Allow logout links
+    document.addEventListener('click', function(e) {
+        const target = e.target.closest('a, button');
+        if (target) {
+            const href = target.getAttribute('href') || '';
+            const onclick = target.getAttribute('onclick') || '';
+
+            // Check if it's a logout link or form submit
+            if (href.includes('Logout') ||
+                onclick.includes('Logout') ||
+                target.type === 'submit') {
+                allowNavigation();
+            }
+        }
+    }, true);
+
+    // Override history methods to prevent bypassing
+    const originalPushState = history.pushState;
+    const originalReplaceState = history.replaceState;
+
+    history.pushState = function(state, title, url) {
+        if (navigationLocked && (!state || !state.locked)) {
+            return; // Block unauthorized pushState
+        }
+        return originalPushState.apply(history, arguments);
+    };
+
+    history.replaceState = function(state, title, url) {
+        if (navigationLocked && (!state || !state.locked)) {
+            return; // Block unauthorized replaceState
+        }
+        return originalReplaceState.apply(history, arguments);
+    };
+
+    // Session check (for logged-in pages only)
+    @if (Session["UserId"] != null) {
+        <text>
+        setInterval(function() {
+            fetch('@Url.Action("CheckSession", "Account")', {
+                method: 'GET',
+                cache: 'no-cache'
+            })
+            .then(function(response) {
+                if (!response.ok) {
+                    allowNavigation();
+                    window.location.replace('@Url.Action("Login", "Account")');
+                }
+            })
+            .catch(function() {
+                // Silent fail - will retry on next interval
+            });
+        }, 30000); // Check every 30 seconds
+        </text>
+    }
+
+    // For VerifyOtp page - check if already logged in
+    @if (ViewBag.Title != null && ViewBag.Title.ToString().Contains("Dashboard")) {
+        <text>
+        // Update date/time for Dashboard
+        function updateDateTime() {
+            const now = new Date();
+            const options = {
+                weekday: 'long',
+                year: 'numeric',
+                month: 'long',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit'
+            };
+            const dateTimeString = now.toLocaleDateString('en-US', options);
+            const dateTimeElement = document.getElementById('currentDateTime');
+            if (dateTimeElement) {
+                dateTimeElement.textContent = dateTimeString;
+            }
+        }
+
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+        </text>
+    }
+
+    console.log('🔒 Navigation locked - Back button disabled');
+
+})();
+        </script>
+
+
+        <script>
         // ========== SIDEBAR FUNCTIONALITY ==========
         const sidebarToggle = document.getElementById('sidebarToggle'); // Keep for backward compatibility
         const navbarMenuToggle = document.getElementById('navbarMenuToggle'); // NEW
@@ -2326,6 +3106,7 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                 const gender = $('#genderFilter').val();
                 const size = $('#sizeFilter').val();
                 const ageRange = $('#ageFilter').val();
+                const location = $('#locationFilter').val().toLowerCase().trim();  // NEW
 
                 let visibleCount = 0;
 
@@ -2335,6 +3116,7 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                     const petGender = ($card.attr('data-gender') || '').trim();
                     const petSize = ($card.attr('data-size') || '').trim();
                     const petAge = parseFloat($card.attr('data-age')) || 0;
+                    const petLocation = ($card.attr('data-location') || '').toLowerCase();  // NEW
 
                     let show = true;
 
@@ -2357,6 +3139,11 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                         }
                     }
 
+                    // NEW: Location filter
+                    if (location && petLocation.indexOf(location) === -1) {
+                        show = false;
+                    }
+
                     if (show) {
                         $card.fadeIn(300);
                         visibleCount++;
@@ -2377,6 +3164,7 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                 const gender = $('#genderFilter').val();
                 const size = $('#sizeFilter').val();
                 const ageRange = $('#ageFilter').val();
+                const location = $('#locationFilter').val().trim();  // ⭐ ADD THIS LINE
 
                 if (!searchTerm && !gender && !size && !ageRange) {
                     return;
@@ -2424,6 +3212,15 @@ function markAsReadAndRedirect(notificationId, notificationType) {
             </div>
         `);
                 }
+                // ⭐ ADD THIS ENTIRE BLOCK HERE:
+                if (location) {
+                    $container.append(`
+            <div class="filter-tag">
+                <span>Location: "${location}"</span>
+                <i class="fas fa-times" data-filter="location"></i>
+            </div>
+        `);
+                }
             }
 
             // Add event delegation for filter tag close buttons
@@ -2442,6 +3239,9 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                         break;
                     case 'age':
                         $('#ageFilter').val('');
+                        break;
+                    case 'location':  // ⭐ ADD THIS CASE
+                        $('#locationFilter').val('');
                         break;
                 }
 
@@ -2485,10 +3285,14 @@ function markAsReadAndRedirect(notificationId, notificationType) {
                 $('#genderFilter').val('');
                 $('#sizeFilter').val('');
                 $('#ageFilter').val('');
+
                 filterPets();
             };
 
             $('#searchInput').on('keyup', function() {
+                filterPets();
+            });
+            $('#locationFilter').on('keyup', function () {
                 filterPets();
             });
 
@@ -2509,36 +3313,144 @@ function markAsReadAndRedirect(notificationId, notificationType) {
             window.history.forward();
         }
 
+        </script>
 
 
-    </script>
+        // Add this to your Index.cshtml
+        <script>
+    section
 
-    // CLEAR CACHES
-    <script>
+            // ========== FILTER PERSISTENCE SYSTEM ==========
 
-      // Method 2: Prevent back button after logout
-    if (window.history && window.history.pushState) {
-        window.history.pushState(null, null, window.location.href);
+            $(document).ready(function () {
+                // Read filters from URL on page load
+                loadFiltersFromURL();
 
-        window.addEventListener('popstate', function() {
-            // Push state again to prevent back
-            window.history.pushState(null, null, window.location.href);
+                // Existing filter code...
+                const searchInput = $('#searchInput');
+                const genderFilter = $('#genderFilter');
+                const sizeFilter = $('#sizeFilter');
+                const ageFilter = $('#ageFilter');
+                const locationFilter = $('#locationFilter');
+                const sortSelect = $('#sortSelect');
 
-            // Verify session is still valid by making a quick check
-            fetch('@Url.Action("CheckSession", "Account")', {
-                method: 'GET',
-                cache: 'no-cache'
-            }).then(function(response) {
-                if (!response.ok) {
-                    // Session expired, redirect to login
-                    window.location.href = '@Url.Action("Login", "Account")';
+                function filterPets() {
+                    const searchTerm = searchInput.val().toLowerCase().trim();
+                    const gender = genderFilter.val();
+                    const size = sizeFilter.val();
+                    const ageRange = ageFilter.val();
+                    const location = locationFilter.val().toLowerCase().trim();
+                    const sortBy = sortSelect.val();
+
+                    let visibleCount = 0;
+
+                    $('.pet-card').each(function () {
+                        const $card = $(this);
+                        const name = ($card.attr('data-name') || '').toLowerCase();
+                        const petGender = ($card.attr('data-gender') || '').trim();
+                        const petSize = ($card.attr('data-size') || '').trim();
+                        const petAge = parseFloat($card.attr('data-age')) || 0;
+                        const petLocation = ($card.attr('data-location') || '').toLowerCase();
+
+                        let show = true;
+
+                        if (searchTerm && name.indexOf(searchTerm) === -1) show = false;
+                        if (gender && petGender !== gender) show = false;
+                        if (size && petSize !== size) show = false;
+                        if (location && petLocation.indexOf(location) === -1) show = false;
+
+                        if (ageRange) {
+                            const [min, max] = ageRange.split('-').map(Number);
+                            if (petAge < min || petAge > max) show = false;
+                        }
+
+                        if (show) {
+                            $card.fadeIn(300);
+                            visibleCount++;
+                        } else {
+                            $card.fadeOut(300);
+                        }
+                    });
+
+                    $('#resultsCount').text(visibleCount);
+                    updateActiveFilters();
+
+                    // ⭐ SAVE FILTERS TO URL
+                    saveFiltersToURL();
                 }
-            }).catch(function() {
-                // On error, redirect to login
-                window.location.href = '@Url.Action("Login", "Account")';
+
+                // ⭐ NEW: Save current filters to URL
+                function saveFiltersToURL() {
+                    const params = new URLSearchParams();
+
+                    const search = searchInput.val().trim();
+                    const gender = genderFilter.val();
+                    const size = sizeFilter.val();
+                    const age = ageFilter.val();
+                    const location = locationFilter.val().trim();
+                    const sort = sortSelect.val();
+
+                    if (search) params.set('search', search);
+                    if (gender) params.set('gender', gender);
+                    if (size) params.set('size', size);
+                    if (age) params.set('age', age);
+                    if (location) params.set('location', location);
+                    if (sort && sort !== 'newest') params.set('sort', sort);
+
+                    // Update URL without page reload
+                    const newURL = params.toString()
+                        ? window.location.pathname + '?' + params.toString()
+                        : window.location.pathname;
+
+                    window.history.replaceState({}, '', newURL);
+                }
+
+                // ⭐ NEW: Load filters from URL on page load
+                function loadFiltersFromURL() {
+                    const params = new URLSearchParams(window.location.search);
+
+                    const search = params.get('search');
+                    const gender = params.get('gender');
+                    const size = params.get('size');
+                    const age = params.get('age');
+                    const location = params.get('location');
+                    const sort = params.get('sort');
+
+                    if (search) searchInput.val(search);
+                    if (gender) genderFilter.val(gender);
+                    if (size) sizeFilter.val(size);
+                    if (age) ageFilter.val(age);
+                    if (location) locationFilter.val(location);
+                    if (sort) sortSelect.val(sort);
+
+                    // Apply filters after loading
+                    filterPets();
+                }
+
+                // Attach filter events
+                searchInput.on('keyup', filterPets);
+                locationFilter.on('keyup', filterPets);
+                genderFilter.on('change', filterPets);
+                sizeFilter.on('change', filterPets);
+                ageFilter.on('change', filterPets);
+                sortSelect.on('change', filterPets);
+
+                window.resetFilters = function () {
+                    searchInput.val('');
+                    genderFilter.val('');
+                    sizeFilter.val('');
+                    ageFilter.val('');
+                    locationFilter.val('');
+                    sortSelect.val('newest');
+
+                    // Clear URL parameters
+                    window.history.replaceState({}, '', window.location.pathname);
+
+                    filterPets();
+                };
+
+                // Initial filter application
+                filterPets();
             });
-        });
-    }
-    </script>
-</body>
-</html>
+
+                </html >

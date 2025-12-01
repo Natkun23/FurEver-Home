@@ -290,13 +290,17 @@
             grid-column: 1 / -1;
         }
 
-        .form-group label {
-            display: block;
-            color: #334155;
-            margin-bottom: 8px;
-            font-weight: 600;
-            font-size: 14px;
-        }
+            .form-group label {
+                display: flex;
+                align-items: center;
+                justify-content: flex-start; /* ✅ Changed from space-between to flex-start */
+                gap: 8px; /* ✅ Add spacing between icon and text */
+                width: 100%;
+                color: #334155;
+                margin-bottom: 8px;
+                font-weight: 600;
+                font-size: 14px;
+            }
 
         .form-group input,
         .form-group select,
@@ -495,6 +499,50 @@
                 padding: 8px 16px;
             }
         }
+
+        .current-image-slot {
+            text-align: center;
+        }
+
+        .slot-label {
+            font-weight: 600;
+            color: #334155;
+            margin-bottom: 8px;
+            font-size: 0.85em;
+        }
+
+        .empty-image-slot {
+            border: 2px dashed #cbd5e1;
+            border-radius: 12px;
+            height: 180px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            background: #f8fafc;
+            transition: all 0.3s;
+        }
+
+            .empty-image-slot:hover {
+                border-color: #3FA9F5;
+                background: #eff6ff;
+            }
+
+            .empty-image-slot i {
+                font-size: 2em;
+                color: #94a3b8;
+                margin-bottom: 8px;
+            }
+
+            .empty-image-slot span {
+                color: #64748b;
+                font-size: 0.9em;
+            }
+
+        .current-image {
+            height: 180px !important;
+        }
     </style>
 </head>
 <body>
@@ -557,21 +605,89 @@
                 </small>
             </div>
 
-            <!-- Current Image Preview with Hover Effect -->
-            if (!string.IsNullOrEmpty(Model.ImageUrl))
+            if (!string.IsNullOrEmpty(Model.ImageUrl) || !string.IsNullOrEmpty(Model.ImageUrl2) || !string.IsNullOrEmpty(Model.ImageUrl3))
             {
                 <div class="image-preview-section">
-                    <h4><i class="fas fa-image"></i> Current Pet Image</h4>
-                    <div class="pet-image-thumbnail-wrapper" onclick="document.getElementById('petImage').click()">
-                        <img src="@Model.ImageUrl" alt="@Model.Name" class="current-image" />
-                        <div class="image-hover-overlay">
-                            <i class="fas fa-camera"></i>
-                            <span>Change Pet Photo</span>
+                    <h4><i class="fas fa-images"></i> Current Pet Images</h4>
+
+                    <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 20px;">
+
+                        <!-- Image 1 -->
+                        <div class="current-image-slot">
+                            <div class="slot-label">Photo 1</div>
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl))
+                            {
+                                <div class="pet-image-thumbnail-wrapper" onclick="document.getElementById('petImage1').click()">
+                                    <img src="@Model.ImageUrl" class="current-image" />
+                                    <div class="image-hover-overlay">
+                                        <i class="fas fa-sync-alt"></i>
+                                        <span>Change</span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="empty-image-slot" onclick="document.getElementById('petImage1').click()">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Add Photo</span>
+                                </div>
+                            }
                         </div>
+
+                        <!-- Image 2 -->
+                        <div class="current-image-slot">
+                            <div class="slot-label">Photo 2</div>
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl2))
+                            {
+                                <div class="pet-image-thumbnail-wrapper" onclick="document.getElementById('petImage2').click()">
+                                    <img src="@Model.ImageUrl2" class="current-image" />
+                                    <div class="image-hover-overlay">
+                                        <i class="fas fa-sync-alt"></i>
+                                        <span>Change</span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="empty-image-slot" onclick="document.getElementById('petImage2').click()">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Add Photo</span>
+                                </div>
+                            }
+                        </div>
+
+                        <!-- Image 3 -->
+                        <div class="current-image-slot">
+                            <div class="slot-label">Photo 3</div>
+                            @if (!string.IsNullOrEmpty(Model.ImageUrl3))
+                            {
+                                <div class="pet-image-thumbnail-wrapper" onclick="document.getElementById('petImage3').click()">
+                                    <img src="@Model.ImageUrl3" class="current-image" />
+                                    <div class="image-hover-overlay">
+                                        <i class="fas fa-sync-alt"></i>
+                                        <span>Change</span>
+                                    </div>
+                                </div>
+                            }
+                            else
+                            {
+                                <div class="empty-image-slot" onclick="document.getElementById('petImage3').click()">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Add Photo</span>
+                                </div>
+                            }
+                        </div>
+
                     </div>
-                    <span class="image-label">Click image to change</span>
+
+                    <span class="image-label">
+                        <i class="fas fa-info-circle"></i> Click any image to change it
+                    </span>
                 </div>
             }
+
+
+
             else
             {
                 <div class="form-group full-width">
@@ -584,9 +700,12 @@
                 </div>
             }
 
-            <!-- Hidden file input -->
-            <input type="file" id="petImage" name="PetImage" accept="image/*" style="display: none;">
-            <div id="fileName" style="margin-bottom: 20px; text-align: center; color: #3FA9F5; font-weight: 600;"></div>
+            <!-- Hidden file inputs -->
+            <input type="file" id="petImage1" name="PetImage" accept="image/*" style="display: none;">
+            <input type="file" id="petImage2" name="PetImages" accept="image/*" style="display: none;">
+            <input type="file" id="petImage3" name="PetImages" accept="image/*" style="display: none;">
+            <div id="fileNames" style="margin-bottom: 20px; text-align: center; color: #3FA9F5; font-weight: 600;"></div>
+
 
             <div class="form-grid">
                 <div class="form-group">
@@ -619,9 +738,9 @@
                             {
                                 foreach (var breed in ViewBag.Breeds)
                                 {
-                                   <option value="@breed.BreedName" @(breed.BreedName == Model.Breed ? "selected" : "")>
-                                       @breed.BreedName
-                                   </option>
+                                    <option value="@breed.BreedName" @(breed.BreedName == Model.Breed ? "selected" : "")>
+                                        @breed.BreedName
+                                    </option>
                                 }
                             }
                             <option value="Aspin" @(Model.Breed == "Aspin" ? "selected" : "")>Aspin</option>
@@ -680,6 +799,20 @@
                 <div class="form-group">
                     <label>Days in Center</label>
                     @Html.TextBoxFor(m => m.DaysInCenter, new { type = "number", min = "0" })
+                </div>
+                <div class="form-group full-width">
+                    <label style="justify-content: flex-start !important; text-align: left !important;">
+                        <i class="fas fa-map-marker-alt"></i> Location *
+                    </label>
+                    @Html.TextBoxFor(m => m.Location, new
+                    {
+                        placeholder = "e.g., Quezon City, Metro Manila",
+                        required = "required",
+                        maxlength = "255"
+                    })
+                    <small style="color: #64748b; display: block; margin-top: 8px;">
+                        <i class="fas fa-info-circle"></i> Specify where the pet is currently located
+                    </small>
                 </div>
             </div>
 
@@ -780,12 +913,20 @@
             }
         });
 
-        document.getElementById('petImage').addEventListener('change', function (e) {
-            var fileName = e.target.files[0]?.name;
-            if (fileName) {
-                document.getElementById('fileName').textContent = '✓ New image selected: ' + fileName;
-            }
-        });
+        // Multi-image change notification
+        function setupImageChange(inputId, imageNumber) {
+            document.getElementById(inputId).addEventListener('change', function (e) {
+                const fileName = e.target.files[0]?.name;
+                if (fileName) {
+                    const fileNamesDiv = document.getElementById('fileNames');
+                    fileNamesDiv.innerHTML += `<div>✓ Photo ${imageNumber} updated: ${fileName}</div>`;
+                }
+            });
+        }
+
+        setupImageChange('petImage1', 1);
+        setupImageChange('petImage2', 2);
+        setupImageChange('petImage3', 3);
     </script>
 </body>
 </html>

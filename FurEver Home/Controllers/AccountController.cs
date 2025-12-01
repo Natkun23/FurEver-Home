@@ -5,13 +5,15 @@ using System.Web;
 using System.Web.Mvc;
 using FurEver_Home.Models;
 using FurEver_Home.Services;
-using OtpNet; // ✅ NEW
-using QRCoder; // ✅ NEW
+using OtpNet;
+using QRCoder;
 using System.Drawing;
 using System.Drawing.Imaging;
+using BCrypt.Net;
 
 namespace FurEver_Home.Controllers
 {
+    [AllowAnonymous]
     public class AccountController : Controller
     {
         private readonly FurEverHomeContext db = new FurEverHomeContext();
@@ -22,15 +24,20 @@ namespace FurEver_Home.Controllers
         // GET: Account/Login
         public ActionResult Login()
         {
-            // Prevent caching
-            Response.Cache.SetCacheability(HttpCacheability.NoCache);
-            Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1));
-            Response.Cache.SetNoStore();
-
-            // If already logged in, redirect to home
+            // If already logged in, redirect appropriately
             if (Session["UserId"] != null)
             {
-                return RedirectToAction("Index", "Pets");
+                string role = Session["UserRole"]?.ToString();
+
+                // ✅ UPDATED: Check if NOT a client
+                if (role != "Client" && !string.IsNullOrEmpty(role))
+                {
+                    return RedirectToAction("Dashboard", "Admin");
+                }
+                else if (role == "Client")
+                {
+                    return RedirectToAction("Index", "Pets");
+                }
             }
 
             return View();
@@ -50,7 +57,7 @@ namespace FurEver_Home.Controllers
 
                 if (user != null)
                 {
-                    if (user.Password == model.Password)
+                    if (BCrypt.Net.BCrypt.Verify(model.Password, user.Password))
                     {
                         if (!user.IsActive)
                         {
@@ -58,7 +65,7 @@ namespace FurEver_Home.Controllers
                             return View(model);
                         }
 
-                        // ✅ NEW: Check if 2FA is enabled
+                        // ✅ Check if 2FA is enabled
                         if (user.TwoFactorEnabled)
                         {
                             // Skip email OTP, go directly to 2FA
@@ -100,6 +107,7 @@ namespace FurEver_Home.Controllers
 
             return View(model);
         }
+
         // ==================== NEW: VERIFY TWO-FACTOR CODE ====================
 
         // GET: Account/VerifyTwoFactor
@@ -141,8 +149,8 @@ namespace FurEver_Home.Controllers
                         Session["UserEmail"] = user.Email;
                         Session["UserRole"] = user.Role;
 
-                        // Redirect based on role
-                        if (user.Role == "Admin")
+                        // ✅ BEST: Check if NOT a client
+                        if (user.Role != "Client")
                         {
                             return RedirectToAction("Dashboard", "Admin");
                         }
@@ -251,7 +259,7 @@ namespace FurEver_Home.Controllers
             }
 
             // Verify password
-            if (user.Password != password) // TODO: Use proper password hashing in production
+            if (!BCrypt.Net.BCrypt.Verify(password, user.Password))
             {
                 return Json(new { success = false, message = "Incorrect password" });
             }
@@ -332,6 +340,7 @@ namespace FurEver_Home.Controllers
                         TempData["Error"] = "OTP has expired. Please login again to receive a new code.";
                         return RedirectToAction("Login");
                     }
+
                     // Check OTP attempts (max 3 attempts)
                     if (user.OtpAttempts >= 3)
                     {
@@ -343,6 +352,7 @@ namespace FurEver_Home.Controllers
                         TempData["Error"] = "Maximum OTP attempts exceeded. Please login again.";
                         return RedirectToAction("Login");
                     }
+
                     // Verify OTP
                     if (user.OtpCode == model.OtpCode)
                     {
@@ -351,13 +361,15 @@ namespace FurEver_Home.Controllers
                         user.OtpExpiry = null;
                         user.OtpAttempts = 0;
                         db.SaveChanges();
+
                         // Create session
                         Session["UserId"] = user.UserId;
                         Session["UserName"] = user.FullName;
                         Session["UserEmail"] = user.Email;
                         Session["UserRole"] = user.Role;
-                        // Redirect based on role
-                        if (user.Role == "Admin")
+
+                        // ✅ UPDATED: Check if NOT a client
+                        if (user.Role != "Client")
                         {
                             return RedirectToAction("Dashboard", "Admin");
                         }
@@ -374,16 +386,16 @@ namespace FurEver_Home.Controllers
                         int remainingAttempts = 3 - user.OtpAttempts;
                         TempData["Error"] = $"Invalid OTP code. {remainingAttempts} attempt(s) remaining.";
                         TempData["OtpEmail"] = model.Email;
-                        TempData["FullName"] = user.FullName; // ADD THIS LINE - Keep name on error
+                        TempData["FullName"] = user.FullName;
                         return View(model);
                     }
                 }
+
                 TempData["Error"] = "User not found.";
                 return RedirectToAction("Login");
             }
 
             TempData["OtpEmail"] = model.Email;
-            // ADD THESE LINES - Keep name even on validation error
             var userForName = db.Users.FirstOrDefault(u => u.Email == model.Email);
             if (userForName != null)
             {
@@ -391,7 +403,6 @@ namespace FurEver_Home.Controllers
             }
             return View(model);
         }
-
 
         // POST: Account/ResendOtp
         [HttpPost]
@@ -487,7 +498,7 @@ namespace FurEver_Home.Controllers
                 {
                     FullName = model.FullName,
                     Email = model.Email,
-                    Password = model.Password, // TODO: Hash password in production!
+                    Password = BCrypt.Net.BCrypt.HashPassword(model.Password),
                     PhoneNumber = model.MobileNumber,
                     Role = "Client",
                     IDType = model.IDType,
@@ -531,7 +542,7 @@ namespace FurEver_Home.Controllers
                     // Generate reset token
                     var token = Guid.NewGuid().ToString();
                     user.ResetToken = token;
-                    user.ResetTokenExpiry = DateTime.Now.AddHours(1); // Token valid for 1 hour
+                    user.ResetTokenExpiry = DateTime.Now.AddHours(1);
                     user.UpdatedAt = DateTime.Now;
                     db.SaveChanges();
 
@@ -555,7 +566,6 @@ namespace FurEver_Home.Controllers
                     return View();
                 }
 
-                // Don't reveal if email exists or not (security best practice)
                 TempData["Success"] = "If your email exists in our system, you will receive password reset instructions.";
             }
 
@@ -601,7 +611,7 @@ namespace FurEver_Home.Controllers
                 if (user != null && user.ResetTokenExpiry >= DateTime.Now)
                 {
                     // Update password
-                    user.Password = model.NewPassword; // TODO: Hash password in production!
+                    user.Password = BCrypt.Net.BCrypt.HashPassword(model.NewPassword);
                     user.ResetToken = null;
                     user.ResetTokenExpiry = null;
                     user.UpdatedAt = DateTime.Now;
@@ -618,15 +628,12 @@ namespace FurEver_Home.Controllers
         }
 
         // ==================== LOGOUT ====================
-        // GET: Account/Logout
         public ActionResult Logout()
         {
-            // Clear all session data
             Session.Clear();
             Session.Abandon();
-            Session.RemoveAll(); // Extra cleanup
+            Session.RemoveAll();
 
-            // Remove authentication cookie if you're using Forms Authentication
             if (Request.Cookies[System.Web.Security.FormsAuthentication.FormsCookieName] != null)
             {
                 var cookie = new HttpCookie(System.Web.Security.FormsAuthentication.FormsCookieName)
@@ -636,13 +643,11 @@ namespace FurEver_Home.Controllers
                 Response.Cookies.Add(cookie);
             }
 
-            // Remove ASP.NET session cookie
             if (Request.Cookies["ASP.NET_SessionId"] != null)
             {
                 Response.Cookies["ASP.NET_SessionId"].Expires = DateTime.Now.AddDays(-1);
             }
 
-            // ✅ ENHANCED: Aggressive cache prevention on logout
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
             Response.Cache.SetExpires(DateTime.UtcNow.AddMinutes(-1));
             Response.Cache.SetNoStore();
@@ -657,7 +662,6 @@ namespace FurEver_Home.Controllers
 
         // ==================== PROFILE ====================
 
-        // GET: Account/Profile
         public ActionResult Profile()
         {
             if (Session["UserId"] == null)
@@ -676,7 +680,6 @@ namespace FurEver_Home.Controllers
             return View(user);
         }
 
-        // POST: Account/UpdateProfile
         [HttpPost]
         [ValidateAntiForgeryToken]
         public ActionResult UpdateProfile(User model, HttpPostedFileBase ProfilePicture, HttpPostedFileBase IDImage)
@@ -696,13 +699,11 @@ namespace FurEver_Home.Controllers
                     return HttpNotFound();
                 }
 
-                // Update basic info
                 user.FullName = model.FullName;
                 user.PhoneNumber = model.PhoneNumber;
                 user.Address = model.Address;
                 user.Age = model.Age;
 
-                // ==================== Handle Profile Picture Upload ====================
                 if (ProfilePicture != null && ProfilePicture.ContentLength > 0)
                 {
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png" };
@@ -714,13 +715,12 @@ namespace FurEver_Home.Controllers
                         return RedirectToAction("Profile");
                     }
 
-                    if (ProfilePicture.ContentLength > 5 * 1024 * 1024) // 5MB limit
+                    if (ProfilePicture.ContentLength > 5 * 1024 * 1024)
                     {
                         TempData["Error"] = "Profile picture must be less than 5MB.";
                         return RedirectToAction("Profile");
                     }
 
-                    // Delete old profile picture if exists
                     if (!string.IsNullOrEmpty(user.ProfilePictureUrl))
                     {
                         var oldPath = Server.MapPath("~" + user.ProfilePictureUrl);
@@ -730,14 +730,10 @@ namespace FurEver_Home.Controllers
                             {
                                 System.IO.File.Delete(oldPath);
                             }
-                            catch
-                            {
-                                // File might be in use, continue anyway
-                            }
+                            catch { }
                         }
                     }
 
-                    // Save new profile picture (already cropped from JavaScript)
                     var uploadsDir = Server.MapPath("~/Content/Uploads/Profiles");
                     if (!Directory.Exists(uploadsDir))
                     {
@@ -751,7 +747,6 @@ namespace FurEver_Home.Controllers
                     user.ProfilePictureUrl = "/Content/Uploads/Profiles/" + fileName;
                 }
 
-                // ==================== Handle ID Image Upload ====================
                 if (IDImage != null && IDImage.ContentLength > 0)
                 {
                     var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".pdf" };
@@ -763,13 +758,12 @@ namespace FurEver_Home.Controllers
                         return RedirectToAction("Profile");
                     }
 
-                    if (IDImage.ContentLength > 5 * 1024 * 1024) // 5MB limit
+                    if (IDImage.ContentLength > 5 * 1024 * 1024)
                     {
                         TempData["Error"] = "ID document must be less than 5MB.";
                         return RedirectToAction("Profile");
                     }
 
-                    // Delete old ID if exists
                     if (!string.IsNullOrEmpty(user.IDImageUrl))
                     {
                         var oldPath = Server.MapPath("~" + user.IDImageUrl);
@@ -779,14 +773,10 @@ namespace FurEver_Home.Controllers
                             {
                                 System.IO.File.Delete(oldPath);
                             }
-                            catch
-                            {
-                                // File might be in use, continue anyway
-                            }
+                            catch { }
                         }
                     }
 
-                    // Save new ID document (cropped if it's an image)
                     var uploadsDir = Server.MapPath("~/Content/Uploads/IDs");
                     if (!Directory.Exists(uploadsDir))
                     {
@@ -798,18 +788,13 @@ namespace FurEver_Home.Controllers
                     IDImage.SaveAs(filePath);
 
                     user.IDImageUrl = "/Content/Uploads/IDs/" + fileName;
-
-                    // Reset to pending for admin review
                     user.IDStatus = "Pending";
-
-                    // Flag to show modal after redirect
                     TempData["IDStatusChanged"] = "true";
                 }
 
                 user.UpdatedAt = DateTime.Now;
                 db.SaveChanges();
 
-                // Update session if name changed
                 Session["UserName"] = user.FullName;
 
                 TempData["Success"] = "Profile updated successfully!";
@@ -817,34 +802,26 @@ namespace FurEver_Home.Controllers
             }
             catch (Exception ex)
             {
-                // Log the error if you have logging set up
                 TempData["Error"] = "An error occurred while updating your profile. Please try again.";
                 return RedirectToAction("Profile");
             }
-
-
         }
 
-        // GET: Account/CheckSession
-        // Used by JavaScript to verify if session is still valid
         public ActionResult CheckSession()
         {
-            // Prevent caching of this check
             Response.Cache.SetCacheability(HttpCacheability.NoCache);
             Response.Cache.SetNoStore();
             Response.AppendHeader("Cache-Control", "no-cache, no-store, must-revalidate");
 
             if (Session["UserId"] != null)
             {
-                // Session is valid
                 return new HttpStatusCodeResult(200, "OK");
             }
             else
             {
-                // Session expired
                 return new HttpStatusCodeResult(401, "Unauthorized");
             }
         }
 
+        }
     }
-}
